@@ -1,0 +1,114 @@
+/* Game Container */
+.game-container {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 60px);
+  background-color: var(--bg-color, #0a0a0a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Game Canvas */
+#gameCanvas {
+  border: 2px solid #2a2a2a;
+  background-color: #0f0f0f;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Game Stats */
+.game-stats {
+  display: flex;
+  gap: 20px;
+  font-family: "Fira Code", monospace;
+  color: #00ff00;
+}
+
+.score,
+.high-score {
+  font-size: 1.2rem;
+}
+
+/* Game Message */
+.game-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #00ff00;
+  background-color: rgba(10, 10, 10, 0.9);
+  padding: 2rem;
+  border: 2px solid #2a2a2a;
+  border-radius: 8px;
+  z-index: 100;
+}
+
+.game-message h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-family: "Fira Code", monospace;
+}
+
+.game-message p {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.game-message .code-comment {
+  color: #666;
+  font-family: "Fira Code", monospace;
+}
+
+/* Game Controls */
+.game-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.control-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(0, 255, 0, 0.1);
+  border: 2px solid #00ff00;
+  color: #00ff00;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.control-button:hover {
+  background-color: rgba(0, 255, 0, 0.2);
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .game-stats {
+    font-size: 1rem;
+  }
+
+  .game-message {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .game-message h2 {
+    font-size: 1.5rem;
+  }
+
+  .game-message p {
+    font-size: 1rem;
+  }
+}
+
+/* Hide mobile controls on desktop */
+@media (min-width: 769px) {
+  .game-controls {
+    display: none;
+  }
+}
