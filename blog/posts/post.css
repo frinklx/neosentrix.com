@@ -1,0 +1,244 @@
+/* Post Container */
+.post-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+}
+
+/* Post Header */
+.post-header {
+  margin-bottom: 3rem;
+}
+
+.post-header h1 {
+  font-size: 2.5rem;
+  margin: 1rem 0;
+}
+
+/* Post Content */
+.post-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.post-content p {
+  margin: 1.5rem 0;
+}
+
+/* Code Blocks */
+.code-block {
+  margin: 2rem 0;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #2a2a2a;
+  border-bottom: 1px solid #333;
+}
+
+.filename {
+  color: #00ff00;
+  font-family: "Fira Code", monospace;
+}
+
+.code-actions button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+.code-actions button:hover {
+  color: #00ff00;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.code-block code {
+  font-family: "Fira Code", monospace;
+  color: #fff;
+}
+
+/* Feature List */
+.feature-list {
+  list-style: none;
+  padding: 0;
+}
+
+.feature-list li {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.feature-list li::before {
+  content: ">";
+  position: absolute;
+  left: 0;
+  color: #00ff00;
+  font-family: "Fira Code", monospace;
+}
+
+/* Post Footer */
+.post-footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 2px solid #2a2a2a;
+}
+
+.author-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.author-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid #00ff00;
+}
+
+.author-info h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+.author-info p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Share Buttons */
+.share-section {
+  margin-top: 2rem;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.share-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-family: "Fira Code", monospace;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.share-button.twitter {
+  background: rgba(29, 161, 242, 0.1);
+  color: #1da1f2;
+}
+
+.share-button.linkedin {
+  background: rgba(0, 119, 181, 0.1);
+  color: #0077b5;
+}
+
+.share-button.copy-link {
+  background: rgba(0, 255, 0, 0.1);
+  color: #00ff00;
+}
+
+.share-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Sidebar */
+.post-sidebar {
+  position: sticky;
+  top: 2rem;
+  height: fit-content;
+}
+
+.sidebar-section {
+  background: #0f0f0f;
+  border: 2px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.sidebar-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.sidebar-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-section li {
+  margin: 0.75rem 0;
+}
+
+.sidebar-section a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.sidebar-section a:hover {
+  color: #00ff00;
+}
+
+.post-date {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .post-container {
+    grid-template-columns: 1fr;
+  }
+
+  .post-sidebar {
+    position: static;
+    margin-top: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .post-header h1 {
+    font-size: 2rem;
+  }
+
+  .share-buttons {
+    flex-direction: column;
+  }
+
+  .share-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
