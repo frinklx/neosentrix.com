@@ -1,14 +1,464 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frinklx_official</title>
+    <title>frinklx</title>
     <link rel="stylesheet" href="styles.css" />
-    <script src="script.js" defer></script>
+    <!-- Fira Code for coding theme -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="shortcut icon" href="images/logo.svg" type="image/x-icon">
   </head>
   <body>
-    <div class="container">
-      <h1>frinklx_official</h1>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="#" class="nav-logo">frinklx</a>
+
+        <div class="nav-links">
+          <a href="#home" class="nav-link active" data-label="home">home</a>
+          <a href="#work" class="nav-link" data-label="work">work</a>
+          <a href="#skills" class="nav-link" data-label="skills">skills</a>
+          <a href="#experience" class="nav-link" data-label="experience">experience</a>
+          <a href="#project" class="nav-link" data-label="project">projects</a>
+        </div>
+
+        <div class="nav-socials">
+          <a href="https://github.com/frinklx" aria-label="GitHub" data-import="github">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://discord.com/users/1241605075047153776" aria-label="Discord" data-import="discord">
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <i class="fas fa-code"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Enhanced Mobile Navigation -->
+    <div class="mobile-nav">
+      <div class="mobile-nav-content">
+        <a href="#home" class="nav-link" data-label="home">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+          <small class="nav-indicator">01</small>
+        </a>
+        <a href="#work" class="nav-link" data-label="work">
+          <i class="fas fa-briefcase"></i>
+          <span>Work</span>
+          <small class="nav-indicator">02</small>
+        </a>
+        <a href="#skills" class="nav-link" data-label="skills">
+          <i class="fas fa-tools"></i>
+          <span>Skills</span>
+          <small class="nav-indicator">03</small>
+        </a>
+        <a href="#experience" class="nav-link" data-label="experience">
+          <i class="fas fa-history"></i>
+          <span>Experience</span>
+          <small class="nav-indicator">04</small>
+        </a>
+        <a href="#project" class="nav-link" data-label="project">
+          <i class="fas fa-code-branch"></i>
+          <span>Projects</span>
+          <small class="nav-indicator">05</small>
+        </a>
+      </div>
+
+      <div class="nav-socials">
+        <a href="https://github.com/frinklx" aria-label="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://discord.com/users/1241605075047153776" aria-label="Discord">
+          <i class="fab fa-discord"></i>
+        </a>
+        <a href="mailto:intrabotofficial@gmail.com" aria-label="Email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </div>
+
+      <div class="mobile-footer">
+        <span class="code-comment">// © 2024 frinklx</span>
+      </div>
     </div>
+
+    <main>
+      <section class="hero">
+        <div class="hero-container">
+          <div class="hero-content">
+            <div class="profile-card" data-animate="animate-fade-left" data-delay="1">
+              <div class="profile-image">
+                <img src="images/frinklx.png" alt="frinklx" id="profile-img" />
+                <div class="status-badge" title="Coding status">
+                  <i class="fas fa-circle"></i> Coding
+                </div>
+              </div>
+              <div class="github-stats">
+                <div class="stat">
+                  <i class="fas fa-code-branch"></i>
+                  <span>13</span>
+                  <small>repositories</small>
+                </div>
+                <div class="stat">
+                  <i class="fas fa-star"></i>
+                  <span>0</span>
+                  <small>stars</small>
+                </div>
+                <div class="stat">
+                  <i class="fas fa-users"></i>
+                  <span>1</span>
+                  <small>followers</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-text">
+              <div class="code-comment" data-animate="animate-fade-right" data-delay="2">// Hello, World! I am</div>
+              <h1 class="glitch-text" data-animate="animate-fade-right" data-delay="3">frinklx</h1>
+              <div class="typewriter" data-animate="animate-fade-right" data-delay="4">
+                <span id="role-text"></span>
+                <span class="cursor">_</span>
+              </div>
+              <p class="bio" data-animate="animate-fade-right" data-delay="5">
+                Hi! I'm frinklx, a full-stack developer and designer. I'm a passionate about creating beautiful and functional websites and applications. I am 13 years old and am self taught. this website itself was built by me! If you need a website built, contact me!
+              </p>
+
+              <div class="cta-buttons" data-animate="animate-fade-up" data-delay="6">
+                <a href="#contact" class="cta-primary">
+                  <i class="fas fa-terminal"></i>
+                  Start a conversation
+                </a>
+                <a href="#projects" class="cta-secondary">
+                  <i class="fas fa-code"></i>
+                  View my work
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="repo-grid" id="work" data-animate="animate-fade-up">
+            <h2 class="section-title">
+              <span class="code-comment">// Featured Repositories</span>
+            </h2>
+            <div class="repo-cards">
+              <a href="https://github.com/frinklx/neosentrix.com" class="repo-card" target="_blank">
+                <h3>
+                  <i class="far fa-folder"></i>
+                  neosentrix.com
+                </h3>
+                <p>My personal portfolio website</p>
+                <div class="repo-meta">
+                  <span><i class="fas fa-star"></i> 0</span>
+                  <span><i class="fas fa-code-branch"></i> 0</span>
+                  <span>HTML</span>
+                </div>
+              </a>
+
+              <a href="https://github.com/frinklx/omastro_web" class="repo-card" target="_blank">
+                <h3>
+                  <i class="far fa-folder"></i>
+                  omastro_web
+                </h3>
+                <p>No description available</p>
+                <div class="repo-meta">
+                  <span><i class="fas fa-star"></i> 0</span>
+                  <span><i class="fas fa-code-branch"></i> 0</span>
+                  <span>CSS</span>
+                </div>
+              </a>
+
+              <a href="https://github.com/frinklx/duckywebdev" class="repo-card" target="_blank">
+                <h3>
+                  <i class="far fa-folder"></i>
+                  duckywebdev
+                </h3>
+                <p>No description available</p>
+                <div class="repo-meta">
+                  <span><i class="fas fa-star"></i> 0</span>
+                  <span><i class="fas fa-code-branch"></i> 0</span>
+                  <span>N/A</span>
+                </div>
+              </a>
+
+              <a href="https://github.com/frinklx/ai_agents" class="repo-card" target="_blank">
+                <h3>
+                  <i class="far fa-folder"></i>
+                  ai_agents
+                </h3>
+                <p>No description available</p>
+                <div class="repo-meta">
+                  <span><i class="fas fa-star"></i> 0</span>
+                  <span><i class="fas fa-code-branch"></i> 0</span>
+                  <span>Python</span>
+                </div>
+              </a>
+
+              <a href="https://github.com/frinklx/Codinglab-P2" class="repo-card" target="_blank">
+                <h3>
+                  <i class="far fa-folder"></i>
+                  Codinglab-P2
+                </h3>
+                <p>No description available</p>
+                <div class="repo-meta">
+                  <span><i class="fas fa-star"></i> 0</span>
+                  <span><i class="fas fa-code-branch"></i> 0</span>
+                  <span>Python</span>
+                </div>
+              </a>
+
+              <a href="https://github.com/frinklx/duckytest" class="repo-card" target="_blank">
+                <h3>
+                  <i class="far fa-folder"></i>
+                  duckytest
+                </h3>
+                <p>No description available</p>
+                <div class="repo-meta">
+                  <span><i class="fas fa-star"></i> 0</span>
+                  <span><i class="fas fa-code-branch"></i> 0</span>
+                  <span>N/A</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-background"></div>
+      </section>
+
+      <!-- Skills Section -->
+      <section class="skills-section" id="skills">
+        <div class="container">
+          <h2 class="section-title" data-animate="animate-fade-up">
+            <span class="code-comment">// Technical Arsenal</span>
+          </h2>
+          <div class="skills-grid">
+            <div class="skill-category" data-animate="animate-fade-up" data-delay="1">
+              <h3><i class="fas fa-code"></i> Languages</h3>
+              <div class="skill-tags">
+                <span class="skill-tag">JavaScript</span>
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">HTML</span>
+                <span class="skill-tag">CSS</span>
+                <span class="skill-tag">Dart</span>
+                <span class="skill-tag">Swift</span>
+                <!-- Add more languages -->
+              </div>
+            </div>
+
+            <div class="skill-category" data-animate="animate-fade-up" data-delay="2">
+              <h3><i class="fas fa-layer-group"></i> Frameworks</h3>
+              <div class="skill-tags">
+                <span class="skill-tag">React</span>
+                <span class="skill-tag">Node.js</span>
+                <span class="skill-tag">Express</span>
+                <span class="skill-tag">Next.js</span>
+                <span class="skill-tag">discord.js</span>
+                <span class="skill-tag">discord.py</span>
+                <!-- Add more frameworks -->
+              </div>
+            </div>
+
+            <div class="skill-category" data-animate="animate-fade-up" data-delay="3">
+              <h3><i class="fas fa-database"></i> Databases</h3>
+              <div class="skill-tags">
+                <span class="skill-tag">MongoDB</span>
+                <span class="skill-tag">SQLite</span>
+                <!-- Add more databases -->
+              </div>
+            </div>
+
+            <div class="skill-category" data-animate="animate-fade-up" data-delay="4">
+              <h3><i class="fas fa-tools"></i> My Tools</h3>
+              <div class="skill-tags">
+                <span class="skill-tag">Github</span>
+                <span class="skill-tag">VSC</span>
+                <span class="skill-tag">MacOS</span>
+                <span class="skill-tag">Windows</span>
+                <span class="skill-tag">Codespaces</span>
+                <span class="skill-tag">Replit</span>
+                <span class="skill-tag">Aceternity</span>
+                <span class="skill-tag">Netlify</span>
+                <!-- Add more tools -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Experience Timeline -->
+      <section class="experience-section" id="experience">
+        <div class="container">
+          <h2 class="section-title" data-animate="animate-fade-up">
+            <span class="code-comment">// Career.map(year => experience)</span>
+          </h2>
+          <div class="timeline">
+            <div class="timeline-item" data-animate="animate-fade-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <div class="timeline-date">Jan 2025 - Present</div>
+                <h3>Founder @ Intrabot</h3>
+                <p>#1 Server Manager for free. [ BETA ]</p>
+                <div class="tech-stack">
+                  <span>discord.js</span>
+                  <span>HTML</span>
+                  <span>CSS</span>
+                  <span>JS</span>
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-date">Nov 2024 - Present</div>
+                <h3>Web Developer @ duckybot.xyz</h3>
+                <p>Developing Ducky's official website for the public</p>
+                <div class="tech-stack">
+                  <span>HTML</span>
+                  <span>CSS</span>
+                  <span>JS</span>
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="timeline-date">Jan 2024 - July 2024</div>
+                <h3>Freelancer</h3>
+                <p>Doing bot & webdev commissions for clients.</p>
+                <div class="tech-stack">
+                  <span>discord.js</span>
+                  <span>discord.py</span>
+                  <span>HTML</span>
+                  <span>CSS</span>
+                  <span>JS</span>
+                  <span>Python</span>
+                  <span>Node.js</span>
+                </div>
+              </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Projects -->
+      <section class="projects-section" id="project">
+        <div class="container">
+          <h2 class="section-title" data-animate="animate-fade-up">
+            <span class="code-comment"
+              >// Featured.filter(project => project.isAwesome)</span
+            >
+          </h2>
+          <div class="projects-grid">
+            <div class="project-card" data-animate="animate-scale" data-delay="1">
+              <div class="project-header">
+                <i class="far fa-folder-open"></i>
+                <div class="project-links">
+                  <a href="#" target="_blank"><i class="fab fa-github"></i></a>
+                  <a href="#" target="_blank"
+                    ><i class="fas fa-external-link-alt"></i
+                  ></a>
+                </div>
+              </div>
+              <h3>Intrabot</h3>
+              <p>#1 Server Manager for free. [ BETA ]</p>
+              <div class="project-tech">
+                <span>HTML</span>
+                <span>CSS</span>
+                <span>JS</span>
+                <span>MongoDB</span>
+                <span>discord.js</span>
+              </div>
+            </div>
+            <!-- Add more project cards -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Replace the contact section with this footer -->
+      <footer class="footer">
+        <div class="footer-grid">
+          <div class="footer-section" data-animate="animate-fade-up" data-delay="1">
+            <div class="footer-brand">
+              <span class="code-keyword">const</span> 
+              <span class="code-variable">contact</span> 
+              <span class="code-operator">=</span> 
+              <span class="code-bracket">{</span>
+            </div>
+            <p class="footer-bio">Building digital experiences with clean code and creative solutions. Always open to new opportunities and collaborations.</p>
+            <div class="social-links">
+              <a href="https://github.com/frinklx" target="_blank" class="social-link">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="mailto:intrabotofficial@gmail.com" class="social-link">
+                <i class="fas fa-envelope"></i>
+              </a>
+              <a href="https://discord.gg/duckybot" target="_blank" class="social-link">
+                <i class="fab fa-discord"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="footer-section" data-animate="animate-fade-up" data-delay="2">
+            <h3 class="footer-title">
+              <span class="code-comment">// Navigation</span>
+            </h3>
+            <ul class="footer-links">
+              <li><span class="code-dot">•</span><a href="#home">home</a></li>
+              <li><span class="code-dot">•</span><a href="#work">work</a></li>
+              <li><span class="code-dot">•</span><a href="#about">about</a></li>
+              <li><span class="code-dot">•</span><a href="#projects">projects</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section" data-animate="animate-fade-up" data-delay="3">
+            <h3 class="footer-title">
+              <span class="code-comment">// Latest Projects</span>
+            </h3>
+            <ul class="footer-links">
+              <li>
+                <span class="code-dot">•</span>
+                <a href="#" class="project-link">
+                  <span class="project-name">Intrabot</span>
+                  <span class="project-status">beta</span>
+                </a>
+              </li>
+              <li>
+                <span class="code-dot">•</span>
+                <a href="#" class="project-link">
+                  <span class="project-name">duckybot.xyz</span>
+                  <span class="project-status">live</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="footer-section" data-animate="animate-fade-up" data-delay="4">
+            <h3 class="footer-title">
+              <span class="code-comment">// Quick Contact</span>
+            </h3>
+            <div class="contact-info">
+              <p><i class="fas fa-envelope"></i> intrabotofficial@gmail.com</p>
+              <p><i class="fab fa-discord"></i> @frinklx</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom" data-animate="animate-fade-up" data-delay="5">
+          <div class="code-line">
+            <span class="code-bracket">}</span>
+            <span class="code-comment">// © 2024 frinklx. All rights reserved.</span>
+          </div>
+          <div class="code-stats">
+            <span class="stat-item"><i class="fas fa-code"></i> with <i class="fas fa-heart"></i></span>
+            <span class="stat-item"><i class="fas fa-coffee"></i> fueled development</span>
+          </div>
+    </div>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
   </body>
 </html>
