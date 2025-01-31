@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frinklx - Blog</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="blog.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="shortcut icon" href="../images/logo.svg" type="image/x-icon" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="../" class="nav-logo">frinklx</a>
+        <div class="nav-links">
+          <a href="../" class="nav-link">home</a>
+          <a href="../work" class="nav-link">work</a>
+          <a href="../skills" class="nav-link">skills</a>
+          <a href="../experience" class="nav-link">experience</a>
+          <a href="../project" class="nav-link">projects</a>
+          <a href="#" class="nav-link active">blog</a>
+        </div>
+        <div class="nav-socials">
+          <a href="https://github.com/frinklx" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a
+            href="https://discord.com/users/1241605075047153776"
+            aria-label="Discord"
+          >
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="blog-container">
+      <header class="blog-header">
+        <div class="code-comment">// Latest Posts</div>
+        <h1 class="glitch-text">My Blog</h1>
+        <p class="header-description">
+          Thoughts, tutorials, and insights about coding and development.
+        </p>
+      </header>
+
+      <div class="blog-grid">
+        <!-- Featured Post -->
+        <article class="blog-card featured" data-animate="animate-fade-up">
+          <div class="card-image">
+            <div class="tag">Featured</div>
+            <img src="../images/blog/featured.jpg" alt="Featured Post" />
+          </div>
+          <div class="card-content">
+            <div class="post-meta">
+              <span class="date"
+                ><i class="far fa-calendar"></i> Jan 30, 2024</span
+              >
+              <span class="category"
+                ><i class="fas fa-code"></i> Development</span
+              >
+            </div>
+            <h2>How I Built This Portfolio Website</h2>
+            <p>
+              A deep dive into the development process of my personal portfolio
+              website, including the technologies used and challenges faced.
+            </p>
+            <div class="post-tags">
+              <span>#HTML</span>
+              <span>#CSS</span>
+              <span>#JavaScript</span>
+              <span>#WebDev</span>
+            </div>
+            <a href="posts/portfolio-development.html" class="read-more">
+              Read More <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- Regular Posts -->
+        <article
+          class="blog-card"
+          data-animate="animate-fade-up"
+          data-delay="1"
+        >
+          <div class="card-content">
+            <div class="post-meta">
+              <span class="date"
+                ><i class="far fa-calendar"></i> Jan 28, 2024</span
+              >
+              <span class="category"><i class="fas fa-robot"></i> AI</span>
+            </div>
+            <h2>Getting Started with Discord.js</h2>
+            <p>
+              Learn how to create your first Discord bot using Discord.js,
+              Node.js, and basic JavaScript.
+            </p>
+            <div class="post-tags">
+              <span>#Discord</span>
+              <span>#JavaScript</span>
+              <span>#Bot</span>
+            </div>
+            <a href="posts/discord-js-guide.html" class="read-more">
+              Read More <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </article>
+
+        <article
+          class="blog-card"
+          data-animate="animate-fade-up"
+          data-delay="2"
+        >
+          <div class="card-content">
+            <div class="post-meta">
+              <span class="date"
+                ><i class="far fa-calendar"></i> Jan 25, 2024</span
+              >
+              <span class="category"
+                ><i class="fas fa-paint-brush"></i> Design</span
+              >
+            </div>
+            <h2>CSS Animation Tips for Beginners</h2>
+            <p>
+              Essential CSS animation techniques that every beginner should
+              know, with practical examples.
+            </p>
+            <div class="post-tags">
+              <span>#CSS</span>
+              <span>#Animation</span>
+              <span>#WebDesign</span>
+            </div>
+            <a href="posts/css-animation-tips.html" class="read-more">
+              Read More <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <!-- Newsletter Signup -->
+      <section class="newsletter-section" data-animate="animate-fade-up">
+        <div class="newsletter-content">
+          <div class="code-comment">// Stay Updated</div>
+          <h2>Subscribe to My Newsletter</h2>
+          <p>Get the latest posts and updates directly in your inbox.</p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" placeholder="your@email.com" required />
+            <button type="submit">
+              <i class="fas fa-paper-plane"></i>
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script src="../script.js"></script>
+    <script src="blog.js"></script>
+  </body>
+</html>
