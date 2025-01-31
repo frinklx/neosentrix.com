@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - frinklx</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="admin.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="shortcut icon" href="../images/logo.svg" type="image/x-icon" />
+  </head>
+  <body>
+    <div id="login-screen" class="login-screen">
+      <div class="login-container">
+        <h2><i class="fas fa-terminal"></i> Admin Access</h2>
+        <div class="code-comment">// Please authenticate</div>
+        <form id="login-form" class="login-form">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" required />
+          </div>
+          <button type="submit" class="login-btn">
+            <i class="fas fa-right-to-bracket"></i> Login
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="admin-dashboard" class="admin-dashboard hidden">
+      <nav class="navbar">
+        <div class="nav-container">
+          <a href="../" class="nav-logo">frinklx</a>
+          <div class="admin-controls">
+            <span id="last-login" class="last-login"
+              >Last login: calculating...</span
+            >
+            <button id="logout-btn" class="logout-btn">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="dashboard-container">
+        <div class="sidebar">
+          <div class="sidebar-header">
+            <i class="fas fa-screwdriver-wrench"></i>
+            <span>Admin Tools</span>
+          </div>
+          <nav class="sidebar-nav">
+            <a href="#overview" class="active" data-section="overview">
+              <i class="fas fa-chart-line"></i> Overview
+            </a>
+            <a href="#users" data-section="users">
+              <i class="fas fa-users"></i> User Management
+            </a>
+            <a href="#content" data-section="content">
+              <i class="fas fa-file-code"></i> Content Manager
+            </a>
+            <a href="#analytics" data-section="analytics">
+              <i class="fas fa-chart-bar"></i> Analytics
+            </a>
+            <a href="#settings" data-section="settings">
+              <i class="fas fa-cog"></i> Settings
+            </a>
+            <a href="#logs" data-section="logs">
+              <i class="fas fa-list"></i> System Logs
+            </a>
+          </nav>
+        </div>
+
+        <main class="dashboard-content">
+          <!-- Overview Section -->
+          <section id="overview" class="dashboard-section active">
+            <h2>Dashboard Overview</h2>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                  <h3>Total Users</h3>
+                  <p>1,234</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-eye"></i></div>
+                <div class="stat-info">
+                  <h3>Page Views</h3>
+                  <p>45,678</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-code-branch"></i></div>
+                <div class="stat-info">
+                  <h3>Deployments</h3>
+                  <p>89</p>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-server"></i></div>
+                <div class="stat-info">
+                  <h3>Server Status</h3>
+                  <p class="status-ok">Operational</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="recent-activity">
+              <h3>Recent Activity</h3>
+              <div class="activity-list">
+                <div class="activity-item">
+                  <i class="fas fa-user-plus"></i>
+                  <span>New user registration</span>
+                  <small>2 minutes ago</small>
+                </div>
+                <div class="activity-item">
+                  <i class="fas fa-code-commit"></i>
+                  <span>Website update deployed</span>
+                  <small>1 hour ago</small>
+                </div>
+                <div class="activity-item">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Security scan completed</span>
+                  <small>3 hours ago</small>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Other sections will be shown/hidden via JavaScript -->
+          <section id="users" class="dashboard-section">
+            <h2>User Management</h2>
+            <div class="user-controls">
+              <button class="admin-btn">
+                <i class="fas fa-user-plus"></i> Add User
+              </button>
+              <input
+                type="search"
+                placeholder="Search users..."
+                class="search-input"
+              />
+            </div>
+            <div class="user-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Last Active</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>frinklx</td>
+                    <td>Admin</td>
+                    <td><span class="status-badge active">Active</span></td>
+                    <td>Just now</td>
+                    <td>
+                      <button class="action-btn">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="action-btn">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="content" class="dashboard-section">
+            <h2>Content Manager</h2>
+            <div class="content-grid">
+              <div class="content-card">
+                <div class="content-header">
+                  <h3>Pages</h3>
+                  <button class="admin-btn small">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+                <ul class="content-list">
+                  <li>
+                    <span>Home</span>
+                    <div class="content-actions">
+                      <button class="action-btn">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="action-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </li>
+                  <li>
+                    <span>Game</span>
+                    <div class="content-actions">
+                      <button class="action-btn">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="action-btn">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section id="analytics" class="dashboard-section">
+            <h2>Analytics</h2>
+            <div class="analytics-grid">
+              <div class="analytics-card">
+                <h3>Traffic Overview</h3>
+                <div class="analytics-placeholder">
+                  <div class="chart-placeholder"></div>
+                  <div class="code-comment">
+                    // Analytics data visualization
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="settings" class="dashboard-section">
+            <h2>System Settings</h2>
+            <div class="settings-grid">
+              <div class="settings-card">
+                <h3>General Settings</h3>
+                <form class="settings-form">
+                  <div class="form-group">
+                    <label>Site Name</label>
+                    <input type="text" value="frinklx" />
+                  </div>
+                  <div class="form-group">
+                    <label>Maintenance Mode</label>
+                    <label class="switch">
+                      <input type="checkbox" />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <button type="submit" class="admin-btn">Save Changes</button>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <section id="logs" class="dashboard-section">
+            <h2>System Logs</h2>
+            <div class="logs-container">
+              <div class="log-filters">
+                <select class="log-level-filter">
+                  <option value="all">All Levels</option>
+                  <option value="error">Errors</option>
+                  <option value="warning">Warnings</option>
+                  <option value="info">Info</option>
+                </select>
+                <input type="date" class="log-date-filter" />
+              </div>
+              <div class="log-entries">
+                <div class="log-entry info">
+                  <span class="log-time">2024-01-31 14:30:15</span>
+                  <span class="log-level">INFO</span>
+                  <span class="log-message">User login successful</span>
+                </div>
+                <div class="log-entry warning">
+                  <span class="log-time">2024-01-31 14:28:30</span>
+                  <span class="log-level">WARNING</span>
+                  <span class="log-message">High CPU usage detected</span>
+                </div>
+                <div class="log-entry error">
+                  <span class="log-time">2024-01-31 14:25:45</span>
+                  <span class="log-level">ERROR</span>
+                  <span class="log-message">Failed login attempt</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script src="admin.js"></script>
+  </body>
+</html>
