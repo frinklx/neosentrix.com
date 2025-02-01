@@ -11,10 +11,27 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the root directory
-app.use(express.static(path.join(__dirname, "..")));
+app.use(
+  express.static(path.join(__dirname, ".."), {
+    setHeaders: (res, path) => {
+      if (path.endsWith(".css")) {
+        res.setHeader("Content-Type", "text/css");
+      }
+    },
+  })
+);
 
 // Serve dashboard files
-app.use("/dashboard", express.static(path.join(__dirname, "../dashboard")));
+app.use(
+  "/dashboard",
+  express.static(path.join(__dirname, "../dashboard"), {
+    setHeaders: (res, path) => {
+      if (path.endsWith(".css")) {
+        res.setHeader("Content-Type", "text/css");
+      }
+    },
+  })
+);
 
 // Create Discord client
 const client = new Client({
@@ -22,6 +39,9 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildPresences,
   ],
 });
 
@@ -76,6 +96,23 @@ app.post("/api/send-message", async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// OAuth2 callback endpoint
+app.get("/dashboard/callback", async (req, res) => {
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).json({ error: "No code provided" });
+  }
+
+  try {
+    // Redirect to dashboard after successful authentication
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.error("OAuth error:", error);
+    res.status(500).json({ error: "Authentication failed" });
   }
 });
 
