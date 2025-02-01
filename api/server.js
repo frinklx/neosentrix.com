@@ -3,6 +3,8 @@ const { Client, GatewayIntentBits } = require("discord.js");
 const express = require("express");
 const WebSocket = require("ws");
 const http = require("http");
+const cors = require("cors");
+const WebSocketServer = require("ws").Server;
 
 // Initialize Discord client
 const client = new Client({
@@ -16,7 +18,49 @@ const client = new Client({
 // Initialize Express app and WebSocket server
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+
+// Initialize WebSocket server with path
+const wss = new WebSocketServer({
+  server,
+  path: "/ws", // This makes the WebSocket available at /ws path
+});
+
+// Middleware
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS.split(","),
+    credentials: true,
+  })
+);
+app.use(express.json());
+
+// API routes
+const apiRouter = express.Router();
+
+// Health check endpoint
+apiRouter.get("/health", (req, res) => {
+  res.json({ status: "ok", uptime: formatUptime(Date.now() - startTime) });
+});
+
+// Mount API routes under /api
+app.use("/api", apiRouter);
+
+// OAuth callback route
+app.get("/dashboard/callback", async (req, res) => {
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).send("No code provided");
+  }
+
+  try {
+    // Implement OAuth2 token exchange
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.error("OAuth error:", error);
+    res.status(500).send("Authentication failed");
+  }
+});
 
 // Your Discord user ID for DM communication
 const YOUR_USER_ID = "1241605075047153776";
@@ -140,24 +184,6 @@ async function sendDMToOwner(message) {
 
 // Start sending stats updates periodically
 setInterval(sendStats, 5000);
-
-// Express routes for OAuth2 callback
-app.get("/callback", async (req, res) => {
-  const { code } = req.query;
-
-  if (!code) {
-    return res.status(400).send("No code provided");
-  }
-
-  try {
-    // Implement OAuth2 token exchange
-    // This should be done securely, preferably on a backend server
-    res.redirect("/dashboard");
-  } catch (error) {
-    console.error("OAuth error:", error);
-    res.status(500).send("Authentication failed");
-  }
-});
 
 // Start the server
 const PORT = process.env.PORT || 3001;
