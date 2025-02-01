@@ -4,7 +4,7 @@
 set -e
 
 # Configuration
-REPO_URL="https://github.com/yourusername/neosentrix.com.git"
+REPO_URL="https://github.com/frinklx/neosentrix.com"
 DEPLOY_PATH="/var/www/neosentrix.com"
 NGINX_CONF="/etc/nginx/sites-available/neosentrix.com"
 
