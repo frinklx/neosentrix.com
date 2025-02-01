@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frinklx - Portfolio</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="portfolio.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="shortcut icon" href="../images/logo.svg" type="image/x-icon" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="../" class="nav-logo">frinklx</a>
+        <div class="nav-links">
+          <a href="../" class="nav-link">home</a>
+          <a href="../services" class="nav-link">services</a>
+          <a href="#" class="nav-link active">portfolio</a>
+          <a href="../contact" class="nav-link">contact</a>
+        </div>
+        <div class="nav-socials">
+          <a href="https://github.com/frinklx" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a
+            href="https://discord.com/users/1241605075047153776"
+            aria-label="Discord"
+          >
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="portfolio-container">
+      <header class="portfolio-header">
+        <div class="code-comment">// Selected Works</div>
+        <h1 class="glitch-text">Portfolio</h1>
+        <p class="header-description">
+          A collection of my latest projects and experiments
+        </p>
+
+        <div class="portfolio-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="web">Web</button>
+          <button class="filter-btn" data-filter="bot">Discord Bots</button>
+          <button class="filter-btn" data-filter="design">UI/UX</button>
+        </div>
+      </header>
+
+      <div class="portfolio-grid">
+        <!-- Project 1 -->
+        <article
+          class="project-card"
+          data-category="web"
+          data-animate="animate-fade-up"
+        >
+          <div class="project-image">
+            <img
+              src="../images/portfolio/project1.jpg"
+              alt="Personal Portfolio"
+            />
+            <div class="project-overlay">
+              <div class="project-links">
+                <a
+                  href="https://github.com/frinklx/neosentrix.com"
+                  target="_blank"
+                  class="project-link"
+                >
+                  <i class="fab fa-github"></i>
+                </a>
+                <a
+                  href="https://neosentrix.com"
+                  target="_blank"
+                  class="project-link"
+                >
+                  <i class="fas fa-external-link-alt"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="project-content">
+            <h2>Personal Portfolio</h2>
+            <p>
+              A modern portfolio website built with HTML, CSS, and JavaScript.
+            </p>
+            <div class="project-tags">
+              <span>HTML</span>
+              <span>CSS</span>
+              <span>JavaScript</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article
+          class="project-card"
+          data-category="bot"
+          data-animate="animate-fade-up"
+          data-delay="1"
+        >
+          <div class="project-image">
+            <img src="../images/portfolio/project2.jpg" alt="Intrabot" />
+            <div class="project-overlay">
+              <div class="project-links">
+                <a
+                  href="https://github.com/frinklx/intrabot"
+                  target="_blank"
+                  class="project-link"
+                >
+                  <i class="fab fa-github"></i>
+                </a>
+                <a
+                  href="https://intrabot.xyz"
+                  target="_blank"
+                  class="project-link"
+                >
+                  <i class="fas fa-external-link-alt"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="project-content">
+            <h2>Intrabot</h2>
+            <p>
+              #1 Server Manager for free. Advanced Discord bot with moderation
+              features.
+            </p>
+            <div class="project-tags">
+              <span>Discord.js</span>
+              <span>Node.js</span>
+              <span>MongoDB</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article
+          class="project-card"
+          data-category="design"
+          data-animate="animate-fade-up"
+          data-delay="2"
+        >
+          <div class="project-image">
+            <img
+              src="../images/portfolio/project3.jpg"
+              alt="UI Design System"
+            />
+            <div class="project-overlay">
+              <div class="project-links">
+                <a href="#" target="_blank" class="project-link">
+                  <i class="fab fa-github"></i>
+                </a>
+                <a href="#" target="_blank" class="project-link">
+                  <i class="fas fa-external-link-alt"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="project-content">
+            <h2>UI Design System</h2>
+            <p>A comprehensive design system for modern web applications.</p>
+            <div class="project-tags">
+              <span>Figma</span>
+              <span>UI/UX</span>
+              <span>Design System</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- GitHub Activity -->
+      <section class="github-section">
+        <h2 class="section-title">
+          <span class="code-comment">// GitHub Activity</span>
+        </h2>
+        <div class="github-calendar">
+          <!-- GitHub activity heatmap will be injected here -->
+          <div id="github-calendar"></div>
+        </div>
+        <div class="github-stats">
+          <div class="stat">
+            <i class="fas fa-code-branch"></i>
+            <span class="stat-number">26</span>
+            <span class="stat-label">Repositories</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-star"></i>
+            <span class="stat-number">10</span>
+            <span class="stat-label">Stars</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-code"></i>
+            <span class="stat-number">50K+</span>
+            <span class="stat-label">Lines of Code</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact CTA -->
+      <section class="contact-cta" data-animate="animate-fade-up">
+        <div class="cta-content">
+          <h2>Interested in working together?</h2>
+          <p>I'm always open to discussing new projects and opportunities.</p>
+          <a href="../contact" class="cta-button">
+            <i class="fas fa-paper-plane"></i>
+            Get in Touch
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script src="../script.js"></script>
+    <script src="portfolio.js"></script>
+  </body>
+</html>
