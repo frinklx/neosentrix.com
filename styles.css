@@ -40,8 +40,8 @@ body {
   right: 0;
   background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 255, 0, 0.1);
   z-index: 1000;
+  transition: transform 0.3s ease;
 }
 
 .nav-container {
@@ -58,8 +58,26 @@ body {
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: 500;
-  text-transform: lowercase;
-  letter-spacing: 1px;
+  font-family: "Fira Code", monospace;
+  position: relative;
+}
+
+.nav-logo::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #00ff00;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.nav-logo:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 .nav-links {
@@ -69,56 +87,116 @@ body {
 }
 
 .nav-link {
-  color: #999;
+  color: #888;
   text-decoration: none;
+  font-family: "Fira Code", monospace;
   font-size: 0.9rem;
-  text-transform: lowercase;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.nav-link i {
+  margin-right: 0.5rem;
+  font-size: 1rem;
 }
 
 .nav-link:hover {
-  color: #fff;
+  color: #00ff00;
+  background: rgba(0, 255, 0, 0.1);
 }
 
 .nav-link.active {
   color: #00ff00;
+  background: rgba(0, 255, 0, 0.1);
 }
 
-.nav-link.active::after {
-  content: "";
+.nav-link::before {
+  content: attr(data-label);
   position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 2px;
+  top: -2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
   background: #00ff00;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  color: #000;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
 }
 
-.nav-socials {
+.nav-link:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.nav-social {
   display: flex;
   gap: 1rem;
 }
 
-.nav-socials a {
-  color: #999;
+.social-link {
+  color: #888;
   font-size: 1.2rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  padding: 0.5rem;
+  border-radius: 4px;
 }
 
-.nav-socials a:hover {
+.social-link:hover {
   color: #00ff00;
+  background: rgba(0, 255, 0, 0.1);
 }
 
-/* Responsive adjustments */
+/* Mobile Navigation */
 @media (max-width: 768px) {
   .nav-container {
     padding: 1rem;
   }
 
   .nav-links {
-    gap: 1rem;
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .nav-link {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-link i {
+    width: 24px;
+    text-align: center;
+  }
+
+  .nav-link::before {
+    display: none;
+  }
+
+  .nav-social {
+    gap: 0.5rem;
+  }
+
+  .social-link {
+    padding: 0.5rem;
   }
 }
 

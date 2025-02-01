@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frinklx - Playground</title>
+    <title>neosentrix - Playground</title>
     <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="playground.css" />
     <link
@@ -17,28 +17,8 @@
     <link rel="shortcut icon" href="../images/logo.svg" type="image/x-icon" />
   </head>
   <body>
-    <nav class="navbar">
-      <div class="nav-container">
-        <a href="../" class="nav-logo">frinklx</a>
-        <div class="nav-links">
-          <a href="../" class="nav-link">home</a>
-          <a href="../services" class="nav-link">services</a>
-          <a href="../portfolio" class="nav-link">portfolio</a>
-          <a href="#" class="nav-link active">playground</a>
-        </div>
-        <div class="nav-socials">
-          <a href="https://github.com/frinklx" aria-label="GitHub">
-            <i class="fab fa-github"></i>
-          </a>
-          <a
-            href="https://discord.com/users/1241605075047153776"
-            aria-label="Discord"
-          >
-            <i class="fab fa-discord"></i>
-          </a>
-        </div>
-      </div>
-    </nav>
+    <!-- Navigation will be loaded here -->
+    <div id="nav-container"></div>
 
     <main class="playground-container">
       <header class="playground-header">
@@ -194,6 +174,10 @@
       </section>
     </main>
 
+    <!-- Footer will be loaded here -->
+    <div id="footer-container"></div>
+
+    <script src="../components/loader.js"></script>
     <script src="../script.js"></script>
     <script src="playground.js"></script>
   </body>
