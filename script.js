@@ -169,4 +169,95 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start initial load animations
   initialLoadAnimations();
+
+  // Get current page from pathname
+  const currentPage = window.location.pathname.split("/")[1] || "home";
+
+  // Update active navigation link
+  navLinks.forEach((link) => {
+    const page = link.getAttribute("data-page");
+    if (page === currentPage) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+
+  // Fix relative paths for nested pages
+  const isNestedPage = window.location.pathname.split("/").length > 2;
+  if (isNestedPage) {
+    document.querySelectorAll('a[href^="/"]').forEach((link) => {
+      if (!link.getAttribute("href").startsWith("//")) {
+        link.href = "." + link.getAttribute("href");
+      }
+    });
+  }
+
+  // Add mobile navigation toggle
+  const navContainer = document.querySelector(".nav-container");
+  const mobileToggle = document.createElement("button");
+  mobileToggle.className = "mobile-nav-toggle";
+  mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+  navContainer.appendChild(mobileToggle);
+
+  mobileToggle.addEventListener("click", () => {
+    document.querySelector(".nav-links").classList.toggle("show");
+    mobileToggle.innerHTML = document
+      .querySelector(".nav-links")
+      .classList.contains("show")
+      ? '<i class="fas fa-times"></i>'
+      : '<i class="fas fa-bars"></i>';
+  });
+
+  // Close mobile menu on link click
+  document.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      document.querySelector(".nav-links").classList.remove("show");
+      mobileToggle.innerHTML = '<i class="fas fa-bars"></i>';
+    });
+  });
 });
+
+// Add mobile navigation styles
+const style = document.createElement("style");
+style.textContent = `
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: #0a0a0a;
+      padding: 1rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-links.show {
+      display: flex;
+    }
+
+    .mobile-nav-toggle {
+      display: block;
+      background: none;
+      border: none;
+      color: #00ff00;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .mobile-nav-toggle:hover {
+      color: #fff;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-nav-toggle {
+      display: none;
+    }
+  }
+`;
+document.head.appendChild(style);
