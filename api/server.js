@@ -160,10 +160,50 @@ app.get("/callback", async (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const PORT = process.env.PORT || 3001;
+
+// Add error handling for the server
+server.on("error", (error) => {
+  if (error.code === "EADDRINUSE") {
+    console.error(
+      `Port ${PORT} is already in use. Please try a different port or close the application using this port.`
+    );
+    process.exit(1);
+  } else {
+    console.error("Server error:", error);
+  }
 });
 
-// Login to Discord
-client.login(process.env.DISCORD_TOKEN);
+// Add graceful shutdown
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received. Closing server...");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+});
+
+process.on("SIGINT", () => {
+  console.log("SIGINT received. Closing server...");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
+});
+
+// Start the server and Discord bot
+server.listen(PORT, () => {
+  console.log(`API Server running on port ${PORT}`);
+  console.log(`WebSocket server available at ws://localhost:${PORT}`);
+
+  // Login to Discord after server is running
+  client
+    .login(process.env.DISCORD_TOKEN)
+    .then(() => {
+      console.log("Discord bot connected successfully");
+    })
+    .catch((error) => {
+      console.error("Failed to connect Discord bot:", error);
+      process.exit(1);
+    });
+});
