@@ -77,48 +77,66 @@ class Dashboard {
 
   login() {
     try {
+      const scopes = this.config.DISCORD_SCOPES.join(" ");
       const params = new URLSearchParams({
         client_id: this.config.DISCORD_CLIENT_ID,
         redirect_uri: this.config.REDIRECT_URI,
         response_type: "code",
-        scope: "identify",
-        prompt: "consent",
+        scope: scopes,
+        permissions: "8", // Administrator permissions for bot
       });
 
       const authUrl = `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+      console.log("Redirecting to Discord auth:", authUrl);
+      this.log("Redirecting to Discord login...");
       window.location.href = authUrl;
     } catch (error) {
       this.log("Failed to initiate login: " + error.message, "error");
+      console.error("Login error:", error);
     }
   }
 
   async checkAuth() {
-    // Check for auth errors
+    // Check for auth errors or token in URL
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("error")) {
-      this.log("Authentication failed: " + urlParams.get("error"), "error");
+    const error = urlParams.get("error");
+    const token = urlParams.get("token");
+
+    if (error) {
+      this.log("Authentication failed: " + error, "error");
+      console.error("Auth error:", error);
       this.showLoginScreen();
-      // Clear the error from URL
       window.history.replaceState({}, document.title, window.location.pathname);
       return;
     }
 
-    const token = localStorage.getItem("discord_token");
-    if (!token) {
+    if (token) {
+      console.log("Received token from URL");
+      localStorage.setItem("discord_token", token);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    const storedToken = localStorage.getItem("discord_token");
+    if (!storedToken) {
+      console.log("No stored token found");
       this.showLoginScreen();
       return;
     }
 
     try {
+      console.log("Validating stored token...");
       const response = await fetch("https://discord.com/api/users/@me", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${storedToken}`,
         },
       });
 
-      if (!response.ok) throw new Error("Authentication failed");
+      if (!response.ok) {
+        throw new Error("Token validation failed");
+      }
 
       const userData = await response.json();
+      console.log("User data received:", userData.username);
 
       if (userData.id === this.config.YOUR_USER_ID) {
         this.isAuthenticated = true;
@@ -129,6 +147,7 @@ class Dashboard {
         throw new Error("Unauthorized user");
       }
     } catch (error) {
+      console.error("Auth validation error:", error);
       this.log("Authentication failed: " + error.message, "error");
       this.logout();
     }
@@ -166,31 +185,42 @@ class Dashboard {
   }
 
   connectWebSocket() {
-    if (this.socket?.readyState === WebSocket.OPEN) return;
+    if (this.socket?.readyState === WebSocket.OPEN) {
+      console.log("WebSocket already connected");
+      return;
+    }
 
+    console.log("Connecting to WebSocket:", this.config.WS_ENDPOINT);
     this.socket = new WebSocket(this.config.WS_ENDPOINT);
 
     this.socket.onopen = () => {
-      this.log("Connected to bot");
-      this.updateBotStatus(true);
+      console.log("WebSocket connected");
+      this.log("Connected to bot server");
+      this.updateBotStatus("online");
       this.reconnectAttempts = 0;
+      this.socket.send(JSON.stringify({ type: "getStats" }));
     };
 
     this.socket.onclose = () => {
-      this.log("Disconnected from bot");
-      this.updateBotStatus(false);
+      console.log("WebSocket disconnected");
+      this.log("Disconnected from bot server");
+      this.updateBotStatus("offline");
       this.handleReconnect();
     };
 
     this.socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
       this.log("WebSocket error: " + error.message, "error");
+      this.updateBotStatus("error");
     };
 
     this.socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        console.log("Received WebSocket message:", data);
         this.handleWebSocketMessage(data);
       } catch (error) {
+        console.error("Failed to process WebSocket message:", error);
         this.log("Failed to process message: " + error.message, "error");
       }
     };
@@ -222,11 +252,17 @@ class Dashboard {
 
   handleWebSocketMessage(data) {
     switch (data.type) {
-      case "stats":
-        this.updateStats(data);
+      case "status":
+        this.updateBotStatus(data.data.status);
+        this.updateStats(data.data);
         break;
-      case "log":
-        this.log(data.message);
+      case "stats":
+        this.updateStats(data.data);
+        break;
+      case "newMessage":
+        this.log(
+          `New message in ${data.data.channelId}: ${data.data.author}: ${data.data.content}`
+        );
         break;
       case "error":
         this.log(data.message, "error");
@@ -240,7 +276,7 @@ class Dashboard {
     if (!data) return;
 
     const { uptime, memory, latency } = data;
-    this.elements.uptimeValue.textContent = uptime || "--:--:--";
+    this.elements.uptimeValue.textContent = this.formatUptime(uptime);
     this.elements.memoryValue.textContent = memory
       ? `${Math.round(memory)} MB`
       : "-- MB";
@@ -326,6 +362,15 @@ class Dashboard {
   clearConsole() {
     this.elements.console.innerHTML = "";
     this.log("Console cleared");
+  }
+
+  formatUptime(ms) {
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    return `${days}d ${hours % 24}h ${minutes % 60}m ${seconds % 60}s`;
   }
 }
 
