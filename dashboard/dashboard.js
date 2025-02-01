@@ -93,6 +93,16 @@ class Dashboard {
   }
 
   async checkAuth() {
+    // Check for auth errors
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("error")) {
+      this.log("Authentication failed: " + urlParams.get("error"), "error");
+      this.showLoginScreen();
+      // Clear the error from URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
     const token = localStorage.getItem("discord_token");
     if (!token) {
       this.showLoginScreen();
@@ -114,6 +124,7 @@ class Dashboard {
         this.isAuthenticated = true;
         this.showDashboard(userData);
         this.connectWebSocket();
+        this.log("Successfully authenticated as " + userData.username);
       } else {
         throw new Error("Unauthorized user");
       }
