@@ -10,9 +10,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the root directory
+// Serve static files from the public directory
 app.use(
-  express.static(path.join(__dirname, ".."), {
+  express.static(path.join(__dirname, "../public"), {
     setHeaders: (res, filePath) => {
       if (filePath.endsWith(".css")) {
         res.setHeader("Content-Type", "text/css");
@@ -22,25 +22,14 @@ app.use(
         res.setHeader("Content-Type", "image/svg+xml");
       }
     },
-    index: false, // Disable automatic serving of index.html
   })
 );
 
 // Serve dashboard files
-app.use(
-  "/dashboard",
-  express.static(path.join(__dirname, "../dashboard"), {
-    setHeaders: (res, filePath) => {
-      if (filePath.endsWith(".css")) {
-        res.setHeader("Content-Type", "text/css");
-      } else if (filePath.endsWith(".js")) {
-        res.setHeader("Content-Type", "application/javascript");
-      } else if (filePath.endsWith(".svg")) {
-        res.setHeader("Content-Type", "image/svg+xml");
-      }
-    },
-  })
-);
+app.use("/dashboard", express.static(path.join(__dirname, "../dashboard")));
+
+// Serve root files
+app.use(express.static(path.join(__dirname, "..")));
 
 // Add CORS headers for WebSocket
 app.use((req, res, next) => {

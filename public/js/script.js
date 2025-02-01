@@ -67,47 +67,43 @@ document.addEventListener("DOMContentLoaded", () => {
         : "none";
   });
 
-  // Typing effect for role
+  // Typing animation for role text
+  const roles = [
+    "Full Stack Developer",
+    "UI/UX Designer",
+    "Discord Bot Developer",
+    "Web Developer",
+  ];
+
+  let roleIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+  const roleElement = document.getElementById("role-text");
+
   function typeRole() {
-    const roles = [
-      "Full Stack Developer",
-      "UI/UX Enthusiast",
-      "Open Source Contributor",
-    ];
-    const roleElement = document.getElementById("role-text");
-    let roleIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    let typingSpeed = 100;
+    const currentRole = roles[roleIndex];
 
-    function type() {
-      const currentRole = roles[roleIndex];
-
-      if (isDeleting) {
-        roleElement.textContent = currentRole.substring(0, charIndex - 1);
-        charIndex--;
-        typingSpeed = 50;
-      } else {
-        roleElement.textContent = currentRole.substring(0, charIndex + 1);
-        charIndex++;
-        typingSpeed = 100;
-      }
-
-      if (!isDeleting && charIndex === currentRole.length) {
-        isDeleting = true;
-        typingSpeed = 2000; // Pause at the end
-      } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        roleIndex = (roleIndex + 1) % roles.length;
-      }
-
-      setTimeout(type, typingSpeed);
+    if (isDeleting) {
+      roleElement.textContent = currentRole.substring(0, charIndex - 1);
+      charIndex--;
+    } else {
+      roleElement.textContent = currentRole.substring(0, charIndex + 1);
+      charIndex++;
     }
 
-    type();
+    if (!isDeleting && charIndex === currentRole.length) {
+      isDeleting = true;
+      setTimeout(typeRole, 2000);
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      roleIndex = (roleIndex + 1) % roles.length;
+      setTimeout(typeRole, 500);
+    } else {
+      setTimeout(typeRole, isDeleting ? 100 : 200);
+    }
   }
 
-  // Initialize
+  // Start typing animation
   typeRole();
 
   // Intersection Observer for reveal animations
