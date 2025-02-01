@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy - Intrabot</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="shortcut icon" href="../images/logo.svg" type="image/x-icon" />
+    <style>
+      .policy-container {
+        max-width: 800px;
+        margin: 80px auto;
+        padding: 20px;
+        color: #00ff00;
+        font-family: "Fira Code", monospace;
+      }
+      .policy-section {
+        margin-bottom: 30px;
+        background: rgba(42, 42, 42, 0.1);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #2a2a2a;
+      }
+      .policy-section h2 {
+        color: #00ff00;
+        margin-bottom: 15px;
+      }
+      .policy-section p,
+      .policy-section ul {
+        color: #cccccc;
+        line-height: 1.6;
+        margin-bottom: 15px;
+      }
+      .code-comment {
+        color: #666;
+        margin: 10px 0;
+      }
+      .highlight {
+        color: #00ff00;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="../" class="nav-logo">frinklx</a>
+        <div class="nav-links">
+          <a href="../">home</a>
+          <a
+            href="https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scope=bot%20applications.commands"
+            >invite bot</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <main class="policy-container">
+      <div class="policy-section">
+        <span class="code-comment">// Last updated: 2024</span>
+        <h1>Privacy Policy for Intrabot</h1>
+      </div>
+
+      <div class="policy-section">
+        <h2>1. Data Collection</h2>
+        <p>
+          Intrabot collects and processes certain data to provide its services.
+          This includes:
+        </p>
+        <ul>
+          <li>Server IDs</li>
+          <li>Channel IDs</li>
+          <li>User IDs</li>
+          <li>Message content (for command processing)</li>
+          <li>Server member information</li>
+          <li>Server roles and permissions</li>
+        </ul>
+        <p class="code-comment">
+          // Note: We use Discord's Privileged Intents (GUILD_MEMBERS,
+          GUILD_PRESENCES, MESSAGE_CONTENT)
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h2>2. Use of Data</h2>
+        <p>The collected data is used for:</p>
+        <ul>
+          <li>Command execution and response</li>
+          <li>Server management features</li>
+          <li>Customization of bot functionality</li>
+          <li>Analytics to improve bot performance</li>
+        </ul>
+      </div>
+
+      <div class="policy-section">
+        <h2>3. Data Storage</h2>
+        <p>
+          All data is stored securely and is only accessible to authorized bot
+          developers. We use industry-standard security measures to protect your
+          data.
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h2>4. Data Retention</h2>
+        <p>
+          Data is retained only as long as necessary for bot functionality.
+          Users can request data deletion at any time.
+        </p>
+      </div>
+
+      <div class="policy-section">
+        <h2>5. User Rights</h2>
+        <p>Users have the right to:</p>
+        <ul>
+          <li>Request data deletion</li>
+          <li>Access their stored data</li>
+          <li>Opt-out of data collection</li>
+          <li>Request data corrections</li>
+        </ul>
+      </div>
+
+      <div class="policy-section">
+        <h2>6. Contact</h2>
+        <p>For any privacy-related concerns, contact us at:</p>
+        <p class="highlight">intrabotofficial@gmail.com</p>
+      </div>
+    </main>
+  </body>
+</html>
