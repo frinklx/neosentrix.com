@@ -13,11 +13,16 @@ app.use(express.json());
 // Serve static files from the root directory
 app.use(
   express.static(path.join(__dirname, ".."), {
-    setHeaders: (res, path) => {
-      if (path.endsWith(".css")) {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".css")) {
         res.setHeader("Content-Type", "text/css");
+      } else if (filePath.endsWith(".js")) {
+        res.setHeader("Content-Type", "application/javascript");
+      } else if (filePath.endsWith(".svg")) {
+        res.setHeader("Content-Type", "image/svg+xml");
       }
     },
+    index: false, // Disable automatic serving of index.html
   })
 );
 
@@ -25,13 +30,25 @@ app.use(
 app.use(
   "/dashboard",
   express.static(path.join(__dirname, "../dashboard"), {
-    setHeaders: (res, path) => {
-      if (path.endsWith(".css")) {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".css")) {
         res.setHeader("Content-Type", "text/css");
+      } else if (filePath.endsWith(".js")) {
+        res.setHeader("Content-Type", "application/javascript");
+      } else if (filePath.endsWith(".svg")) {
+        res.setHeader("Content-Type", "image/svg+xml");
       }
     },
   })
 );
+
+// Add CORS headers for WebSocket
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 
 // Create Discord client
 const client = new Client({
@@ -126,7 +143,22 @@ app.get("*", (req, res) => {
 });
 
 // WebSocket server
-const wss = new WebSocket.Server({ noServer: true });
+const wss = new WebSocket.Server({
+  noServer: true,
+  clientTracking: true,
+  perMessageDeflate: {
+    zlibDeflateOptions: {
+      chunkSize: 1024,
+      memLevel: 7,
+      level: 3,
+    },
+    zlibInflateOptions: {
+      chunkSize: 10 * 1024,
+    },
+    concurrencyLimit: 10,
+    threshold: 1024,
+  },
+});
 
 function broadcastUpdate() {
   wss.clients.forEach((client) => {
@@ -144,7 +176,18 @@ const server = app.listen(PORT, () => {
 
 // Handle WebSocket upgrade
 server.on("upgrade", (request, socket, head) => {
+  // Add WebSocket specific headers
+  const headers = {
+    "Sec-WebSocket-Protocol": "neosentrix-protocol",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+
   wss.handleUpgrade(request, socket, head, (ws) => {
+    for (const [key, value] of Object.entries(headers)) {
+      ws.protocol = value;
+    }
     wss.emit("connection", ws, request);
   });
 });
