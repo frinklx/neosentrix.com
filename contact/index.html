@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frinklx - Contact</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="contact.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="shortcut icon" href="../images/logo.svg" type="image/x-icon" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="../" class="nav-logo">frinklx</a>
+        <div class="nav-links">
+          <a href="../" class="nav-link">home</a>
+          <a href="../services" class="nav-link">services</a>
+          <a href="../portfolio" class="nav-link">portfolio</a>
+          <a href="#" class="nav-link active">contact</a>
+        </div>
+        <div class="nav-socials">
+          <a href="https://github.com/frinklx" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a
+            href="https://discord.com/users/1241605075047153776"
+            aria-label="Discord"
+          >
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="contact-container">
+      <header class="contact-header">
+        <div class="code-comment">// Get in Touch</div>
+        <h1 class="glitch-text">Contact</h1>
+        <p class="header-description">
+          Let's discuss your next project or collaboration
+        </p>
+      </header>
+
+      <div class="contact-grid">
+        <!-- Contact Form -->
+        <section class="contact-form-section" data-animate="animate-fade-up">
+          <h2 class="section-title">
+            <span class="code-comment">// Send a Message</span>
+          </h2>
+          <form id="contactForm" class="contact-form">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required />
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" name="subject" required />
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="6"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="submit-btn">
+              <span>Send Message</span>
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </section>
+
+        <!-- Contact Info -->
+        <section class="contact-info-section" data-animate="animate-fade-up">
+          <h2 class="section-title">
+            <span class="code-comment">// Contact Info</span>
+          </h2>
+          <div class="contact-info">
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div class="info-content">
+                <h3>Email</h3>
+                <p>
+                  <a href="mailto:contact@frinklx.com">contact@frinklx.com</a>
+                </p>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="fab fa-discord"></i>
+              </div>
+              <div class="info-content">
+                <h3>Discord</h3>
+                <p>
+                  <a href="https://discord.com/users/1241605075047153776"
+                    >frinklx</a
+                  >
+                </p>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="fab fa-github"></i>
+              </div>
+              <div class="info-content">
+                <h3>GitHub</h3>
+                <p><a href="https://github.com/frinklx">@frinklx</a></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="availability-status">
+            <div class="status-indicator available"></div>
+            <p>Currently available for new projects</p>
+          </div>
+
+          <div class="response-time">
+            <i class="fas fa-clock"></i>
+            <p>Average response time: 24 hours</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- FAQ Section -->
+      <section class="faq-section" data-animate="animate-fade-up">
+        <h2 class="section-title">
+          <span class="code-comment">// Frequently Asked Questions</span>
+        </h2>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <div class="faq-question">
+              <h3>What services do you offer?</h3>
+              <i class="fas fa-plus"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                I specialize in web development, Discord bot development, and
+                UI/UX design. Check out my services page for more details.
+              </p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              <h3>How long does a project typically take?</h3>
+              <i class="fas fa-plus"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Project timelines vary depending on complexity and scope. A
+                simple website might take 2-3 weeks, while more complex projects
+                could take 1-2 months.
+              </p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              <h3>What is your pricing structure?</h3>
+              <i class="fas fa-plus"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                I offer flexible pricing based on project requirements. Contact
+                me with your project details for a custom quote.
+              </p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              <h3>Do you offer maintenance services?</h3>
+              <i class="fas fa-plus"></i>
+            </div>
+            <div class="faq-answer">
+              <p>
+                Yes, I offer ongoing maintenance and support services to ensure
+                your project stays up-to-date and runs smoothly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../script.js"></script>
+    <script src="contact.js"></script>
+  </body>
+</html>
