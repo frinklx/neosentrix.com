@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frinklx - Community</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="community.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="shortcut icon" href="../images/logo.svg" type="image/x-icon" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="../" class="nav-logo">frinklx</a>
+        <div class="nav-links">
+          <a href="../" class="nav-link">home</a>
+          <a href="../services" class="nav-link">services</a>
+          <a href="../portfolio" class="nav-link">portfolio</a>
+          <a href="#" class="nav-link active">community</a>
+        </div>
+        <div class="nav-socials">
+          <a href="https://github.com/frinklx" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a
+            href="https://discord.com/users/1241605075047153776"
+            aria-label="Discord"
+          >
+            <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="community-container">
+      <header class="community-header">
+        <div class="code-comment">// Community Engagement</div>
+        <h1 class="glitch-text">Community</h1>
+        <p class="header-description">
+          Join our growing community of developers and creators
+        </p>
+      </header>
+
+      <!-- Discord Community -->
+      <section class="discord-section" data-animate="animate-fade-up">
+        <div class="discord-preview">
+          <div class="discord-widget">
+            <iframe
+              src="https://discord.com/widget?id=YOUR_DISCORD_SERVER_ID&theme=dark"
+              width="100%"
+              height="400"
+              allowtransparency="true"
+              frameborder="0"
+              sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+            ></iframe>
+          </div>
+        </div>
+        <div class="discord-info">
+          <h2>Join Our Discord</h2>
+          <p>
+            Connect with fellow developers, share your projects, and get help
+            from the community.
+          </p>
+          <div class="discord-features">
+            <div class="feature-item">
+              <i class="fas fa-comments"></i>
+              <span>Active Discussion</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-code"></i>
+              <span>Code Help</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-project-diagram"></i>
+              <span>Project Showcase</span>
+            </div>
+          </div>
+          <a
+            href="https://discord.gg/YOUR_INVITE_CODE"
+            class="join-btn"
+            target="_blank"
+          >
+            Join Server <i class="fab fa-discord"></i>
+          </a>
+        </div>
+      </section>
+
+      <!-- GitHub Activity -->
+      <section class="github-section" data-animate="animate-fade-up">
+        <h2 class="section-title">
+          <span class="code-comment">// Open Source Contributions</span>
+        </h2>
+        <div class="github-grid">
+          <div class="contribution-card">
+            <div class="contribution-header">
+              <i class="fab fa-github"></i>
+              <h3>Project Contributions</h3>
+            </div>
+            <div class="contribution-stats">
+              <div class="stat-item">
+                <span class="stat-value">500+</span>
+                <span class="stat-label">Commits</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">50+</span>
+                <span class="stat-label">PRs</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">20+</span>
+                <span class="stat-label">Repos</span>
+              </div>
+            </div>
+            <div id="contributionGraph" class="contribution-graph">
+              <!-- Contribution graph will be rendered here -->
+            </div>
+          </div>
+
+          <div class="recent-activity">
+            <h3>Recent Activity</h3>
+            <div class="activity-list" id="activityList">
+              <!-- Activity items will be loaded dynamically -->
+              <div class="activity-item skeleton">
+                <div class="activity-icon"></div>
+                <div class="activity-content">
+                  <div class="activity-title"></div>
+                  <div class="activity-meta"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Community Projects -->
+      <section class="projects-section" data-animate="animate-fade-up">
+        <h2 class="section-title">
+          <span class="code-comment">// Featured Community Projects</span>
+        </h2>
+        <div class="projects-grid">
+          <div class="project-card">
+            <div class="project-preview">
+              <img src="../images/project1.jpg" alt="Project 1" />
+            </div>
+            <div class="project-content">
+              <h3>Discord Bot Template</h3>
+              <p>
+                A modern Discord.js v14 bot template with TypeScript support.
+              </p>
+              <div class="project-meta">
+                <span><i class="fas fa-star"></i> 150</span>
+                <span><i class="fas fa-code-branch"></i> 45</span>
+              </div>
+              <a href="#" class="project-link"
+                >View Project <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-preview">
+              <img src="../images/project2.jpg" alt="Project 2" />
+            </div>
+            <div class="project-content">
+              <h3>React Component Library</h3>
+              <p>
+                A collection of reusable React components with dark theme
+                support.
+              </p>
+              <div class="project-meta">
+                <span><i class="fas fa-star"></i> 120</span>
+                <span><i class="fas fa-code-branch"></i> 30</span>
+              </div>
+              <a href="#" class="project-link"
+                >View Project <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-preview">
+              <img src="../images/project3.jpg" alt="Project 3" />
+            </div>
+            <div class="project-content">
+              <h3>VS Code Theme</h3>
+              <p>
+                A dark theme for VS Code with neon accents and improved
+                readability.
+              </p>
+              <div class="project-meta">
+                <span><i class="fas fa-star"></i> 80</span>
+                <span><i class="fas fa-code-branch"></i> 15</span>
+              </div>
+              <a href="#" class="project-link"
+                >View Project <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Community Events -->
+      <section class="events-section" data-animate="animate-fade-up">
+        <h2 class="section-title">
+          <span class="code-comment">// Upcoming Events</span>
+        </h2>
+        <div class="events-grid">
+          <div class="event-card">
+            <div class="event-date">
+              <span class="date">25</span>
+              <span class="month">MAR</span>
+            </div>
+            <div class="event-content">
+              <h3>Code Review Session</h3>
+              <p>
+                Join us for a community code review session where we'll review
+                and improve your projects.
+              </p>
+              <div class="event-meta">
+                <span><i class="fas fa-clock"></i> 2:00 PM UTC</span>
+                <span><i class="fas fa-users"></i> Discord</span>
+              </div>
+              <a href="#" class="event-link"
+                >Learn More <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="event-card">
+            <div class="event-date">
+              <span class="date">01</span>
+              <span class="month">APR</span>
+            </div>
+            <div class="event-content">
+              <h3>Discord.js Workshop</h3>
+              <p>
+                Learn how to create advanced Discord bots using Discord.js and
+                TypeScript.
+              </p>
+              <div class="event-meta">
+                <span><i class="fas fa-clock"></i> 3:00 PM UTC</span>
+                <span><i class="fas fa-users"></i> Discord</span>
+              </div>
+              <a href="#" class="event-link"
+                >Learn More <i class="fas fa-arrow-right"></i
+              ></a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../script.js"></script>
+    <script src="community.js"></script>
+  </body>
+</html>

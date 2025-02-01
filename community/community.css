@@ -1,0 +1,490 @@
+.community-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.community-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding-top: 4rem;
+}
+
+.code-comment {
+  color: #666;
+  font-family: "Fira Code", monospace;
+  margin-bottom: 1rem;
+}
+
+.glitch-text {
+  font-size: 3rem;
+  color: #00ff00;
+  margin: 1rem 0;
+  position: relative;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.header-description {
+  color: #999;
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Discord Section */
+.discord-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+.discord-section.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.discord-preview {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.discord-widget {
+  width: 100%;
+  height: 100%;
+}
+
+.discord-widget iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.discord-info {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.discord-info h2 {
+  color: #fff;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.discord-info p {
+  color: #999;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.discord-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #999;
+}
+
+.feature-item i {
+  color: #00ff00;
+  font-size: 1.2rem;
+}
+
+.join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  text-decoration: none;
+  font-family: "Fira Code", monospace;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.join-btn:hover {
+  background: rgba(0, 255, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* GitHub Section */
+.github-section {
+  margin-bottom: 4rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+.github-section.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-title {
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.github-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.contribution-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.contribution-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.contribution-header i {
+  font-size: 2rem;
+  color: #00ff00;
+}
+
+.contribution-header h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.contribution-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  color: #00ff00;
+  font-size: 1.5rem;
+  font-family: "Fira Code", monospace;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.contribution-graph {
+  width: 100%;
+  height: 200px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.recent-activity {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.recent-activity h3 {
+  color: #fff;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.activity-item.skeleton {
+  animation: pulse 1.5s infinite;
+}
+
+.activity-icon {
+  width: 24px;
+  height: 24px;
+  background: #00ff00;
+  border-radius: 50%;
+}
+
+.activity-content {
+  flex-grow: 1;
+}
+
+.activity-title {
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.activity-meta {
+  height: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  width: 60%;
+}
+
+/* Projects Section */
+.projects-section {
+  margin-bottom: 4rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+.projects-section.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.project-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 255, 0, 0.1);
+}
+
+.project-preview {
+  height: 200px;
+  overflow: hidden;
+}
+
+.project-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-content {
+  padding: 1.5rem;
+}
+
+.project-content h3 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.project-content p {
+  color: #999;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.project-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: #999;
+}
+
+.project-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-meta i {
+  color: #00ff00;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #00ff00;
+  text-decoration: none;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.project-link:hover {
+  color: #fff;
+}
+
+/* Events Section */
+.events-section {
+  margin-bottom: 4rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+}
+
+.events-section.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.event-card {
+  display: flex;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.event-date {
+  text-align: center;
+  min-width: 80px;
+}
+
+.event-date .date {
+  display: block;
+  color: #00ff00;
+  font-size: 2rem;
+  font-family: "Fira Code", monospace;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.event-date .month {
+  color: #999;
+  font-size: 0.9rem;
+  font-family: "Fira Code", monospace;
+}
+
+.event-content h3 {
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.event-content p {
+  color: #999;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.event-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.event-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.event-meta i {
+  color: #00ff00;
+}
+
+.event-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #00ff00;
+  text-decoration: none;
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.event-link:hover {
+  color: #fff;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .community-header {
+    padding-top: 2rem;
+  }
+
+  .glitch-text {
+    font-size: 2rem;
+  }
+
+  .discord-section {
+    grid-template-columns: 1fr;
+  }
+
+  .github-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .event-date {
+    margin: 0 auto;
+  }
+
+  .event-meta {
+    justify-content: center;
+  }
+}
