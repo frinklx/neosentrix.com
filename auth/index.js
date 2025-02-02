@@ -1,11 +1,13 @@
 // Import shared utilities
-import { showToast, showLoading, hideLoading } from "../shared/utils/ui";
-import { ROUTES, navigateTo, redirectTo } from "../shared/utils/routes";
-import { initializeComponents } from "../shared/components/loading";
+import { showToast, showLoading, hideLoading } from "../shared/utils/ui.js";
+import { redirectTo } from "../shared/utils/routes.js";
+import { initializeComponents } from "../shared/components/loading.js";
 
 // Initialize Firebase Auth
 let auth;
 let firestore;
+let authInitialized = false;
+let isProcessingAuth = false;
 
 // Initialize components when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
@@ -35,32 +37,58 @@ async function handleAuthStateChange(user) {
     user ? "User logged in" : "No user"
   );
 
-  if (user) {
+  if (isProcessingAuth) {
+    console.log("[Auth] Already processing auth state - skipping");
+    return;
+  }
+
+  if (!user) {
+    console.log("[Auth] No user - no action needed");
+    return;
+  }
+
+  try {
+    isProcessingAuth = true;
     console.log("[Auth] User ID:", user.uid);
     console.log("[Auth] Email:", user.email);
     console.log("[Auth] Display Name:", user.displayName);
     console.log("[Auth] Provider Data:", user.providerData);
 
-    try {
-      // Check if user exists in Firestore
-      const userDoc = await checkUserExists(user.uid);
-      console.log("[Auth] User document exists:", userDoc != null);
+    // Check if user exists in Firestore
+    const userDoc = await checkUserExists(user.uid);
+    console.log("[Auth] User document exists:", userDoc != null);
 
-      if (!userDoc) {
-        // New user - redirect to continue signup
-        console.log(
-          "[Auth] New user detected - redirecting to continue signup"
-        );
+    // Get current path
+    const currentPath = window.location.pathname;
+    console.log("[Auth] Current path:", currentPath);
+
+    if (!userDoc) {
+      // New user - should go to continue signup
+      console.log("[Auth] New user detected");
+      if (!currentPath.includes("/signup/continue.html")) {
+        console.log("[Auth] Redirecting to continue signup");
         redirectTo("/auth/signup/continue.html");
-      } else {
-        // Existing user - redirect to dashboard
-        console.log("[Auth] Existing user - redirecting to dashboard");
+      }
+    } else if (!userDoc.hasCompletedSignup) {
+      // Incomplete signup - should complete profile
+      console.log("[Auth] Incomplete signup detected");
+      if (!currentPath.includes("/signup/continue.html")) {
+        console.log("[Auth] Redirecting to continue signup");
+        redirectTo("/auth/signup/continue.html");
+      }
+    } else {
+      // Existing user with complete profile
+      console.log("[Auth] Existing user with complete profile");
+      if (currentPath.includes("/auth/")) {
+        console.log("[Auth] Redirecting to dashboard");
         redirectTo("/dashboard/");
       }
-    } catch (error) {
-      console.error("[Auth] Error checking user existence:", error);
-      showToast("Error checking user status", "error");
     }
+  } catch (error) {
+    console.error("[Auth] Error checking user existence:", error);
+    showToast("Error checking user status", "error");
+  } finally {
+    isProcessingAuth = false;
   }
 }
 
@@ -68,7 +96,9 @@ async function checkUserExists(userId) {
   console.log("[Auth] Checking if user exists in Firestore:", userId);
   try {
     const userDoc = await firestore.collection("users").doc(userId).get();
-    return userDoc.exists ? userDoc.data() : null;
+    const userData = userDoc.exists ? userDoc.data() : null;
+    console.log("[Auth] User data:", userData);
+    return userData;
   } catch (error) {
     console.error("[Auth] Error checking user in Firestore:", error);
     throw error;
@@ -95,39 +125,5 @@ export async function saveUserData(userId, userData) {
   }
 }
 
-// Initialize auth components
-export function initializeAuth() {
-  initializeComponents();
-
-  // Check if user is already signed in
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      try {
-        const userDoc = await firebase
-          .firestore()
-          .collection("users")
-          .doc(user.uid)
-          .get();
-
-        if (userDoc.exists) {
-          const userData = userDoc.data();
-          if (!userData.hasCompletedProfile) {
-            await navigateTo(ROUTES.CONTINUE_SIGNUP);
-          } else if (!userData.hasCompletedOnboarding) {
-            await navigateTo(ROUTES.ONBOARDING);
-          } else {
-            await navigateTo(ROUTES.DASHBOARD);
-          }
-        } else {
-          await navigateTo(ROUTES.SIGNUP);
-        }
-      } catch (error) {
-        console.error("Error checking user state:", error);
-        showToast(error.message, "error");
-      }
-    }
-  });
-}
-
-// Export auth-related utilities
-export { showToast, showLoading, hideLoading, navigateTo, ROUTES };
+// Export necessary functions
+export { checkUserExists };

@@ -1,3 +1,20 @@
+// Initialize Firebase and get references
+let auth;
+let firestore;
+
+function initializeFirebase() {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  auth = firebase.auth();
+  firestore = firebase.firestore();
+}
+
+// Initialize Firebase when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+  initializeFirebase();
+});
+
 // Get DOM elements
 const loginForm = document.getElementById("loginForm");
 const emailInput = document.getElementById("email");
@@ -48,17 +65,12 @@ loginForm.addEventListener("submit", async (e) => {
       ? firebase.auth.Auth.Persistence.LOCAL
       : firebase.auth.Auth.Persistence.SESSION;
 
-    await firebase.auth().setPersistence(persistence);
-    const userCredential = await firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password);
+    await auth.setPersistence(persistence);
+    await auth.signInWithEmailAndPassword(email, password);
 
     showToast("Successfully signed in!");
-
-    // Redirect to dashboard after successful login
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 1000);
+    window.location.href =
+      "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
   } catch (error) {
     console.error("Error:", error);
     showToast(error.message, "error");
@@ -69,17 +81,36 @@ loginForm.addEventListener("submit", async (e) => {
 googleSignInBtn.addEventListener("click", async () => {
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await firebase.auth().signInWithPopup(provider);
+    const result = await auth.signInWithPopup(provider);
 
-    showToast("Successfully signed in with Google!");
+    // After successful Google sign in, check if user exists in Firestore
+    const userDoc = await firestore
+      .collection("users")
+      .doc(result.user.uid)
+      .get();
 
-    // Redirect to dashboard after successful login
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 1000);
+    if (!userDoc.exists) {
+      // New user - redirect to continue signup
+      window.location.href =
+        "/redirect/index.html?to=/auth/signup/continue.html&message=Complete your profile&submessage=Setting up your account...";
+    } else {
+      const userData = userDoc.data();
+      if (!userData.isOnboardingComplete) {
+        // Existing user but onboarding not complete
+        window.location.href =
+          "/redirect/index.html?to=/onboarding&message=Complete onboarding&submessage=Setting up your workspace...";
+      } else {
+        // Fully registered user - redirect to dashboard
+        window.location.href =
+          "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
+      }
+    }
   } catch (error) {
     console.error("Error:", error);
     showToast(error.message, "error");
+    // Reset button state
+    googleSignInBtn.style.opacity = "1";
+    googleSignInBtn.style.pointerEvents = "auto";
   }
 });
 
@@ -87,25 +118,59 @@ googleSignInBtn.addEventListener("click", async () => {
 githubSignInBtn.addEventListener("click", async () => {
   try {
     const provider = new firebase.auth.GithubAuthProvider();
-    const result = await firebase.auth().signInWithPopup(provider);
+    const result = await auth.signInWithPopup(provider);
 
-    showToast("Successfully signed in with GitHub!");
+    // After successful GitHub sign in, check if user exists in Firestore
+    const userDoc = await firestore
+      .collection("users")
+      .doc(result.user.uid)
+      .get();
 
-    // Redirect to dashboard after successful login
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 1000);
+    if (!userDoc.exists) {
+      window.location.href =
+        "/redirect/index.html?to=/auth/signup/continue.html&message=Complete your profile&submessage=Setting up your account...";
+    } else {
+      const userData = userDoc.data();
+      if (!userData.isOnboardingComplete) {
+        window.location.href =
+          "/redirect/index.html?to=/onboarding&message=Complete onboarding&submessage=Setting up your workspace...";
+      } else {
+        window.location.href =
+          "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
+      }
+    }
   } catch (error) {
     console.error("Error:", error);
     showToast(error.message, "error");
+    // Reset button state
+    githubSignInBtn.style.opacity = "1";
+    githubSignInBtn.style.pointerEvents = "auto";
   }
 });
 
 // Check if user is already signed in
-firebase.auth().onAuthStateChanged((user) => {
+auth?.onAuthStateChanged(async (user) => {
   if (user) {
-    // User is signed in, redirect to dashboard
-    window.location.href = "/dashboard";
+    try {
+      const userDoc = await firestore.collection("users").doc(user.uid).get();
+
+      if (!userDoc.exists) {
+        window.location.href =
+          "/redirect/index.html?to=/auth/signup/continue.html&message=Complete your profile&submessage=Setting up your account...";
+      } else {
+        const userData = userDoc.data();
+        if (!userData.isOnboardingComplete) {
+          window.location.href =
+            "/redirect/index.html?to=/onboarding&message=Complete onboarding&submessage=Setting up your workspace...";
+        } else {
+          window.location.href =
+            "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
+        }
+      }
+    } catch (error) {
+      console.error("Error checking user status:", error);
+      showToast("Error verifying your account", "error");
+    }
   }
 });
 

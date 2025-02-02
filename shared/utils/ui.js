@@ -1,95 +1,129 @@
 // UI Utilities
 
+// Toast container
+let toastContainer;
+
+// Create toast container if it doesn't exist
+function ensureToastContainer() {
+  if (!toastContainer) {
+    toastContainer = document.createElement("div");
+    toastContainer.className = "toast-container";
+    document.body.appendChild(toastContainer);
+    console.log("[UI] Toast container created");
+  }
+}
+
 // Show toast notification
-export function showToast(message, type = "success") {
+export function showToast(message, type = "info") {
+  console.log(`[UI] Showing toast: ${message} (${type})`);
+  ensureToastContainer();
+
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
   toast.innerHTML = `
-    <i class="fas fa-${
-      type === "success" ? "check-circle" : "exclamation-circle"
-    }"></i>
-    ${message}
-  `;
-  document.querySelector(".toast-container").appendChild(toast);
+        <i class="fas fa-${
+          type === "error"
+            ? "exclamation-circle"
+            : type === "success"
+            ? "check-circle"
+            : "info-circle"
+        }"></i>
+        <span>${message}</span>
+    `;
 
-  // Remove toast after 3 seconds
+  toastContainer.appendChild(toast);
+
+  // Trigger reflow for animation
+  toast.offsetHeight;
+  toast.classList.add("show");
+
   setTimeout(() => {
-    toast.style.opacity = "0";
+    toast.classList.remove("show");
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
 
-// Show loading screen with custom message
-export async function showLoading(
-  message = "Preparing your experience...",
-  submessage = "Setting up your personalized learning environment..."
-) {
-  const loadingScreen = document.querySelector(".loading-screen");
-  if (!loadingScreen) return;
+// Loading screen
+let loadingScreen;
+let loadingTimeout;
 
-  const loadingText = loadingScreen.querySelector(".loading-text");
-  const loadingSubtext = loadingScreen.querySelector(".loading-subtext");
+// Create loading screen if it doesn't exist
+function ensureLoadingScreen() {
+  if (!loadingScreen) {
+    loadingScreen = document.createElement("div");
+    loadingScreen.className = "loading-screen";
+    loadingScreen.innerHTML = `
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Loading...</div>
+                <div class="loading-subtext"></div>
+                <div class="loading-progress">
+                    <div class="loading-progress-bar"></div>
+                </div>
+            </div>
+        `;
+    document.body.appendChild(loadingScreen);
+    console.log("[UI] Loading screen created");
+  }
+}
 
-  loadingText.textContent = message;
-  loadingSubtext.textContent = submessage;
-  loadingScreen.classList.add("visible");
+// Show loading screen with optional custom message and submessage
+export function showLoading(message = "Loading...", submessage = "") {
+  console.log("[UI] Showing loading screen:", { message, submessage });
+  ensureLoadingScreen();
 
-  // Update steps every 750ms
-  const steps = loadingScreen.querySelectorAll(".loading-step");
-  let currentStep = 0;
-  const stepInterval = setInterval(() => {
-    steps.forEach((step, index) => {
-      step.classList.toggle("active", index === currentStep);
-    });
-    currentStep = (currentStep + 1) % steps.length;
-  }, 750);
+  const textElement = loadingScreen.querySelector(".loading-text");
+  const subtextElement = loadingScreen.querySelector(".loading-subtext");
 
-  // Set a maximum loading time of 10 seconds
-  const timeout = new Promise((_, reject) => {
-    setTimeout(() => {
-      clearInterval(stepInterval);
-      hideLoading();
-      reject(new Error("Loading timeout exceeded"));
-    }, 10000);
-  });
+  if (textElement) textElement.textContent = message;
+  if (subtextElement) subtextElement.textContent = submessage;
 
-  // Return a promise that resolves after 3 seconds or rejects on timeout
-  return Promise.race([
-    new Promise((resolve) => {
-      setTimeout(() => {
-        clearInterval(stepInterval);
-        resolve();
-      }, 3000);
-    }),
-    timeout,
-  ]);
+  loadingScreen.classList.add("show");
+
+  // Set a timeout to auto-hide after 10 seconds
+  if (loadingTimeout) clearTimeout(loadingTimeout);
+  loadingTimeout = setTimeout(() => {
+    console.log("[UI] Loading screen timeout - auto-hiding");
+    hideLoading();
+    showToast("Operation timed out", "error");
+  }, 10000);
 }
 
 // Hide loading screen
 export function hideLoading() {
-  const loadingScreen = document.querySelector(".loading-screen");
-  if (!loadingScreen) return;
-
-  loadingScreen.classList.remove("visible");
-  // Reset loading screen state
-  const steps = loadingScreen.querySelectorAll(".loading-step");
-  steps.forEach((step) => step.classList.remove("active"));
-  steps[0].classList.add("active");
+  console.log("[UI] Hiding loading screen");
+  if (loadingTimeout) {
+    clearTimeout(loadingTimeout);
+    loadingTimeout = null;
+  }
+  if (loadingScreen) {
+    loadingScreen.classList.remove("show");
+  }
 }
 
 // Show error in loading screen
 export function showLoadingError(error) {
-  const loadingScreen = document.querySelector(".loading-screen");
-  if (!loadingScreen) return;
+  console.log("[UI] Showing loading error:", error);
+  ensureLoadingScreen();
 
-  const loadingText = loadingScreen.querySelector(".loading-text");
-  const loadingSubtext = loadingScreen.querySelector(".loading-subtext");
-  const loadingProgress = loadingScreen.querySelector(".loading-progress");
+  const textElement = loadingScreen.querySelector(".loading-text");
+  const subtextElement = loadingScreen.querySelector(".loading-subtext");
+  const progressElement = loadingScreen.querySelector(".loading-progress");
 
-  loadingText.textContent = "Oops! Something went wrong";
-  loadingText.style.color = "#ff4444";
-  loadingSubtext.textContent = error.message;
-  loadingProgress.style.display = "none";
+  if (textElement) {
+    textElement.textContent = "Oops! Something went wrong";
+    textElement.style.color = "var(--error-color)";
+  }
+  if (subtextElement) {
+    subtextElement.textContent = error.message;
+  }
+  if (progressElement) {
+    progressElement.style.display = "none";
+  }
 
-  setTimeout(hideLoading, 3000);
+  loadingScreen.classList.add("show");
+  setTimeout(() => {
+    hideLoading();
+    showToast(error.message, "error");
+  }, 3000);
 }

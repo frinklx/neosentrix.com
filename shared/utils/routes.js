@@ -1,19 +1,32 @@
-// Routes Configuration
+// Route definitions
 export const ROUTES = {
-  DASHBOARD: "/dashboard",
-  ONBOARDING: "/onboarding",
-  CONTINUE_SIGNUP: "/auth/signup/continue.html",
+  HOME: "/",
   LOGIN: "/auth/login/",
   SIGNUP: "/auth/signup/",
-  HOME: "/",
+  CONTINUE_SIGNUP: "/auth/signup/continue.html",
+  DASHBOARD: "/dashboard/",
+  ONBOARDING: "/onboarding/",
   ABOUT: "/about",
   FEATURES: "/features",
   PRIVACY: "/privacypolicy",
   TERMS: "/tos",
 };
 
+// Navigate to a route with history
+export function navigateTo(path) {
+  console.log("[Routes] Navigating to:", path);
+  window.history.pushState({}, "", path);
+  window.dispatchEvent(new PopStateEvent("popstate"));
+}
+
+// Redirect to a route (replaces history)
+export function redirectTo(path) {
+  console.log("[Routes] Redirecting to:", path);
+  window.location.href = path;
+}
+
 // Handle navigation with error checking
-export async function navigateTo(route, options = {}) {
+export async function navigateToWithErrorChecking(route, options = {}) {
   try {
     if (options.loading) {
       await showLoading(options.loadingMessage, options.loadingSubmessage);
@@ -21,7 +34,7 @@ export async function navigateTo(route, options = {}) {
 
     // Check if route exists
     if (route.endsWith(".html") || route === "/" || route.startsWith("/")) {
-      window.location.href = route;
+      redirectTo(route);
     } else {
       throw new Error("Invalid route");
     }
@@ -29,6 +42,6 @@ export async function navigateTo(route, options = {}) {
     hideLoading();
     showToast(error.message, "error");
     // Fallback to a safe route
-    window.location.href = ROUTES.LOGIN;
+    redirectTo(ROUTES.LOGIN);
   }
 }

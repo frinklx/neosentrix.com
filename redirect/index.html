@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting - NeoSentrix</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../shared/styles/variables.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+        color: white;
+      }
+
+      .redirect-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 20px;
+        background-color: var(--background);
+      }
+
+      .loader {
+        border: 4px solid var(--border);
+        border-top: 4px solid var(--primary);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .redirect-message {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+      }
+
+      .redirect-submessage {
+        font-size: 1rem;
+        color: var(--text-secondary);
+      }
+
+      .progress-bar {
+        width: 200px;
+        height: 4px;
+        background-color: var(--border);
+        border-radius: 2px;
+        margin-top: 20px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-bar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 30%;
+        background-color: var(--primary);
+        animation: progress 2s ease-in-out infinite;
+      }
+
+      @keyframes progress {
+        0% {
+          left: -30%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Effects -->
+    <div class="bg-effects"></div>
+
+    <!-- Redirect Container -->
+    <div class="redirect-container">
+      <div class="loader"></div>
+      <div class="redirect-message" id="redirectMessage">Redirecting...</div>
+      <div class="redirect-submessage" id="redirectSubMessage">
+        Please wait while we prepare your experience
+      </div>
+      <div class="progress-bar"></div>
+    </div>
+
+    <!-- Main Script -->
+    <script type="module" src="index.js"></script>
+  </body>
+</html>

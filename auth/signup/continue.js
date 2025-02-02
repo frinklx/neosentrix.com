@@ -1,26 +1,28 @@
-import { initializeComponents } from "../../shared/components/loading";
-import { redirectTo } from "../../shared/utils/routes";
-import { showToast } from "../../shared/utils/ui";
-import { saveUserData } from "../index";
+import { showToast, showLoading, hideLoading } from "../../shared/utils/ui.js";
+import { redirectTo } from "../../shared/utils/routes.js";
 
 let auth;
+let firestore;
 let currentUser = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("[Continue Signup] DOM Content Loaded - Initializing components");
-  initializeComponents();
-  initializeAuth();
+  initializeFirebase();
   setupFormListeners();
 });
 
-function initializeAuth() {
-  console.log("[Continue Signup] Initializing Firebase Auth");
+function initializeFirebase() {
+  console.log("[Continue Signup] Initializing Firebase");
   try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
     auth = firebase.auth();
+    firestore = firebase.firestore();
     auth.onAuthStateChanged(handleAuthStateChange);
-    console.log("[Continue Signup] Firebase Auth initialized successfully");
+    console.log("[Continue Signup] Firebase initialized successfully");
   } catch (error) {
-    console.error("[Continue Signup] Error initializing Firebase Auth:", error);
+    console.error("[Continue Signup] Error initializing Firebase:", error);
     showToast("Error initializing authentication", "error");
   }
 }
@@ -148,14 +150,29 @@ async function handleFormSubmit(event) {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
+  const phone = document.getElementById("phone").value;
+  const agreeTerms = document.getElementById("agreeTerms").checked;
 
   // Validate form
   if (!validateForm(username, password, confirmPassword)) {
     return;
   }
 
+  if (!agreeTerms) {
+    showToast(
+      "Please agree to the Terms of Service and Privacy Policy",
+      "error"
+    );
+    return;
+  }
+
   try {
+    showLoading(
+      "Setting up your account...",
+      "Please wait while we save your information"
+    );
     console.log("[Continue Signup] Updating user profile");
+
     // Update display name if changed
     if (username !== currentUser.displayName) {
       await currentUser.updateProfile({ displayName: username });
@@ -167,11 +184,18 @@ async function handleFormSubmit(event) {
       email: currentUser.email,
       photoURL: currentUser.photoURL || null,
       provider: currentUser.providerData[0].providerId,
+      phone: phone || null,
       hasCompletedSignup: true,
+      isOnboardingComplete: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
 
     console.log("[Continue Signup] Saving user data:", userData);
-    await saveUserData(currentUser.uid, userData);
+    await firestore
+      .collection("users")
+      .doc(currentUser.uid)
+      .set(userData, { merge: true });
 
     // Link password to account if not already linked
     if (!currentUser.providerData.some((p) => p.providerId === "password")) {
@@ -184,10 +208,13 @@ async function handleFormSubmit(event) {
     }
 
     console.log("[Continue Signup] Setup completed successfully");
+    hideLoading();
     showToast("Account setup completed!", "success");
-    redirectTo("/dashboard/");
+    window.location.href =
+      "/redirect/index.html?to=/onboarding&message=Welcome to NeoSentrix!&submessage=Let's set up your workspace...";
   } catch (error) {
     console.error("[Continue Signup] Error during setup:", error);
+    hideLoading();
     showToast(error.message, "error");
   }
 }
