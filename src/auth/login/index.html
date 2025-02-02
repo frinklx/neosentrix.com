@@ -12,35 +12,28 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <link rel="stylesheet" href="../styles.css" />
     <link rel="stylesheet" href="login.css" />
   </head>
-  <body class="loaded">
-    <!-- Background Effects -->
-    <div class="noise-overlay"></div>
-    <div class="gradient-sphere"></div>
-    <div class="gradient-sphere-2"></div>
-    <div class="grid-overlay"></div>
-    <div class="vignette"></div>
-
+  <body>
     <!-- Login Container -->
     <div class="login-container">
-      <div class="login-card glass-card">
+      <div class="login-card">
+        <a href="/" class="logo">
+          <i class="fas fa-brain"></i>
+          <span>NeoSentrix</span>
+        </a>
+
         <div class="login-header">
-          <a href="/" class="logo">
-            <i class="fas fa-brain gradient-text"></i>
-            <span>NeoSentrix</span>
-          </a>
           <h1>Welcome Back</h1>
           <p>Sign in to continue your learning journey</p>
         </div>
 
         <div class="oauth-buttons">
-          <button class="oauth-btn google-btn" id="googleSignIn">
+          <button class="oauth-btn" id="googleSignIn">
             <img src="https://www.google.com/favicon.ico" alt="Google" />
             Continue with Google
           </button>
-          <button class="oauth-btn github-btn" id="githubSignIn">
+          <button class="oauth-btn" id="githubSignIn">
             <i class="fab fa-github"></i>
             Continue with GitHub
           </button>
@@ -50,32 +43,28 @@
           <span>or</span>
         </div>
 
-        <form id="loginForm" class="login-form">
-          <div class="form-group">
-            <div class="input-icon">
-              <i class="fas fa-envelope"></i>
-              <input
-                type="email"
-                id="email"
-                placeholder="Email address"
-                required
-              />
-            </div>
+        <form id="loginForm">
+          <div class="input-icon">
+            <i class="fas fa-envelope"></i>
+            <input
+              type="email"
+              id="email"
+              placeholder="Email address"
+              required
+            />
           </div>
 
-          <div class="form-group">
-            <div class="input-icon">
-              <i class="fas fa-lock"></i>
-              <input
-                type="password"
-                id="password"
-                placeholder="Password"
-                required
-              />
-              <button type="button" class="toggle-password">
-                <i class="fas fa-eye"></i>
-              </button>
-            </div>
+          <div class="input-icon">
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              required
+            />
+            <button type="button" class="toggle-password">
+              <i class="fas fa-eye"></i>
+            </button>
           </div>
 
           <div class="form-options">
@@ -88,26 +77,22 @@
             >
           </div>
 
-          <button type="submit" class="primary-btn glow-effect login-btn">
-            Sign In
-          </button>
+          <button type="submit" class="primary-btn">Sign In</button>
         </form>
 
         <div class="signup-prompt">
-          <p>Don't have an account? <a href="/signup">Sign up</a></p>
+          Don't have an account? <a href="/signup">Sign up</a>
         </div>
       </div>
-
-      <!-- Toast Notifications -->
-      <div class="toast-container"></div>
     </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container"></div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <!-- Initialize Firebase first -->
     <script src="firebase-config.js"></script>
-    <!-- Then load the login logic -->
     <script src="login.js"></script>
   </body>
 </html>
