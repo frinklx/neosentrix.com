@@ -3,13 +3,13 @@ export const ROUTES = {
   DASHBOARD: "/dashboard",
   ONBOARDING: "/onboarding",
   CONTINUE_SIGNUP: "/auth/signup/continue.html",
-  LOGIN: "/auth/login",
-  SIGNUP: "/auth/signup",
+  LOGIN: "/auth/login/",
+  SIGNUP: "/auth/signup/",
   HOME: "/",
   ABOUT: "/about",
   FEATURES: "/features",
-  PRIVACY: "/privacy",
-  TERMS: "/terms",
+  PRIVACY: "/privacypolicy",
+  TERMS: "/tos",
 };
 
 // Handle navigation with error checking

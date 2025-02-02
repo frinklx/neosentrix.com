@@ -1,10 +1,103 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>it works</title>
+    <title>Dashboard - NeoSentrix</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    it works
+    <!-- Background Effects -->
+    <div class="bg-effects"></div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-brain"></i>
+          <span>NeoSentrix</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="#" class="active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-book"></i>
+            <span>Courses</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-chart-line"></i>
+            <span>Progress</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+        <button id="logoutBtn" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="dashboard-header">
+          <div class="user-welcome">
+            <h1>Welcome Back, <span id="userName">User</span>!</h1>
+            <p>Your learning journey continues...</p>
+          </div>
+          <div class="user-profile">
+            <img
+              id="userAvatar"
+              src="https://via.placeholder.com/40"
+              alt="User Avatar"
+            />
+          </div>
+        </header>
+
+        <!-- Development Notice -->
+        <div class="dev-notice">
+          <i class="fas fa-code"></i>
+          <h2>Dashboard Under Development</h2>
+          <p>
+            We're working hard to bring you an amazing learning experience.
+            Check back soon for updates!
+          </p>
+          <div class="feature-preview">
+            <h3>Coming Soon:</h3>
+            <ul>
+              <li><i class="fas fa-check"></i> Personalized Learning Paths</li>
+              <li><i class="fas fa-check"></i> AI-Powered Progress Tracking</li>
+              <li><i class="fas fa-check"></i> Interactive Course Content</li>
+              <li>
+                <i class="fas fa-check"></i> Real-time Performance Analytics
+              </li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="../shared/utils/firebase-config.js"></script>
+
+    <!-- Main Script -->
+    <script type="module" src="index.js"></script>
   </body>
 </html>

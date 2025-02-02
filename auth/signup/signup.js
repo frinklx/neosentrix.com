@@ -20,9 +20,9 @@ let googleUser = null;
 const ROUTES = {
   DASHBOARD: "/dashboard",
   ONBOARDING: "/onboarding",
-  CONTINUE_SIGNUP: "/signup/continue.html",
-  LOGIN: "/login",
-  SIGNUP: "/signup",
+  CONTINUE_SIGNUP: "/auth/signup/continue.html",
+  LOGIN: "/auth/login/",
+  SIGNUP: "/auth/signup/",
 };
 
 // Toast notification function
