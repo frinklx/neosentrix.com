@@ -1289,3 +1289,255 @@ footer {
   z-index: -1;
   animation: ripple 1.5s linear infinite;
 }
+
+/* Content Section Styles */
+.content-section {
+  padding: 8rem 2rem 4rem;
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Policy Page Styles */
+.policy-content,
+.tos-content {
+  padding: 2rem;
+}
+
+.policy-section,
+.tos-section {
+  margin-bottom: 3rem;
+}
+
+.policy-section h2,
+.tos-section h2 {
+  color: var(--success-color);
+  margin-bottom: 1.5rem;
+}
+
+.policy-section ul,
+.tos-section ul {
+  list-style: none;
+  margin-left: 1rem;
+}
+
+.policy-section li,
+.tos-section li {
+  margin: 1rem 0;
+  color: var(--gray-text);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.policy-section li::before,
+.tos-section li::before {
+  content: "•";
+  color: var(--success-color);
+}
+
+/* About Page Styles */
+.about-header {
+  text-align: center;
+  padding: 3rem 2rem;
+  margin-bottom: 3rem;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.about-card {
+  padding: 2rem;
+  text-align: center;
+}
+
+.about-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 1.5rem;
+  color: var(--dark-bg);
+}
+
+.about-story,
+.about-future {
+  padding: 3rem;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.about-story p,
+.about-future p {
+  color: var(--gray-text);
+  margin: 1.5rem 0;
+}
+
+/* Features Page Styles */
+.features-header {
+  text-align: center;
+  padding: 3rem 2rem;
+  margin-bottom: 3rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.feature-list {
+  list-style: none;
+  margin: 1.5rem 0;
+}
+
+.feature-list li {
+  margin: 1rem 0;
+  color: var(--gray-text);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.feature-list i {
+  color: var(--success-color);
+}
+
+.features-cta {
+  text-align: center;
+  padding: 3rem;
+  margin-top: 3rem;
+}
+
+/* Use Cases Page Styles */
+.usecases-header {
+  text-align: center;
+  padding: 3rem 2rem;
+  margin-bottom: 3rem;
+}
+
+.usecases-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.usecase-card {
+  padding: 2rem;
+  text-align: center;
+}
+
+.usecase-icon {
+  width: 60px;
+  height: 60px;
+  background: var(--gradient-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 1.5rem;
+  color: var(--dark-bg);
+}
+
+.usecase-benefits {
+  list-style: none;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.usecase-benefits li {
+  margin: 1rem 0;
+  color: var(--gray-text);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.usecase-benefits i {
+  color: var(--success-color);
+}
+
+.usecase-cta {
+  margin-top: 2rem;
+}
+
+.success-stories {
+  padding: 3rem;
+  margin: 3rem 0;
+}
+
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.story-card {
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.story-header i {
+  font-size: 2rem;
+  color: var(--success-color);
+  opacity: 0.2;
+  margin-bottom: 1rem;
+}
+
+.story-author {
+  margin-top: 1.5rem;
+  color: var(--success-color);
+  font-style: italic;
+}
+
+.usecases-cta {
+  text-align: center;
+  padding: 3rem;
+}
+
+/* Responsive Styles for New Pages */
+@media (max-width: 992px) {
+  .about-grid,
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .usecases-grid,
+  .stories-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-grid,
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .content-section {
+    padding: 6rem 1rem 2rem;
+  }
+
+  .policy-content,
+  .tos-content {
+    padding: 1.5rem;
+  }
+}
