@@ -4,10 +4,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: {
-    main: "./src/index.js",
-    auth: "./src/auth/index.js",
-    onboarding: "./src/onboarding/index.js",
-    dashboard: "./src/dashboard/index.js",
+    main: "./index.js",
+    auth: "./auth/index.js",
+    onboarding: "./onboarding/index.js",
+    dashboard: "./dashboard/index.js",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -38,26 +38,26 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: "./index.html",
       chunks: ["main"],
     }),
     new HtmlWebpackPlugin({
-      template: "./src/auth/login/index.html",
+      template: "./auth/login/index.html",
       filename: "auth/login/index.html",
       chunks: ["auth"],
     }),
     new HtmlWebpackPlugin({
-      template: "./src/auth/signup/index.html",
+      template: "./auth/signup/index.html",
       filename: "auth/signup/index.html",
       chunks: ["auth"],
     }),
     new HtmlWebpackPlugin({
-      template: "./src/onboarding/index.html",
+      template: "./onboarding/index.html",
       filename: "onboarding/index.html",
       chunks: ["onboarding"],
     }),
     new HtmlWebpackPlugin({
-      template: "./src/dashboard/index.html",
+      template: "./dashboard/index.html",
       filename: "dashboard/index.html",
       chunks: ["dashboard"],
     }),

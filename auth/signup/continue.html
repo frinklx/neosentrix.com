@@ -12,24 +12,20 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <link rel="stylesheet" href="../signup/signup.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="loaded">
+  <body>
     <!-- Background Effects -->
-    <div class="noise-overlay"></div>
-    <div class="gradient-sphere"></div>
-    <div class="gradient-sphere-2"></div>
-    <div class="grid-overlay"></div>
-    <div class="vignette"></div>
+    <div class="bg-effects"></div>
 
     <!-- Continue Signup Container -->
     <div class="auth-container">
       <div class="auth-content">
         <div class="auth-form-container">
-          <div class="auth-card glass-card">
+          <div class="auth-card">
             <div class="auth-header">
               <a href="/" class="logo">
-                <i class="fas fa-brain gradient-text"></i>
+                <i class="fas fa-brain"></i>
                 <span>NeoSentrix</span>
               </a>
               <h1>Complete Your Profile</h1>
@@ -101,44 +97,36 @@
                 </label>
               </div>
 
-              <button type="submit" class="primary-btn glow-effect signup-btn">
-                Complete Setup
+              <button type="submit" class="primary-btn glow-effect">
+                Continue
               </button>
             </form>
           </div>
         </div>
 
-        <!-- Right Side - Account Benefits -->
-        <div class="auth-features glass-card">
+        <div class="auth-features">
           <div class="features-content">
-            <h2>Benefits of Completing Your Profile</h2>
+            <h2>Almost There!</h2>
             <div class="feature-list">
               <div class="feature-item">
-                <i class="fas fa-shield-alt"></i>
+                <i class="fas fa-user-shield"></i>
                 <div class="feature-text">
-                  <h3>Enhanced Security</h3>
-                  <p>Protect your account with a strong password</p>
+                  <h3>Secure Account</h3>
+                  <p>Your data is protected with enterprise-grade security</p>
                 </div>
               </div>
               <div class="feature-item">
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-fingerprint"></i>
                 <div class="feature-text">
                   <h3>Unique Identity</h3>
-                  <p>Stand out with your personalized username</p>
+                  <p>Create your unique presence in our learning community</p>
                 </div>
               </div>
               <div class="feature-item">
-                <i class="fas fa-bell"></i>
+                <i class="fas fa-cog"></i>
                 <div class="feature-text">
-                  <h3>Important Updates</h3>
-                  <p>Stay informed about your learning progress</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <i class="fas fa-sync"></i>
-                <div class="feature-text">
-                  <h3>Account Recovery</h3>
-                  <p>Easily recover your account if needed</p>
+                  <h3>Personalization</h3>
+                  <p>Customize your learning experience to match your goals</p>
                 </div>
               </div>
             </div>
@@ -147,25 +135,15 @@
       </div>
     </div>
 
-    <!-- Toast Notifications -->
-    <div class="toast-container"></div>
-
-    <!-- Loading Screen -->
-    <div class="loading-screen" style="display: none">
-      <div class="loading-content">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Preparing your experience...</div>
-        <div class="loading-progress">
-          <div class="loading-progress-bar"></div>
-        </div>
-      </div>
-    </div>
-
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="../login/firebase-config.js"></script>
-    <script src="continue.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="../../shared/utils/firebase-config.js"></script>
+
+    <!-- Main Script -->
+    <script type="module" src="continue.js"></script>
   </body>
 </html>

@@ -6,7 +6,7 @@ A modern web-based learning platform built with JavaScript and Firebase.
 
 ```
 neosentrix.com/
-├── src/                      # Source code
+├──                       # Source code
 │   ├── auth/                 # Authentication
 │   │   ├── login/           # Login page
 │   │   └── signup/          # Signup pages

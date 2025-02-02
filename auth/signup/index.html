@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - NeoSentrix</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Background Effects -->
+    <div class="bg-effects"></div>
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+      <div class="auth-content">
+        <div class="auth-form-container">
+          <div class="auth-card">
+            <div class="auth-header">
+              <a href="/" class="logo">
+                <i class="fas fa-brain"></i>
+                <span>NeoSentrix</span>
+              </a>
+              <h1>Create Account</h1>
+              <p>Join our learning community today</p>
+            </div>
+
+            <div class="oauth-buttons">
+              <button id="googleSignUp" class="oauth-btn google-btn">
+                <img src="../../assets/images/google.svg" alt="Google" />
+                Sign up with Google
+              </button>
+              <button id="githubSignUp" class="oauth-btn github-btn">
+                <i class="fab fa-github"></i>
+                Sign up with GitHub
+              </button>
+            </div>
+
+            <div class="divider">
+              <span>or</span>
+            </div>
+
+            <form id="signupForm" class="auth-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input
+                      type="text"
+                      id="firstName"
+                      placeholder="First Name"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input
+                      type="text"
+                      id="lastName"
+                      placeholder="Last Name"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="input-icon">
+                  <i class="fas fa-envelope"></i>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="Email address"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="input-icon">
+                  <i class="fas fa-lock"></i>
+                  <input
+                    type="password"
+                    id="password"
+                    placeholder="Create password"
+                    required
+                  />
+                  <button type="button" class="toggle-password">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <div class="password-strength">
+                  <div class="strength-meter"></div>
+                  <span class="strength-text"></span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="input-icon">
+                  <i class="fas fa-lock"></i>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="terms-checkbox">
+                  <input type="checkbox" id="agreeTerms" required />
+                  <span
+                    >I agree to the <a href="/tos">Terms of Service</a> and
+                    <a href="/privacy">Privacy Policy</a></span
+                  >
+                </label>
+              </div>
+
+              <button type="submit" class="primary-btn glow-effect">
+                Create Account
+              </button>
+            </form>
+
+            <div class="auth-prompt">
+              <p>Already have an account? <a href="/auth/login">Sign In</a></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-features">
+          <div class="features-content">
+            <h2>Why Choose NeoSentrix?</h2>
+            <div class="feature-list">
+              <div class="feature-item">
+                <i class="fas fa-brain"></i>
+                <div class="feature-text">
+                  <h3>Personalized Learning</h3>
+                  <p>
+                    AI-powered platform that adapts to your learning style and
+                    pace
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-rocket"></i>
+                <div class="feature-text">
+                  <h3>Fast Progress</h3>
+                  <p>
+                    Learn faster with our proven methodology and structured
+                    approach
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-users"></i>
+                <div class="feature-text">
+                  <h3>Community Support</h3>
+                  <p>
+                    Join a community of learners and get help when you need it
+                  </p>
+                </div>
+              </div>
+              <div class="feature-item">
+                <i class="fas fa-certificate"></i>
+                <div class="feature-text">
+                  <h3>Certification</h3>
+                  <p>Earn certificates recognized by industry leaders</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="../../shared/utils/firebase-config.js"></script>
+
+    <!-- Main Script -->
+    <script type="module" src="index.js"></script>
+  </body>
+</html>
