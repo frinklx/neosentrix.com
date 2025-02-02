@@ -39,9 +39,7 @@ This project is proprietary software. While the source code is visible, usage an
 
 ## Contact
 
-- Website: [company.com](https://company.com)
-- Email: contact@company.com
-- LinkedIn: [Company Name](https://linkedin.com/company/companyname)
-
+- Website: [neosentrix.com](https://neosentrix.com)
+- Github: [frinklx](https://github.com/frinklx)
 ---
 © 2024 Company Name. All rights reserved.
