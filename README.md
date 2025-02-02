@@ -1,83 +1,47 @@
-# NeoSentrix Learning Platform
+# AI-Powered Learning Tools
 
-A modern web-based learning platform built with JavaScript and Firebase.
+Welcome to our innovative educational technology platform! We develop cutting-edge AI-powered learning tools while maintaining privacy and security as top priorities.
 
-## Project Structure
+## About Us
 
-```
-neosentrix.com/
-├──                       # Source code
-│   ├── auth/                 # Authentication
-│   │   ├── login/           # Login page
-│   │   └── signup/          # Signup pages
-│   ├── onboarding/          # User onboarding
-│   ├── dashboard/           # User dashboard
-│   ├── features/            # Feature pages
-│   ├── about/               # About pages
-│   ├── privacypolicy/       # Privacy policy
-│   ├── tos/                 # Terms of service
-│   ├── usecases/           # Use cases
-│   ├── shared/             # Shared code
-│   │   ├── components/     # Reusable components
-│   │   ├── styles/         # Global styles
-│   │   ├── utils/          # Utility functions
-│   │   └── layouts/        # Layout components
-│   ├── assets/             # Static assets
-│   │   ├── images/         # Images
-│   │   └── icons/          # Icons
-│   ├── index.html          # Main HTML
-│   └── index.js            # Main entry point
-├── webpack.config.js        # Webpack configuration
-└── package.json            # Project dependencies
-```
+We are a private company dedicated to revolutionizing education through artificial intelligence. Our tools help create personalized learning experiences while protecting user data and privacy.
 
-## Setup
+## Our Mission
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+To empower educators and learners by providing intelligent, adaptive learning solutions that:
+- Personalize the learning journey for each student
+- Provide actionable insights to educators
+- Maintain the highest standards of data privacy and security
+- Make quality education more accessible and engaging
 
-2. Start development server:
-   ```bash
-   npm run dev
-   ```
+## Key Features
 
-3. Build for production:
-   ```bash
-   npm run build
-   ```
+- **Adaptive Learning Paths**: AI-driven personalization of content and pacing
+- **Progress Analytics**: Detailed insights into learning patterns and achievements
+- **Privacy-First Design**: Robust data protection and secure infrastructure
+- **Educator Dashboard**: Comprehensive tools for monitoring and supporting student progress
 
-## Features
+## Getting Started
 
-- Modern authentication system
-- Personalized learning paths
-- Progress tracking
-- Interactive dashboard
-- Responsive design
-- Real-time updates
-
-## Technologies
-
-- JavaScript (ES6+)
-- Firebase (Authentication & Firestore)
-- Webpack
-- CSS3 with modern features
-- Responsive design
-- Progressive Web App capabilities
-
-## Development
-
-The project uses a modular architecture with:
-- Shared components for reusability
-- Utility functions for common operations
-- CSS variables for consistent styling
-- Webpack for bundling and optimization
+While our codebase is open source, access to our services requires proper authentication. Please contact our team for partnership opportunities and access credentials.
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a pull request 
+We welcome contributions from the developer community! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## Security
+
+Security is paramount in educational technology. If you discover any security issues, please report them to security@company.com instead of using the public issue tracker.
+
+## License
+
+This project is proprietary software. While the source code is visible, usage and modification rights are restricted. Contact our legal team for licensing information.
+
+## Contact
+
+- Website: [company.com](https://company.com)
+- Email: contact@company.com
+- LinkedIn: [Company Name](https://linkedin.com/company/companyname)
+
+---
+© 2024 Company Name. All rights reserved.
