@@ -109,15 +109,21 @@ function updateUIWithUserData(userData) {
   const userNameElement = document.getElementById("userName");
   const userEmailElement = document.getElementById("userEmail");
 
-  if (userNameElement) userNameElement.textContent = userData.displayName;
+  if (userNameElement)
+    userNameElement.textContent =
+      userData.displayName || userData.email.split("@")[0];
   if (userEmailElement) userEmailElement.textContent = userData.email;
 
   // Update avatar
-  const userAvatarElement = document.getElementById("userAvatar");
-  if (userAvatarElement) {
+  const avatarElement = document.getElementById("userAvatar");
+  if (avatarElement) {
+    console.log("[Dashboard] Updating avatar source");
     const avatarSrc =
-      userData.photoURL || "../assets/images/default-avatar.png";
-    userAvatarElement.src = avatarSrc;
+      userData.photoURL ||
+      "https://ui-avatars.com/api/?name=" +
+        encodeURIComponent(userData.email.split("@")[0]) +
+        "&background=00f2ff&color=000000";
+    avatarElement.src = avatarSrc;
     console.log("[Dashboard] Updated avatar source:", avatarSrc);
   }
 }
@@ -126,10 +132,12 @@ function setupEventListeners() {
   console.log("[Dashboard] Setting up event listeners");
 
   // Logout button
-  const logoutButton = document.getElementById("logoutButton");
+  const logoutButton = document.getElementById("logoutBtn");
   if (logoutButton) {
     logoutButton.addEventListener("click", handleLogout);
     console.log("[Dashboard] Logout button listener added");
+  } else {
+    console.warn("[Dashboard] Logout button not found in DOM");
   }
 
   // Handle browser back button
@@ -159,7 +167,8 @@ async function handleLogout() {
     showLoading("Logging out...", "Please wait");
     await signOut(auth);
     console.log("[Dashboard] Logout successful");
-    redirectTo("/auth/login");
+    window.location.href =
+      "/redirect/index.html?to=/auth/login&message=Logged out successfully&submessage=See you soon!";
   } catch (error) {
     console.error("[Dashboard] Error during logout:", error);
     showToast("Failed to log out", "error");
