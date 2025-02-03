@@ -1,278 +1,273 @@
-// Import shared utilities and styles
-import "../../shared/styles/variables.css";
-import "./styles.css";
-import { showToast, showLoading, hideLoading } from "../../shared/utils/ui";
-import { ROUTES, navigateTo } from "../../shared/utils/routes";
-import { initializeComponents } from "../../shared/components/loading";
-import { checkUserExists, saveUserData } from "../index";
+// Import utilities and styles
+import {
+  showToast,
+  showLoading,
+  hideLoading,
+  validateEmail,
+  validatePassword,
+} from "../../shared/utils/ui.js";
+import { redirectTo } from "../../shared/utils/routes.js";
+import { auth, firestore } from "../../shared/utils/firebase-config.js";
 
-// Get DOM elements
-const signupForm = document.getElementById("signupForm");
-const firstNameInput = document.getElementById("firstName");
-const lastNameInput = document.getElementById("lastName");
+// DOM Elements
+const form = document.getElementById("signupForm");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
-const confirmPasswordInput = document.getElementById("confirmPassword");
 const agreeTermsCheckbox = document.getElementById("agreeTerms");
-const togglePasswordBtn = document.querySelector(".toggle-password");
-const googleSignUpBtn = document.getElementById("googleSignUp");
-const githubSignUpBtn = document.getElementById("githubSignUp");
-const strengthMeter = document.querySelector(".strength-meter");
-const strengthText = document.querySelector(".strength-text");
-
-let googleUser = null;
-
-// Password strength checker
-function checkPasswordStrength(password) {
-  let strength = 0;
-  const patterns = {
-    length: password.length >= 8,
-    lowercase: /[a-z]/.test(password),
-    uppercase: /[A-Z]/.test(password),
-    numbers: /\d/.test(password),
-    special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-  };
-
-  // Calculate strength
-  strength += patterns.length ? 1 : 0;
-  strength += patterns.lowercase && patterns.uppercase ? 1 : 0;
-  strength += patterns.numbers ? 1 : 0;
-  strength += patterns.special ? 1 : 0;
-
-  // Update UI
-  strengthMeter.className = "strength-meter";
-  strengthText.textContent = "";
-
-  if (password.length === 0) {
-    strengthText.textContent = "";
-  } else if (strength < 2) {
-    strengthMeter.classList.add("weak");
-    strengthText.textContent = "Weak password";
-    strengthText.style.color = "#ff4444";
-  } else if (strength < 3) {
-    strengthMeter.classList.add("medium");
-    strengthText.textContent = "Medium password";
-    strengthText.style.color = "#ffbb33";
-  } else {
-    strengthMeter.classList.add("strong");
-    strengthText.textContent = "Strong password";
-    strengthText.style.color = "var(--success-color)";
-  }
-
-  return strength >= 3;
-}
-
-// Enhanced form validation
-function validateForm() {
-  let isValid = true;
-  const errors = [];
-
-  // Password validation
-  if (!googleUser) {
-    if (passwordInput.value !== confirmPasswordInput.value) {
-      errors.push("Passwords do not match");
-      isValid = false;
-      passwordInput.style.borderColor = "#ff4444";
-      confirmPasswordInput.style.borderColor = "#ff4444";
-    }
-
-    if (!checkPasswordStrength(passwordInput.value)) {
-      errors.push("Please choose a stronger password");
-      isValid = false;
-      passwordInput.style.borderColor = "#ff4444";
-    }
-  }
-
-  // Terms agreement validation
-  if (!agreeTermsCheckbox.checked) {
-    errors.push("Please agree to the Terms of Service and Privacy Policy");
-    isValid = false;
-    agreeTermsCheckbox.parentElement.style.color = "#ff4444";
-  }
-
-  // Show all validation errors
-  if (!isValid) {
-    errors.forEach((error) => showToast(error, "error"));
-  }
-
-  return isValid;
-}
-
-// Initialize UI interactions
-function initializeUI() {
-  initializeComponents();
-  setupPasswordToggle();
-  setupFormValidation();
-  setupTermsCheckbox();
-}
-
-// Setup password toggle
-function setupPasswordToggle() {
-  const toggleBtns = document.querySelectorAll(".toggle-password");
-  const passwordInputs = document.querySelectorAll('input[type="password"]');
-
-  toggleBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      const input = btn.previousElementSibling;
-      const type = input.type === "password" ? "text" : "password";
-      input.type = type;
-      btn.innerHTML = `<i class="fas fa-${
-        type === "password" ? "eye" : "eye-slash"
-      }"></i>`;
-    });
-  });
-
-  passwordInputs.forEach((input) => {
-    input.addEventListener("input", () => {
-      if (input.id === "password") {
-        checkPasswordStrength(input.value);
-      }
-    });
-  });
-}
-
-// Setup form validation
-function setupFormValidation() {
-  const inputs = document.querySelectorAll("input");
-
-  inputs.forEach((input) => {
-    input.addEventListener("input", () => {
-      const isValid = input.checkValidity();
-      input.style.borderColor = isValid ? "var(--glass-border)" : "#ff4444";
-
-      if (input.id === "confirmPassword") {
-        const isMatch = input.value === passwordInput.value;
-        input.style.borderColor = isMatch ? "var(--glass-border)" : "#ff4444";
-      }
-    });
-
-    input.addEventListener("focus", () => {
-      input.parentElement.classList.add("focused");
-    });
-
-    input.addEventListener("blur", () => {
-      input.parentElement.classList.remove("focused");
-      const isValid = input.checkValidity();
-      input.style.borderColor = isValid ? "var(--glass-border)" : "#ff4444";
-    });
-  });
-}
-
-// Setup terms checkbox
-function setupTermsCheckbox() {
-  const termsCheckbox = document.getElementById("agreeTerms");
-  const termsLabel = termsCheckbox.parentElement;
-
-  termsCheckbox.addEventListener("change", () => {
-    termsLabel.style.color = termsCheckbox.checked
-      ? "var(--gray-text)"
-      : "#ff4444";
-  });
-
-  termsLabel.addEventListener("click", (e) => {
-    if (e.target.tagName !== "A") {
-      termsCheckbox.click();
-    }
-  });
-}
+const googleButton = document.querySelector(".google-btn");
+const githubButton = document.querySelector(".github-btn");
+const togglePasswordButton = document.querySelector(".toggle-password");
 
 // Event Listeners
-document.addEventListener("DOMContentLoaded", initializeUI);
+document.addEventListener("DOMContentLoaded", () => {
+  setupFormListeners();
+  setupOAuthListeners();
+  setupPasswordToggle();
+  initializeUI();
+});
 
-// Google Sign Up
-googleSignUpBtn.addEventListener("click", async () => {
+function initializeUI() {
+  // Add loaded class to body
+  document.body.classList.add("loaded");
+
+  // Initialize password strength meter
+  if (passwordInput) {
+    updatePasswordStrength();
+  }
+}
+
+function setupFormListeners() {
+  form.addEventListener("submit", handleSignup);
+  passwordInput.addEventListener("input", updatePasswordStrength);
+}
+
+function setupOAuthListeners() {
+  googleButton.addEventListener("click", handleGoogleSignup);
+  githubButton.addEventListener("click", handleGithubSignup);
+}
+
+function setupPasswordToggle() {
+  togglePasswordButton.addEventListener("click", () => {
+    const type = passwordInput.type === "password" ? "text" : "password";
+    passwordInput.type = type;
+    togglePasswordButton.innerHTML = `<i class="fas fa-${
+      type === "password" ? "eye" : "eye-slash"
+    }"></i>`;
+  });
+}
+
+async function handleGoogleSignup() {
   try {
-    await showLoading(
+    showLoading(
       "Connecting to Google...",
-      "Please wait while we securely connect to your Google account"
+      "Please wait while we set up your account"
     );
 
     const provider = new firebase.auth.GoogleAuthProvider();
-    provider.addScope("profile");
     provider.addScope("email");
-    const result = await firebase.auth().signInWithPopup(provider);
+    provider.addScope("profile");
 
-    const userExists = await checkUserExists(result.user.uid);
+    const result = await auth.signInWithPopup(provider);
+    const user = result.user;
 
-    if (!userExists) {
-      await showLoading(
-        "Creating Your Account...",
-        "Setting up your profile with Google information"
-      );
+    // Check if this is a new user
+    const isNewUser = result.additionalUserInfo.isNewUser;
 
-      await saveUserData(result.user.uid, {
-        email: result.user.email,
-        displayName: result.user.displayName,
-        photoURL: result.user.photoURL,
-        authProvider: "google",
-        hasCompletedProfile: false,
-      });
+    await saveUserData(user, {
+      provider: "google",
+      isNewUser,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+    });
 
-      showToast("Successfully signed up with Google!");
-      await navigateTo(ROUTES.CONTINUE_SIGNUP);
-    } else {
-      const userDoc = await firebase
-        .firestore()
-        .collection("users")
-        .doc(result.user.uid)
-        .get();
+    hideLoading();
+    showToast(
+      isNewUser ? "Account created successfully!" : "Welcome back!",
+      "success"
+    );
 
-      if (userDoc.data().hasCompletedProfile) {
-        showToast("Welcome back!");
-        await navigateTo(ROUTES.DASHBOARD);
-      } else {
-        await navigateTo(ROUTES.CONTINUE_SIGNUP);
-      }
-    }
+    // Redirect based on whether user needs to complete signup
+    const redirectPath = isNewUser
+      ? "/auth/signup/continue.html"
+      : "/dashboard";
+    redirectTo(redirectPath);
   } catch (error) {
     hideLoading();
-    console.error("Error:", error);
-    showToast(error.message, "error");
+    console.error("Google signup error:", error);
+    showToast(getErrorMessage(error), "error");
   }
-});
+}
 
-// Email/Password Sign Up
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+async function handleGithubSignup() {
+  try {
+    showLoading(
+      "Connecting to GitHub...",
+      "Please wait while we set up your account"
+    );
 
-  if (!validateForm()) return;
+    const provider = new firebase.auth.GithubAuthProvider();
+    provider.addScope("user");
+    provider.addScope("email");
+
+    const result = await auth.signInWithPopup(provider);
+    const user = result.user;
+
+    const isNewUser = result.additionalUserInfo.isNewUser;
+
+    await saveUserData(user, {
+      provider: "github",
+      isNewUser,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+    });
+
+    hideLoading();
+    showToast(
+      isNewUser ? "Account created successfully!" : "Welcome back!",
+      "success"
+    );
+
+    const redirectPath = isNewUser
+      ? "/auth/signup/continue.html"
+      : "/dashboard";
+    redirectTo(redirectPath);
+  } catch (error) {
+    hideLoading();
+    console.error("GitHub signup error:", error);
+    showToast(getErrorMessage(error), "error");
+  }
+}
+
+async function handleSignup(event) {
+  event.preventDefault();
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  const agreeTerms = agreeTermsCheckbox.checked;
+
+  if (!validateForm(email, password, agreeTerms)) return;
 
   try {
-    await showLoading(
-      "Creating Your Account...",
-      "Setting up your secure profile"
+    showLoading(
+      "Creating your account...",
+      "Please wait while we set up your workspace"
     );
 
-    const userCredential = await firebase
-      .auth()
-      .createUserWithEmailAndPassword(emailInput.value, passwordInput.value);
-
-    await showLoading(
-      "Saving Your Information...",
-      "Securely storing your profile details"
+    const userCredential = await auth.createUserWithEmailAndPassword(
+      email,
+      password
     );
+    const user = userCredential.user;
 
-    // Update user profile
-    await userCredential.user.updateProfile({
-      displayName: `${firstNameInput.value} ${lastNameInput.value}`,
+    await saveUserData(user, {
+      provider: "password",
+      isNewUser: true,
+      email: user.email,
     });
 
-    // Save user data
-    await saveUserData(userCredential.user.uid, {
-      firstName: firstNameInput.value,
-      lastName: lastNameInput.value,
-      email: userCredential.user.email,
-      displayName: `${firstNameInput.value} ${lastNameInput.value}`,
-      authProvider: "email",
-      hasCompletedProfile: true,
-    });
-
-    showToast("Account created successfully!");
-    await navigateTo(ROUTES.ONBOARDING);
+    hideLoading();
+    showToast("Account created successfully!", "success");
+    redirectTo("/auth/signup/continue.html");
   } catch (error) {
     hideLoading();
-    console.error("Error:", error);
-    showToast(error.message, "error");
+    console.error("Email signup error:", error);
+    showToast(getErrorMessage(error), "error");
   }
-});
+}
+
+function validateForm(email, password, agreeTerms) {
+  if (!email || !validateEmail(email)) {
+    showToast("Please enter a valid email address", "error");
+    emailInput.focus();
+    return false;
+  }
+
+  const passwordStrength = validatePassword(password);
+  const passedCriteria = Object.values(passwordStrength).filter(Boolean).length;
+
+  if (passedCriteria < 3) {
+    showToast("Please create a stronger password", "error");
+    passwordInput.focus();
+    return false;
+  }
+
+  if (!agreeTerms) {
+    showToast(
+      "Please agree to the Terms of Service and Privacy Policy",
+      "error"
+    );
+    agreeTermsCheckbox.focus();
+    return false;
+  }
+
+  return true;
+}
+
+async function saveUserData(user, additionalData = {}) {
+  const userData = {
+    email: user.email,
+    displayName: user.displayName || null,
+    photoURL: user.photoURL || null,
+    provider: additionalData.provider,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    hasCompletedSignup: false,
+    isOnboardingComplete: false,
+    ...additionalData,
+  };
+
+  await firestore
+    .collection("users")
+    .doc(user.uid)
+    .set(userData, { merge: true });
+}
+
+function updatePasswordStrength() {
+  const password = passwordInput.value;
+  const strength = validatePassword(password);
+  const strengthMeter = document.querySelector(".strength-meter");
+  const strengthText = document.querySelector(".strength-text");
+
+  const passedCriteria = Object.values(strength).filter(Boolean).length;
+  const percentage = (passedCriteria / 5) * 100;
+
+  strengthMeter.style.width = `${percentage}%`;
+  strengthMeter.style.background =
+    percentage <= 40
+      ? "var(--error-color)"
+      : percentage <= 60
+      ? "var(--warning-color)"
+      : "var(--success-color)";
+
+  strengthText.textContent =
+    percentage <= 40
+      ? "Weak"
+      : percentage <= 60
+      ? "Moderate"
+      : percentage <= 80
+      ? "Strong"
+      : "Very Strong";
+}
+
+function getErrorMessage(error) {
+  switch (error.code) {
+    case "auth/email-already-in-use":
+      return "This email is already registered. Please sign in instead.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/operation-not-allowed":
+      return "This sign-in method is not enabled. Please contact support.";
+    case "auth/weak-password":
+      return "Please choose a stronger password.";
+    case "auth/popup-closed-by-user":
+      return "Sign-in was cancelled. Please try again.";
+    case "auth/popup-blocked":
+      return "Sign-in popup was blocked. Please allow popups for this site.";
+    case "auth/account-exists-with-different-credential":
+      return "An account already exists with this email but with a different sign-in method.";
+    default:
+      return error.message || "An error occurred. Please try again.";
+  }
+}

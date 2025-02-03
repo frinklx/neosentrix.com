@@ -1,23 +1,21 @@
 // Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyAacdQXlfBtXB9XxyFrLopsffDH2ZeMzI4",
-  authDomain: "neolearn-b3cb1.firebaseapp.com",
-  projectId: "neolearn-b3cb1",
-  storageBucket: "neolearn-b3cb1.firebasestorage.app",
-  messagingSenderId: "646341343406",
-  appId: "1:646341343406:web:fce6d834b2f81a8d30d53f",
-  measurementId: "G-EZYFSV1NT5",
+window.firebaseConfig = {
+  apiKey: "AIzaSyDXqHXJhzVxX_YfaXKOGPxPAuGGXxCQwYo",
+  authDomain: "neosentrix-learning.firebaseapp.com",
+  projectId: "neosentrix-learning",
+  storageBucket: "neosentrix-learning.appspot.com",
+  messagingSenderId: "1098765432",
+  appId: "1:1098765432:web:abcdef1234567890",
+  measurementId: "G-ABCDEF1234",
 };
 
-// Initialize Firebase
-if (typeof firebase !== "undefined") {
-  // Initialize Firebase only if firebase is defined and no apps exist
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-} else {
-  console.error("Firebase SDK not loaded");
+// Initialize Firebase if not already initialized
+if (!firebase.apps.length) {
+  firebase.initializeApp(window.firebaseConfig);
 }
 
-// Export the config
-export default firebaseConfig;
+// Export Firebase instances
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+
+export { auth, firestore };

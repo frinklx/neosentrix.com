@@ -1,3 +1,4 @@
+// Import shared utilities
 import { showToast, showLoading, hideLoading } from "../../shared/utils/ui.js";
 import { redirectTo } from "../../shared/utils/routes.js";
 
@@ -15,7 +16,10 @@ function initializeFirebase() {
   console.log("[Continue Signup] Initializing Firebase");
   try {
     if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+      if (!window.firebaseConfig) {
+        throw new Error("Firebase configuration not found");
+      }
+      firebase.initializeApp(window.firebaseConfig);
     }
     auth = firebase.auth();
     firestore = firebase.firestore();

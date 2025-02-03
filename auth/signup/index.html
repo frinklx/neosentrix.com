@@ -4,15 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up - NeoSentrix</title>
+
+    <!-- Fonts and Icons -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+
+    <!-- Styles -->
     <link rel="stylesheet" href="signup.css" />
+
+    <style>
+      /* Critical styles to prevent FOUC */
+      body {
+        opacity: 0;
+      }
+      .loaded {
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+    </style>
   </head>
   <body>
     <!-- Background Effects -->
@@ -33,13 +48,13 @@
             </div>
 
             <div class="oauth-buttons">
-              <button id="googleSignUp" class="oauth-btn google-btn">
-                <img src="../../assets/images/google.svg" alt="Google" />
-                Sign up with Google
+              <button class="oauth-btn google-btn">
+                <i class="fab fa-google"></i>
+                Continue with Google
               </button>
-              <button id="githubSignUp" class="oauth-btn github-btn">
+              <button class="oauth-btn github-btn">
                 <i class="fab fa-github"></i>
-                Sign up with GitHub
+                Continue with GitHub
               </button>
             </div>
 
@@ -48,31 +63,6 @@
             </div>
 
             <form id="signupForm" class="auth-form">
-              <div class="form-row">
-                <div class="form-group">
-                  <div class="input-icon">
-                    <i class="fas fa-user"></i>
-                    <input
-                      type="text"
-                      id="firstName"
-                      placeholder="First Name"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="input-icon">
-                    <i class="fas fa-user"></i>
-                    <input
-                      type="text"
-                      id="lastName"
-                      placeholder="Last Name"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
               <div class="form-group">
                 <div class="input-icon">
                   <i class="fas fa-envelope"></i>
@@ -105,18 +95,6 @@
               </div>
 
               <div class="form-group">
-                <div class="input-icon">
-                  <i class="fas fa-lock"></i>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="Confirm password"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="form-group">
                 <label class="terms-checkbox">
                   <input type="checkbox" id="agreeTerms" required />
                   <span
@@ -131,9 +109,9 @@
               </button>
             </form>
 
-            <div class="auth-prompt">
-              <p>Already have an account? <a href="/auth/login">Sign In</a></p>
-            </div>
+            <p class="auth-prompt">
+              Already have an account? <a href="/auth/login">Sign In</a>
+            </p>
           </div>
         </div>
 
@@ -142,39 +120,26 @@
             <h2>Why Choose NeoSentrix?</h2>
             <div class="feature-list">
               <div class="feature-item">
-                <i class="fas fa-brain"></i>
+                <i class="fas fa-graduation-cap"></i>
                 <div class="feature-text">
                   <h3>Personalized Learning</h3>
-                  <p>
-                    AI-powered platform that adapts to your learning style and
-                    pace
-                  </p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <i class="fas fa-rocket"></i>
-                <div class="feature-text">
-                  <h3>Fast Progress</h3>
-                  <p>
-                    Learn faster with our proven methodology and structured
-                    approach
-                  </p>
+                  <p>Adaptive learning paths tailored to your goals and pace</p>
                 </div>
               </div>
               <div class="feature-item">
                 <i class="fas fa-users"></i>
                 <div class="feature-text">
                   <h3>Community Support</h3>
-                  <p>
-                    Join a community of learners and get help when you need it
-                  </p>
+                  <p>Connect with peers and mentors in your learning journey</p>
                 </div>
               </div>
               <div class="feature-item">
-                <i class="fas fa-certificate"></i>
+                <i class="fas fa-chart-line"></i>
                 <div class="feature-text">
-                  <h3>Certification</h3>
-                  <p>Earn certificates recognized by industry leaders</p>
+                  <h3>Track Progress</h3>
+                  <p>
+                    Monitor your growth with detailed analytics and insights
+                  </p>
                 </div>
               </div>
             </div>
@@ -184,14 +149,20 @@
     </div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
     <!-- Firebase Config -->
     <script src="../../shared/utils/firebase-config.js"></script>
 
     <!-- Main Script -->
     <script type="module" src="index.js"></script>
+
+    <script>
+      // Add loaded class to body after DOM content is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.classList.add("loaded");
+      });
+    </script>
   </body>
 </html>

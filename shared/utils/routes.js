@@ -45,3 +45,52 @@ export async function navigateToWithErrorChecking(route, options = {}) {
     redirectTo(ROUTES.LOGIN);
   }
 }
+
+// Navigation utilities
+export function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  const result = {};
+  for (const [key, value] of params) {
+    result[key] = value;
+  }
+  return result;
+}
+
+export function buildUrl(base, params = {}) {
+  const url = new URL(base, window.location.origin);
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      url.searchParams.append(key, value);
+    }
+  });
+  return url.toString();
+}
+
+// Path utilities
+export function getBasePath() {
+  return window.location.pathname.split("/").slice(0, -1).join("/");
+}
+
+export function joinPaths(...paths) {
+  return paths
+    .map((path) => path.replace(/^\/+|\/+$/g, ""))
+    .filter(Boolean)
+    .join("/");
+}
+
+// Route guards
+export function requireAuth(redirectPath = "/auth/login") {
+  if (!localStorage.getItem("user")) {
+    redirectTo(redirectPath);
+    return false;
+  }
+  return true;
+}
+
+export function preventAuthenticatedAccess(redirectPath = "/dashboard") {
+  if (localStorage.getItem("user")) {
+    redirectTo(redirectPath);
+    return false;
+  }
+  return true;
+}
