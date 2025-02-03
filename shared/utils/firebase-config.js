@@ -1,5 +1,10 @@
+// Import Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 // Firebase configuration
-window.firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyDXqHXJhzVxX_YfaXKOGPxPAuGGXxCQwYo",
   authDomain: "neosentrix-learning.firebaseapp.com",
   projectId: "neosentrix-learning",
@@ -9,13 +14,15 @@ window.firebaseConfig = {
   measurementId: "G-ABCDEF1234",
 };
 
-// Initialize Firebase if not already initialized
-if (!firebase.apps.length) {
-  firebase.initializeApp(window.firebaseConfig);
-}
+// Initialize Firebase
+console.log("[Firebase] Initializing Firebase app...");
+const app = initializeApp(firebaseConfig);
 
-// Export Firebase instances
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+// Initialize services
+console.log("[Firebase] Initializing Firebase services...");
+const auth = getAuth(app);
+const firestore = getFirestore(app);
+
+console.log("[Firebase] Firebase initialization complete");
 
 export { auth, firestore };
