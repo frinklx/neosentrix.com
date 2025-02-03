@@ -5,9 +5,13 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// Import utilities and styles
+import {
+  collection,
+  doc,
+  setDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { auth, firestore } from "../../shared/utils/firebase-config.js";
 import {
   showToast,
   showLoading,
@@ -16,7 +20,6 @@ import {
   validatePassword,
 } from "../../shared/utils/ui.js";
 import { redirectTo } from "../../shared/utils/routes.js";
-import { auth, firestore } from "../../shared/utils/firebase-config.js";
 
 console.log("[Auth] Initializing signup page...");
 
@@ -322,10 +325,9 @@ async function saveUserData(user, additionalData = {}) {
   };
 
   try {
-    await firestore
-      .collection("users")
-      .doc(user.uid)
-      .set(userData, { merge: true });
+    const usersRef = collection(firestore, "users");
+    const userDocRef = doc(usersRef, user.uid);
+    await setDoc(userDocRef, userData, { merge: true });
     console.log("[Database] User data saved successfully");
   } catch (error) {
     console.error("[Database] Error saving user data:", error);
