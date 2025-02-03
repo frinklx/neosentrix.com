@@ -26,3 +26,4 @@ const firestore = getFirestore(app);
 console.log("[Firebase] Firebase initialization complete");
 
 export { auth, firestore };
+export default firebaseConfig;

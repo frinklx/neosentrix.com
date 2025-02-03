@@ -2,6 +2,22 @@
 import { showToast, showLoading, hideLoading } from "../../shared/utils/ui.js";
 import { redirectTo } from "../../shared/utils/routes.js";
 
+// Import Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  EmailAuthProvider,
+  linkWithCredential,
+  updateProfile,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 let auth;
 let firestore;
 let currentUser = null;
@@ -12,18 +28,20 @@ document.addEventListener("DOMContentLoaded", () => {
   setupFormListeners();
 });
 
-function initializeFirebase() {
+async function initializeFirebase() {
   console.log("[Continue Signup] Initializing Firebase");
   try {
-    if (!firebase.apps.length) {
-      if (!window.firebaseConfig) {
-        throw new Error("Firebase configuration not found");
-      }
-      firebase.initializeApp(window.firebaseConfig);
-    }
-    auth = firebase.auth();
-    firestore = firebase.firestore();
-    auth.onAuthStateChanged(handleAuthStateChange);
+    const { default: firebaseConfig } = await import(
+      "../../shared/utils/firebase-config.js"
+    );
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    firestore = getFirestore(app);
+
+    // Set up auth state listener
+    onAuthStateChanged(auth, handleAuthStateChange);
     console.log("[Continue Signup] Firebase initialized successfully");
   } catch (error) {
     console.error("[Continue Signup] Error initializing Firebase:", error);
@@ -179,7 +197,7 @@ async function handleFormSubmit(event) {
 
     // Update display name if changed
     if (username !== currentUser.displayName) {
-      await currentUser.updateProfile({ displayName: username });
+      await updateProfile(currentUser, { displayName: username });
     }
 
     // Save additional user data
@@ -191,24 +209,23 @@ async function handleFormSubmit(event) {
       phone: phone || null,
       hasCompletedSignup: true,
       isOnboardingComplete: false,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     };
 
     console.log("[Continue Signup] Saving user data:", userData);
-    await firestore
-      .collection("users")
-      .doc(currentUser.uid)
-      .set(userData, { merge: true });
+    await setDoc(doc(firestore, "users", currentUser.uid), userData, {
+      merge: true,
+    });
 
     // Link password to account if not already linked
     if (!currentUser.providerData.some((p) => p.providerId === "password")) {
       console.log("[Continue Signup] Linking password to account");
-      const credential = firebase.auth.EmailAuthProvider.credential(
+      const credential = EmailAuthProvider.credential(
         currentUser.email,
         password
       );
-      await currentUser.linkWithCredential(credential);
+      await linkWithCredential(currentUser, credential);
     }
 
     console.log("[Continue Signup] Setup completed successfully");

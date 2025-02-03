@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up - NeoSentrix</title>
+    <title>Sign Up - Neolearn</title>
 
     <!-- Fonts and Icons -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -17,15 +17,17 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="signup.css" />
+    <link
+      rel="shortcut icon"
+      href="../../assets/images/logo.svg"
+      type="image/x-icon"
+    />
 
     <style>
       /* Critical styles to prevent FOUC */
       body {
-        opacity: 0;
-        background-color: #0a0a0a;
-      }
-      .loaded {
         opacity: 1;
+        background-color: #0a0a0a;
         transition: opacity 0.3s ease;
       }
     </style>
@@ -39,204 +41,168 @@
     </div>
 
     <!-- Auth Container -->
-    <div class="auth-container">
-      <div class="auth-content">
-        <div class="auth-form-container">
-          <div class="auth-card">
-            <div class="auth-header">
-              <a href="/" class="logo">
-                <i class="fas fa-brain"></i>
-                <span>NeoSentrix</span>
-              </a>
-              <h1>Create Account</h1>
-              <p>Join our learning community today</p>
-            </div>
-
-            <div class="oauth-buttons">
-              <button class="oauth-btn google-btn">
-                <i class="fab fa-google"></i>
-                Continue with Google
-              </button>
-              <button class="oauth-btn github-btn">
-                <i class="fab fa-github"></i>
-                Continue with GitHub
-              </button>
-            </div>
-
-            <div class="divider">
-              <span>or continue with email</span>
-            </div>
-
-            <form id="signupForm" class="auth-form">
-              <div class="form-row">
-                <div class="form-group">
-                  <div class="input-icon">
-                    <i class="fas fa-user"></i>
-                    <input
-                      type="text"
-                      id="firstName"
-                      placeholder="First name"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="input-icon">
-                    <i class="fas fa-user"></i>
-                    <input
-                      type="text"
-                      id="lastName"
-                      placeholder="Last name"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="input-icon">
-                  <i class="fas fa-envelope"></i>
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="Email address"
-                    required
-                  />
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="input-icon">
-                  <i class="fas fa-phone"></i>
-                  <input
-                    type="tel"
-                    id="phone"
-                    placeholder="Singapore phone number (optional)"
-                    pattern="[8-9][0-9]{7}"
-                    maxlength="8"
-                    title="Please enter a valid Singapore phone number starting with 8 or 9"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="input-icon">
-                  <i class="fas fa-lock"></i>
-                  <input
-                    type="password"
-                    id="password"
-                    placeholder="Create password"
-                    required
-                  />
-                  <button type="button" class="toggle-password">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                </div>
-                <div class="password-strength">
-                  <div class="strength-meter"></div>
-                  <div class="strength-text"></div>
-                  <div class="password-requirements">
-                    <div class="requirement" data-requirement="length">
-                      <i class="fas fa-circle"></i>
-                      At least 8 characters
-                    </div>
-                    <div class="requirement" data-requirement="uppercase">
-                      <i class="fas fa-circle"></i>
-                      One uppercase letter
-                    </div>
-                    <div class="requirement" data-requirement="lowercase">
-                      <i class="fas fa-circle"></i>
-                      One lowercase letter
-                    </div>
-                    <div class="requirement" data-requirement="numbers">
-                      <i class="fas fa-circle"></i>
-                      One number
-                    </div>
-                    <div class="requirement" data-requirement="special">
-                      <i class="fas fa-circle"></i>
-                      One special character
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="terms-checkbox">
-                  <input type="checkbox" id="agreeTerms" required />
-                  <span class="checkmark"></span>
-                  <span class="terms-text"
-                    >I agree to the <a href="/tos">Terms of Service</a> and
-                    <a href="/privacy">Privacy Policy</a></span
-                  >
-                </label>
-              </div>
-
-              <button type="submit" class="primary-btn">
-                <span>Create Account</span>
-                <i class="fas fa-arrow-right"></i>
-              </button>
-            </form>
-
-            <p class="auth-prompt">
-              Already have an account? <a href="/auth/login">Sign In</a>
-            </p>
-          </div>
+    <div class="signup-container">
+      <div class="signup-card">
+        <div class="card-header">
+          <a href="/" class="logo">
+            <img src="../../assets/images/logo.svg" alt="Neolearn Logo" />
+            <h1>Neolearn</h1>
+          </a>
+          <p>Create your account and start learning</p>
         </div>
 
-        <div class="auth-features">
-          <div class="features-content">
-            <h2>Why Choose NeoSentrix?</h2>
-            <div class="feature-list">
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-graduation-cap"></i>
-                </div>
-                <div class="feature-text">
-                  <h3>Personalized Learning</h3>
-                  <p>Adaptive learning paths tailored to your goals and pace</p>
-                </div>
+        <form class="signup-form" id="signupForm">
+          <div class="form-row">
+            <div class="form-group">
+              <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input
+                  type="text"
+                  id="firstName"
+                  placeholder="First name"
+                  required
+                />
               </div>
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-users"></i>
-                </div>
-                <div class="feature-text">
-                  <h3>Community Support</h3>
-                  <p>Connect with peers and mentors in your learning journey</p>
-                </div>
+              <div class="input-highlight"></div>
+            </div>
+
+            <div class="form-group">
+              <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input
+                  type="text"
+                  id="lastName"
+                  placeholder="Last name"
+                  required
+                />
               </div>
-              <div class="feature-item">
-                <div class="feature-icon">
-                  <i class="fas fa-chart-line"></i>
+              <div class="input-highlight"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group">
+              <i class="fas fa-envelope"></i>
+              <input
+                type="email"
+                id="email"
+                placeholder="Email address"
+                required
+              />
+            </div>
+            <div class="input-highlight"></div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group">
+              <i class="fas fa-phone"></i>
+              <input
+                type="tel"
+                id="phone"
+                placeholder="Phone number (optional)"
+                pattern="[8-9][0-9]{7}"
+                maxlength="8"
+                title="Please enter a valid Singapore phone number starting with 8 or 9"
+              />
+            </div>
+            <div class="input-highlight"></div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group">
+              <i class="fas fa-lock"></i>
+              <input
+                type="password"
+                id="password"
+                placeholder="Create password"
+                required
+              />
+              <button type="button" class="toggle-password">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <div class="input-highlight"></div>
+            <div class="password-strength">
+              <div class="strength-meter"></div>
+              <div class="strength-text"></div>
+              <div class="password-requirements">
+                <div class="requirement" data-requirement="length">
+                  <i class="fas fa-circle"></i>
+                  At least 8 characters
                 </div>
-                <div class="feature-text">
-                  <h3>Track Progress</h3>
-                  <p>
-                    Monitor your growth with detailed analytics and insights
-                  </p>
+                <div class="requirement" data-requirement="uppercase">
+                  <i class="fas fa-circle"></i>
+                  One uppercase letter
+                </div>
+                <div class="requirement" data-requirement="lowercase">
+                  <i class="fas fa-circle"></i>
+                  One lowercase letter
+                </div>
+                <div class="requirement" data-requirement="numbers">
+                  <i class="fas fa-circle"></i>
+                  One number
+                </div>
+                <div class="requirement" data-requirement="special">
+                  <i class="fas fa-circle"></i>
+                  One special character
                 </div>
               </div>
             </div>
           </div>
+
+          <div class="form-group">
+            <label class="terms-checkbox">
+              <input
+                type="checkbox"
+                id="agreeTerms"
+                name="agreeTerms"
+                required
+              />
+              <span class="checkmark"></span>
+              <span class="terms-text"
+                >I agree to the
+                <a href="/terms" target="_blank">Terms of Service</a> and
+                <a href="/privacy" target="_blank">Privacy Policy</a></span
+              >
+            </label>
+          </div>
+
+          <button type="submit" class="signup-btn">
+            <span>Create Account</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+
+          <div class="social-signup">
+            <p>Or sign up with</p>
+            <div class="social-buttons">
+              <button type="button" class="social-btn google">
+                <i class="fab fa-google"></i>
+                <span>Google</span>
+              </button>
+              <button type="button" class="social-btn github">
+                <i class="fab fa-github"></i>
+                <span>GitHub</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div class="card-footer">
+          <p>Already have an account? <a href="/auth/login">Login</a></p>
         </div>
       </div>
+
+      <!-- Decorative Elements -->
+      <div class="decoration-sphere sphere-1"></div>
+      <div class="decoration-sphere sphere-2"></div>
+      <div class="decoration-sphere sphere-3"></div>
     </div>
 
     <!-- Firebase SDK -->
-    <script
-      type="module"
-      src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"
-    ></script>
-    <script
-      type="module"
-      src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"
-    ></script>
-    <script
-      type="module"
-      src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
-    ></script>
-
-    <!-- Main Script -->
-    <script type="module" src="index.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="signup.js"></script>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {

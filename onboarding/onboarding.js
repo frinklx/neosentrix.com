@@ -2,14 +2,30 @@
 import { showLoading, hideLoading, showToast } from "../shared/utils/ui.js";
 import { redirectTo } from "../shared/utils/routes.js";
 
+// Import Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  collection,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 let auth;
 let firestore;
 let currentUser = null;
 let currentStep = 1;
 const totalSteps = 4;
 
-// Initialize Firebase when the module loads
-async function initializeApp() {
+// Initialize the app when the DOM is loaded
+async function initializeOnboarding() {
   console.log("[Onboarding] DOM Content Loaded - Initializing");
   try {
     await initializeFirebase();
@@ -25,28 +41,30 @@ async function initializeApp() {
 async function initializeFirebase() {
   console.log("[Onboarding] Initializing Firebase");
   try {
-    // Check if Firebase is already initialized
-    if (!firebase.apps.length) {
-      if (!window.firebaseConfig) {
-        throw new Error("Firebase configuration not found");
-      }
-      firebase.initializeApp(window.firebaseConfig);
-    }
+    const { default: firebaseConfig } = await import(
+      "../shared/utils/firebase-config.js"
+    );
 
-    auth = firebase.auth();
-    firestore = firebase.firestore();
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    firestore = getFirestore(app);
 
     // Set up auth state listener with Promise
     return new Promise((resolve, reject) => {
-      const unsubscribe = auth.onAuthStateChanged(async (user) => {
-        try {
-          await handleAuthStateChange(user);
-          unsubscribe(); // Cleanup listener after initial auth state is handled
-          resolve();
-        } catch (error) {
-          reject(error);
-        }
-      }, reject);
+      const unsubscribe = onAuthStateChanged(
+        auth,
+        async (user) => {
+          try {
+            await handleAuthStateChange(user);
+            unsubscribe(); // Cleanup listener after initial auth state is handled
+            resolve();
+          } catch (error) {
+            reject(error);
+          }
+        },
+        reject
+      );
     });
   } catch (error) {
     console.error("[Onboarding] Error initializing Firebase:", error);
@@ -72,12 +90,10 @@ async function handleAuthStateChange(user) {
 
 async function checkOnboardingStatus() {
   try {
-    const userDoc = await firestore
-      .collection("users")
-      .doc(currentUser.uid)
-      .get();
+    const userDocRef = doc(firestore, "users", currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
 
-    if (!userDoc.exists) {
+    if (!userDoc.exists()) {
       console.log(
         "[Onboarding] User document not found - redirecting to signup"
       );
@@ -234,7 +250,7 @@ async function handleSubmit(event) {
 // Save onboarding data to Firestore
 async function saveOnboardingData(userId, onboardingData) {
   try {
-    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+    const timestamp = serverTimestamp();
 
     // Validate required fields
     const requiredFields = [
@@ -267,31 +283,29 @@ async function saveOnboardingData(userId, onboardingData) {
       weeklyGoals: generateWeeklyGoals(onboardingData),
     };
 
-    // Save comprehensive onboarding data
-    await firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .update({
-        onboarding: {
-          ...onboardingData,
-          learningProfile,
-          completedAt: timestamp,
-          lastUpdated: timestamp,
-        },
-        isOnboardingComplete: true,
-        updatedAt: timestamp,
-      });
+    // Save comprehensive onboarding data to users collection
+    await updateDoc(doc(firestore, "users", userId), {
+      onboardingData: {
+        ...onboardingData,
+        learningProfile,
+        completedAt: timestamp,
+        lastUpdated: timestamp,
+      },
+      isOnboardingComplete: true,
+    });
 
     // Create initial progress tracking document
-    await firebase.firestore().collection("userProgress").doc(userId).set({
-      currentLevel: onboardingData.experienceLevel,
-      completedTopics: [],
-      achievements: [],
-      weeklyProgress: [],
-      lastActive: timestamp,
-      createdAt: timestamp,
-    });
+    await setDoc(
+      doc(firestore, "userProgress", userId, "progress", "current"),
+      {
+        currentLevel: onboardingData.experienceLevel,
+        completedTopics: [],
+        achievements: [],
+        weeklyProgress: [],
+        lastActive: timestamp,
+        createdAt: timestamp,
+      }
+    );
 
     // Set up personalized learning path
     await createLearningPath(userId, learningProfile);
@@ -414,7 +428,7 @@ function generateWeeklyGoals(onboardingData) {
 // Create personalized learning path
 async function createLearningPath(userId, learningProfile) {
   try {
-    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+    const timestamp = serverTimestamp();
 
     // Generate learning modules based on profile
     const modules = learningProfile.recommendedTopics.map((topic, index) => ({
@@ -427,7 +441,7 @@ async function createLearningPath(userId, learningProfile) {
     }));
 
     // Create learning path document
-    await firebase.firestore().collection("learningPaths").doc(userId).set({
+    await setDoc(doc(firestore, "learningPaths", userId), {
       userId,
       modules,
       currentModule: modules[0].id,
@@ -444,7 +458,7 @@ async function createLearningPath(userId, learningProfile) {
 }
 
 // Initialize the app when the DOM is loaded
-document.addEventListener("DOMContentLoaded", initializeApp);
+document.addEventListener("DOMContentLoaded", initializeOnboarding);
 
 // Export functions that might be needed by other modules
 export { navigateStep, validateCurrentStep, handleSubmit, saveOnboardingData };

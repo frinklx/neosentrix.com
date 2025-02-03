@@ -142,6 +142,7 @@ async function handleGoogleSignup() {
       "success"
     );
 
+    // Redirect based on whether it's a new user
     const redirectPath = isNewUser
       ? "/auth/signup/continue.html"
       : "/dashboard";
@@ -250,8 +251,8 @@ async function handleSignup(event) {
 
     hideLoading();
     showToast("Account created successfully!", "success");
-    console.log("[Auth] Redirecting to continue page...");
-    redirectTo("/auth/signup/continue.html");
+    console.log("[Auth] Redirecting to onboarding page...");
+    redirectTo("/onboarding");
   } catch (error) {
     console.error("[Auth] Email signup error:", error);
     hideLoading();

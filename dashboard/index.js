@@ -1,6 +1,20 @@
 import { showToast, showLoading, hideLoading } from "../shared/utils/ui.js";
 import { redirectTo } from "../shared/utils/routes.js";
 
+// Import Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 let auth;
 let firestore;
 let currentUser = null;
@@ -14,23 +28,22 @@ document.addEventListener("DOMContentLoaded", () => {
   setupEventListeners();
 });
 
-function initializeFirebase() {
+async function initializeFirebase() {
   console.log("[Dashboard] Initializing Firebase");
-  if (!firebase.apps.length) {
-    try {
-      firebase.initializeApp(firebaseConfig);
-      console.log("[Dashboard] Firebase initialized successfully");
-    } catch (error) {
-      console.error("[Dashboard] Error initializing Firebase:", error);
-      showToast("error", "Failed to initialize security features");
-      return;
-    }
+  try {
+    const { default: firebaseConfig } = await import(
+      "../shared/utils/firebase-config.js"
+    );
+    const app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    firestore = getFirestore(app);
+
+    onAuthStateChanged(auth, handleAuthStateChange);
+    console.log("[Dashboard] Firebase initialized successfully");
+  } catch (error) {
+    console.error("[Dashboard] Error initializing Firebase:", error);
+    showToast("Failed to initialize security features", "error");
   }
-
-  auth = firebase.auth();
-  firestore = firebase.firestore();
-
-  auth.onAuthStateChanged(handleAuthStateChange);
 }
 
 async function handleAuthStateChange(user) {
@@ -52,9 +65,9 @@ async function handleAuthStateChange(user) {
     }
 
     console.log("[Dashboard] User found, checking Firestore data");
-    const userDoc = await firestore.collection("users").doc(user.uid).get();
+    const userDoc = await getDoc(doc(firestore, "users", user.uid));
 
-    if (!userDoc.exists) {
+    if (!userDoc.exists()) {
       console.log(
         "[Dashboard] User document not found, redirecting to continue signup"
       );
@@ -83,7 +96,7 @@ async function handleAuthStateChange(user) {
     currentUser = user;
   } catch (error) {
     console.error("[Dashboard] Error in auth state change:", error);
-    showToast("error", "Failed to verify your access");
+    showToast("Failed to verify your access", "error");
     window.location.href =
       "/redirect/index.html?to=/auth/login&message=Authentication error&submessage=Please try logging in again...";
   } finally {
@@ -96,7 +109,7 @@ function updateUIWithUserData(userData) {
   const userNameElement = document.getElementById("userName");
   const userEmailElement = document.getElementById("userEmail");
 
-  if (userNameElement) userNameElement.textContent = userData.name;
+  if (userNameElement) userNameElement.textContent = userData.displayName;
   if (userEmailElement) userEmailElement.textContent = userData.email;
 
   // Update avatar
@@ -144,12 +157,12 @@ async function handleLogout() {
   console.log("[Dashboard] Handling logout");
   try {
     showLoading("Logging out...", "Please wait");
-    await auth.signOut();
+    await signOut(auth);
     console.log("[Dashboard] Logout successful");
     redirectTo("/auth/login.html");
   } catch (error) {
     console.error("[Dashboard] Error during logout:", error);
-    showToast("error", "Failed to log out");
+    showToast("Failed to log out", "error");
     hideLoading();
   }
 }

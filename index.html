@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NeoSentrix - AI-Powered Learning Platform</title>
+    <title>Neolearn - AI-Powered Learning Platform</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -18,278 +18,250 @@
       href="assets/images/logo.svg"
       type="image/x-icon"
     />
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+    </style>
   </head>
   <body>
-    <!-- Background Effects -->
-    <div class="noise-overlay"></div>
-    <div class="gradient-sphere"></div>
-    <div class="gradient-sphere-2"></div>
-    <div class="grid-overlay"></div>
-    <div class="vignette"></div>
-
-    <!-- Navigation -->
-    <nav class="glass-morphism">
-      <div class="logo">
-        <i class="fas fa-brain gradient-text"></i>
-        NeoSentrix
-      </div>
-      <div class="nav-links">
-        <a href="#home" class="hover-underline">Home</a>
-        <a href="#features" class="hover-underline">Features</a>
-        <a href="#how-it-works" class="hover-underline">How It Works</a>
-        <button class="primary-btn glow-effect">
-          <a href="/auth/login/">Get Started</a>
-        </button>
-      </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero-section">
-      <div class="hero-content">
-        <div class="badge glow-effect">
-          <i class="fas fa-robot"></i> AI-Powered Learning
+    <div class="nav-container">
+      <nav>
+        <div class="logo">
+          <img src="assets/images/logo.svg" alt="Neolearn Logo" />
+          <h1>Neolearn</h1>
         </div>
-        <h1 class="gradient-heading">
-          Transform Your Learning Journey erfwith AI
-        </h1>
-        <p>
-          Harness the power of artificial intelligence to revolutionize how you
-          learn, track progress, and achieve your goals with personalized
-          learning paths.
-        </p>
-        <div class="cta-buttons">
-          <button class="primary-btn glow-effect">
-            Start Free Trial
-            <i class="fas fa-arrow-right"></i>
+        <div class="menu-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="nav-links">
+          <a href="#hero">Home</a>
+          <a href="#features">Tools & Features</a>
+          <a href="#status">Development Status</a>
+        </div>
+        <div class="auth-buttons">
+          <button
+            class="login-btn"
+            onclick="window.location.href='/auth/login'"
+          >
+            Login
           </button>
-          <button class="secondary-btn">
-            <i class="fas fa-play"></i>
-            Watch Demo
+          <button
+            class="signup-btn"
+            onclick="window.location.href='/auth/signup'"
+          >
+            Sign Up
           </button>
         </div>
-      </div>
-      <div class="hero-image">
-        <img
-          src="assets/images/dashboard.png"
-          alt="NeoSentrix Dashboard"
-          class="floating"
-        />
-        <div class="floating-elements">
-          <div class="floating-card glass-card">
-            <i class="fas fa-chart-line"></i>
-            <span>Learning Progress +28%</span>
-          </div>
-          <div class="floating-card glass-card">
-            <i class="fas fa-trophy"></i>
-            <span>Achievement Unlocked!</span>
-          </div>
-        </div>
-      </div>
-    </section>
+      </nav>
+    </div>
 
-    <!-- Features Section -->
-    <section id="features" class="features-section">
-      <div class="section-header">
-        <span class="section-label">Features</span>
-        <h2>AI Tools That Power Your Learning</h2>
+    <div class="hero-container" id="hero">
+      <div class="hero-content-text">
+        <h1>Supercharge your learning with AI powered tools.</h1>
         <p>
-          Discover how our AI-powered features can enhance your learning
-          experience and accelerate your progress
+          Tools that you never imagined could be free. Join now and be part of
+          our early access <strong>beta program</strong> before it's too late!
+          (AI tools <strong>currently in development</strong>, Release before
+          March 2025)
         </p>
-      </div>
-      <div class="feature-grid">
-        <div class="glass-card feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-brain"></i>
-          </div>
-          <h3>Smart Learning Paths</h3>
-          <p>
-            AI-generated personalized learning paths based on your goals and
-            progress
-          </p>
-          <div class="card-stats">
-            <span>+45% Learning Efficiency</span>
-          </div>
-          <a href="#" class="feature-link"
-            >Learn More <i class="fas fa-arrow-right"></i
-          ></a>
-        </div>
-        <div class="glass-card feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <h3>Progress Analytics</h3>
-          <p>Deep insights into your learning patterns and achievements</p>
-          <div class="card-stats">
-            <span>Real-time Tracking</span>
-          </div>
-          <a href="#" class="feature-link"
-            >Learn More <i class="fas fa-arrow-right"></i
-          ></a>
-        </div>
-        <div class="glass-card feature-card">
-          <div class="feature-icon">
-            <i class="fas fa-graduation-cap"></i>
-          </div>
-          <h3>Adaptive Testing</h3>
-          <p>Dynamic assessments that adjust to your knowledge level</p>
-          <div class="card-stats">
-            <span>98% Accuracy Rate</span>
-          </div>
-          <a href="#" class="feature-link"
-            >Learn More <i class="fas fa-arrow-right"></i
-          ></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section id="how-it-works" class="how-it-works-section">
-      <div class="section-header">
-        <span class="section-label">Process</span>
-        <h2>How NeoSentrix Works</h2>
-        <p>Get started with our simple three-step process</p>
-      </div>
-      <div class="steps-container">
-        <div class="step glass-card">
-          <div class="step-number">01</div>
-          <h3>Create Your Profile</h3>
-          <p>Set your learning goals and preferences</p>
-          <img
-            src="https://placehold.co/200x200/1a1a1a/00f5d4.png?text=Step+1"
-            alt="Create Profile"
-            class="step-image"
-          />
-        </div>
-        <div class="step glass-card">
-          <div class="step-number">02</div>
-          <h3>AI Analysis</h3>
-          <p>Our AI creates your personalized learning path</p>
-          <img
-            src="https://placehold.co/200x200/1a1a1a/00f5d4.png?text=Step+2"
-            alt="AI Analysis"
-            class="step-image"
-          />
-        </div>
-        <div class="step glass-card">
-          <div class="step-number">03</div>
-          <h3>Start Learning</h3>
-          <p>Begin your journey with smart recommendations</p>
-          <img
-            src="https://placehold.co/200x200/1a1a1a/00f5d4.png?text=Step+3"
-            alt="Start Learning"
-            class="step-image"
-          />
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section glass-morphism">
-      <div class="cta-content">
-        <h2>Ready to Transform Your Learning?</h2>
-        <p>Start your learning journey with NeoSentrix today</p>
-        <div class="cta-buttons">
-          <button class="primary-btn glow-effect">
+        <div class="hero-buttons">
+          <button
+            class="get-started-btn"
+            onclick="window.location.href='/auth/login'"
+          >
             Get Started
-            <i class="fas fa-arrow-right"></i>
+          </button>
+          <button
+            class="learn-more-btn"
+            onclick="window.location.href='#features'"
+          >
+            Learn More
           </button>
         </div>
       </div>
-      <div class="cta-features">
-        <div class="cta-feature">
-          <i class="fas fa-check-circle"></i>
-          <span>Completely Free</span>
-        </div>
-        <div class="cta-feature">
-          <i class="fas fa-check-circle"></i>
-          <span>No Registration Required</span>
-        </div>
-        <div class="cta-feature">
-          <i class="fas fa-check-circle"></i>
-          <span>Start Learning Instantly</span>
-        </div>
+      <br />
+      <br />
+      <div class="hero-content-image">
+        <img src="assets/images/dashboard.png" alt="Hero Image" />
       </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer class="glass-morphism">
-      <div class="footer-content">
-        <div class="footer-section brand">
-          <div class="logo">
-            <i class="fas fa-brain gradient-text"></i>
-            NeoSentrix
-          </div>
-          <p>Transforming learning through AI innovation</p>
-          <div class="social-links">
-            <a href="#" class="social-link" style="text-decoration: none">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="social-link" style="text-decoration: none">
-              <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="#" class="social-link" style="text-decoration: none">
-              <i class="fab fa-github"></i>
-            </a>
-          </div>
+    <div class="features-section" id="features">
+      <h2>AI Tools in Development</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-book"></i>
+          <h3>Flashcards</h3>
+          <p>
+            Upload your notes and wait for the AI to create flashcards for you!
+          </p>
+          <span class="status in-progress">10% Completed</span>
         </div>
-        <div class="footer-section">
-          <h4>Product</h4>
-          <ul>
-            <li><a href="/features/">Features</a></li>
-            <li><a href="/usecases/">Use Cases</a></li>
-            <li><a href="/updates/">Updates</a></li>
-          </ul>
+        <div class="feature-card">
+          <i class="fas fa-chart-line"></i>
+          <h3>Performance Analytics</h3>
+          <p>Advanced analytics and progress tracking with AI insights</p>
+          <span class="status planned">Planned - Q2 2024</span>
         </div>
-        <div class="footer-section">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="/about/">About</a></li>
-          </ul>
+        <div class="feature-card">
+          <i class="fas fa-robot"></i>
+          <h3>Smart Practice Tests</h3>
+          <p>
+            Adaptive testing system that evolves with your knowledge. Practice
+            tests that are tailored to your needs.
+          </p>
+          <span class="status planned">Planned - Q2 2025</span>
         </div>
-        <div class="footer-section">
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="/privacypolicy/">Privacy</a></li>
-            <li><a href="/tos/">Terms</a></li>
-            <li><a href="#">Status</a></li>
-          </ul>
+        <div class="feature-card">
+          <i class="fas fa-comments"></i>
+          <h3>Fine Tuned ChatGPT</h3>
+          <p>
+            Trained on our database, the chatgpt is ready to help you with your
+            questions regarding learning!
+          </p>
+          <span class="status planned">Planned - Q4 2025</span>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-brain"></i>
+          <h3>Plagerism Detector</h3>
+          <p>
+            Detect plagerism and AI generated content with ease. View reports,
+            citations and more!
+          </p>
+          <span class="status planned">Planned - Q2 2025</span>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-brain"></i>
+          <h3>Session Planner</h3>
+          <p>
+            Plan your study sessions based on your goals and preferences. Create
+            custom study plans and track your progress.
+          </p>
+          <span class="status planned">Planned - Q3 2025</span>
         </div>
       </div>
+    </div>
+
+    <div class="status-section" id="status">
+      <h2>Development Status</h2>
+      <div class="status-timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot completed"></div>
+          <div class="timeline-content">
+            <h3>Phase 1: Foundation</h3>
+            <p>Core platform development and basic features</p>
+            <span class="status completed">Completed</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot active"></div>
+          <div class="timeline-content">
+            <h3>Phase 2: AI Integration</h3>
+            <p>Implementation of core AI features</p>
+            <span class="status in-progress">In Progress</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h3>Phase 3: Advanced Features</h3>
+            <p>Enhanced AI capabilities and community features</p>
+            <span class="status planned">Planned</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-top">
+        <div class="footer-logo">
+          <img src="assets/images/logo.svg" alt="Neolearn Logo" />
+          <h3>Neolearn</h3>
+          <p>
+            Revolutionizing learning with AI-powered tools and personalized
+            education.
+          </p>
+          <div class="social-links">
+            <a href="#" class="social-link">
+              <i class="fab fa-twitter"></i>
+              <span class="tooltip">Twitter</span>
+            </a>
+            <a href="#" class="social-link">
+              <i class="fab fa-linkedin"></i>
+              <span class="tooltip">LinkedIn</span>
+            </a>
+            <a href="#" class="social-link">
+              <i class="fab fa-github"></i>
+              <span class="tooltip">GitHub</span>
+            </a>
+            <a href="#" class="social-link">
+              <i class="fab fa-discord"></i>
+              <span class="tooltip">Discord</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>Platform</h4>
+            <ul>
+              <li><a href="#">Features</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="#">Roadmap</a></li>
+              <li><a href="#">Beta Access</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">API Reference</a></li>
+              <li><a href="#">System Status</a></li>
+              <li><a href="#">Blog</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Contact</a></li>
+              <li><a href="#">Legal</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section newsletter">
+            <h4>Stay Updated</h4>
+            <p>Subscribe to our newsletter for updates and early access.</p>
+            <div class="newsletter-form">
+              <input type="email" placeholder="Enter your email" />
+              <button class="subscribe-btn">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="footer-bottom">
-        <p>&copy; 2024 NeoSentrix. All rights reserved.</p>
-        <div class="footer-badges">
-          <span class="badge">
-            <i class="fas fa-shield-alt"></i> SOC 2 Compliant
-          </span>
-          <span class="badge"> <i class="fas fa-lock"></i> GDPR Ready </span>
+        <div class="footer-bottom-content">
+          <p>&copy; 2024 Neolearn. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <span class="separator">•</span>
+            <a href="#">Terms of Service</a>
+            <span class="separator">•</span>
+            <a href="#">Cookie Policy</a>
+          </div>
         </div>
       </div>
     </footer>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu">
-      <div class="mobile-menu-header">
-        <div class="logo">
-          <i class="fas fa-brain gradient-text"></i>
-          NeoSentrix
-        </div>
-        <button class="close-menu-btn">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <nav class="mobile-nav">
-        <a href="#home">Home</a>
-        <a href="#features">Features</a>
-        <a href="#how-it-works">How It Works</a>
-      </nav>
-      <div class="mobile-cta">
-        <button class="login-btn">Log In</button>
-        <button class="primary-btn glow-effect">Get Started</button>
-      </div>
-    </div>
-
-    <!-- Scripts -->
     <script src="script.js"></script>
   </body>
 </html>

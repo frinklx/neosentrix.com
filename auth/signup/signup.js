@@ -1,18 +1,35 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyAacdQXlfBtXB9XxyFrLopsffDH2ZeMzI4",
+  authDomain: "neolearn-b3cb1.firebaseapp.com",
+  projectId: "neolearn-b3cb1",
+  storageBucket: "neolearn-b3cb1.firebasestorage.app",
+  messagingSenderId: "646341343406",
+  appId: "1:646341343406:web:fce6d834b2f81a8d30d53f",
+  measurementId: "G-EZYFSV1NT5",
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
 // Get DOM elements
 const signupForm = document.getElementById("signupForm");
 const firstNameInput = document.getElementById("firstName");
 const lastNameInput = document.getElementById("lastName");
 const emailInput = document.getElementById("email");
+const phoneInput = document.getElementById("phone");
 const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirmPassword");
 const agreeTermsCheckbox = document.getElementById("agreeTerms");
 const togglePasswordBtn = document.querySelector(".toggle-password");
-const googleSignUpBtn = document.getElementById("googleSignUp");
-const githubSignUpBtn = document.getElementById("githubSignUp");
+const googleSignUpBtn = document.querySelector(".social-btn.google");
+const githubSignUpBtn = document.querySelector(".social-btn.github");
 const strengthMeter = document.querySelector(".strength-meter");
 const strengthText = document.querySelector(".strength-text");
 const authContainer = document.querySelector(".auth-container");
 const onboardingContainer = document.querySelector(".onboarding-container");
+const requirements = document.querySelectorAll(".requirement");
 
 let googleUser = null;
 
@@ -27,6 +44,14 @@ const ROUTES = {
 
 // Toast notification function
 function showToast(message, type = "success") {
+  // Create toast container if it doesn't exist
+  let toastContainer = document.querySelector(".toast-container");
+  if (!toastContainer) {
+    toastContainer = document.createElement("div");
+    toastContainer.className = "toast-container";
+    document.body.appendChild(toastContainer);
+  }
+
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
   toast.innerHTML = `
@@ -35,7 +60,7 @@ function showToast(message, type = "success") {
     }"></i>
     ${message}
   `;
-  document.querySelector(".toast-container").appendChild(toast);
+  toastContainer.appendChild(toast);
 
   // Remove toast after 3 seconds
   setTimeout(() => {
@@ -88,15 +113,49 @@ function checkPasswordStrength(password) {
 togglePasswordBtn.addEventListener("click", () => {
   const type = passwordInput.type === "password" ? "text" : "password";
   passwordInput.type = type;
-  confirmPasswordInput.type = type;
-  togglePasswordBtn.innerHTML = `<i class="fas fa-${
-    type === "password" ? "eye" : "eye-slash"
-  }"></i>`;
+  const icon = togglePasswordBtn.querySelector("i");
+  icon.classList.toggle("fa-eye");
+  icon.classList.toggle("fa-eye-slash");
 });
 
 // Password strength check on input
 passwordInput.addEventListener("input", () => {
-  checkPasswordStrength(passwordInput.value);
+  const password = passwordInput.value;
+  let strength = 0;
+
+  // Check requirements
+  const checks = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    numbers: /[0-9]/.test(password),
+    special: /[^A-Za-z0-9]/.test(password),
+  };
+
+  requirements.forEach((req) => {
+    const type = req.dataset.requirement;
+    if (checks[type]) {
+      req.classList.add("met");
+      strength++;
+    } else {
+      req.classList.remove("met");
+    }
+  });
+
+  // Update strength meter
+  const strengthPercentage = (strength / 5) * 100;
+  strengthMeter.style.width = `${strengthPercentage}%`;
+
+  if (strength < 2) {
+    strengthMeter.className = "strength-meter weak";
+    strengthText.textContent = "Weak";
+  } else if (strength < 4) {
+    strengthMeter.className = "strength-meter medium";
+    strengthText.textContent = "Medium";
+  } else {
+    strengthMeter.className = "strength-meter strong";
+    strengthText.textContent = "Strong";
+  }
 });
 
 // Enhanced form validation
@@ -105,26 +164,17 @@ function validateForm() {
   const errors = [];
 
   // Password validation
-  if (!googleUser) {
-    if (passwordInput.value !== confirmPasswordInput.value) {
-      errors.push("Passwords do not match");
-      isValid = false;
-      passwordInput.style.borderColor = "#ff4444";
-      confirmPasswordInput.style.borderColor = "#ff4444";
-    }
-
-    if (!checkPasswordStrength(passwordInput.value)) {
-      errors.push("Please choose a stronger password");
-      isValid = false;
-      passwordInput.style.borderColor = "#ff4444";
-    }
+  if (!checkPasswordStrength(passwordInput.value)) {
+    errors.push("Please choose a stronger password");
+    isValid = false;
+    passwordInput.closest(".input-group").style.borderColor = "#ff4444";
   }
 
   // Terms agreement validation
   if (!agreeTermsCheckbox.checked) {
     errors.push("Please agree to the Terms of Service and Privacy Policy");
     isValid = false;
-    agreeTermsCheckbox.parentElement.style.color = "#ff4444";
+    agreeTermsCheckbox.closest(".terms-checkbox").classList.add("error");
   }
 
   // Show all validation errors
@@ -134,6 +184,22 @@ function validateForm() {
 
   return isValid;
 }
+
+// Add event listeners for validation cleanup
+document.addEventListener("DOMContentLoaded", () => {
+  // Reset validation styles when checkbox is clicked
+  agreeTermsCheckbox.addEventListener("change", () => {
+    const termsContainer = agreeTermsCheckbox.closest(".terms-checkbox");
+    if (agreeTermsCheckbox.checked) {
+      termsContainer.classList.remove("error");
+    }
+  });
+
+  // Reset validation styles when password is changed
+  passwordInput.addEventListener("input", () => {
+    passwordInput.closest(".input-group").style.borderColor = "";
+  });
+});
 
 // Enhanced password visibility toggle
 function setupPasswordToggle() {
@@ -234,8 +300,7 @@ document.addEventListener("DOMContentLoaded", initializeUI);
 // Save user data to Firestore
 async function saveUserData(userId, userData) {
   try {
-    await firebase
-      .firestore()
+    await db
       .collection("users")
       .doc(userId)
       .set({
@@ -286,8 +351,7 @@ async function saveOnboardingData(userId, onboardingData) {
     };
 
     // Save comprehensive onboarding data
-    await firebase
-      .firestore()
+    await db
       .collection("users")
       .doc(userId)
       .update({
@@ -302,7 +366,7 @@ async function saveOnboardingData(userId, onboardingData) {
       });
 
     // Create initial progress tracking document
-    await firebase.firestore().collection("userProgress").doc(userId).set({
+    await db.collection("userProgress").doc(userId).set({
       currentLevel: onboardingData.experienceLevel,
       completedTopics: [],
       achievements: [],
@@ -423,7 +487,7 @@ async function createLearningPath(userId, learningProfile) {
     }));
 
     // Create learning path document
-    await firebase.firestore().collection("learningPaths").doc(userId).set({
+    await db.collection("learningPaths").doc(userId).set({
       userId,
       modules,
       currentModule: modules[0].id,
@@ -484,9 +548,9 @@ async function handleOnboarding(userId) {
 
 // Show onboarding form
 function showOnboarding(userId) {
-  authContainer.style.display = "none";
-  onboardingContainer.style.display = "block";
-  handleOnboarding(userId);
+  // Instead of manipulating DOM elements that don't exist,
+  // redirect to the onboarding page
+  window.location.href = ROUTES.ONBOARDING + "?uid=" + userId;
 }
 
 // Show loading screen with custom message
@@ -567,11 +631,7 @@ function showLoadingError(error) {
 // Check if user exists in Firestore
 async function checkUserExists(userId) {
   try {
-    const userDoc = await firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .get();
+    const userDoc = await db.collection("users").doc(userId).get();
     return userDoc.exists;
   } catch (error) {
     console.error("Error checking user:", error);
@@ -611,7 +671,7 @@ googleSignUpBtn.addEventListener("click", async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     provider.addScope("profile");
     provider.addScope("email");
-    const result = await firebase.auth().signInWithPopup(provider);
+    const result = await auth.signInWithPopup(provider);
 
     const userExists = await checkUserExists(result.user.uid);
 
@@ -637,11 +697,7 @@ googleSignUpBtn.addEventListener("click", async () => {
         loadingSubmessage: "Taking you to complete your profile setup",
       });
     } else {
-      const userDoc = await firebase
-        .firestore()
-        .collection("users")
-        .doc(result.user.uid)
-        .get();
+      const userDoc = await db.collection("users").doc(result.user.uid).get();
 
       if (userDoc.data().hasCompletedProfile) {
         showToast("Welcome back!");
@@ -677,9 +733,10 @@ signupForm.addEventListener("submit", async (e) => {
       "Setting up your secure profile"
     );
 
-    let userCredential = await firebase
-      .auth()
-      .createUserWithEmailAndPassword(emailInput.value, passwordInput.value);
+    let userCredential = await auth.createUserWithEmailAndPassword(
+      emailInput.value,
+      passwordInput.value
+    );
 
     await showLoading(
       "Saving Your Information...",
@@ -720,7 +777,7 @@ signupForm.addEventListener("submit", async (e) => {
 githubSignUpBtn.addEventListener("click", async () => {
   try {
     const provider = new firebase.auth.GithubAuthProvider();
-    const result = await firebase.auth().signInWithPopup(provider);
+    const result = await auth.signInWithPopup(provider);
 
     showToast("Successfully signed up with GitHub!");
 
@@ -756,25 +813,81 @@ buttons.forEach((button) => {
 });
 
 // Check if user is already signed in
-firebase.auth().onAuthStateChanged((user) => {
+auth.onAuthStateChanged((user) => {
   if (user) {
     // Check if user has completed onboarding
-    firebase
-      .firestore()
-      .collection("users")
+    db.collection("users")
       .doc(user.uid)
       .get()
       .then((doc) => {
         if (doc.exists && doc.data().onboarding) {
           // User has completed onboarding, redirect to dashboard
-          window.location.href = "/dashboard";
+          window.location.href = ROUTES.DASHBOARD;
         } else {
-          // Show onboarding
-          showOnboarding(user.uid);
+          // Redirect to onboarding
+          window.location.href = ROUTES.ONBOARDING + "?uid=" + user.uid;
         }
       })
       .catch((error) => {
         console.error("Error checking onboarding status:", error);
+        showToast("Error checking user status. Please try again.", "error");
       });
+  }
+});
+
+// Form submission handler
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (!validateForm()) return;
+
+  try {
+    const button = e.target.querySelector(".signup-btn");
+    button.classList.add("loading");
+
+    const userCredential = await auth.createUserWithEmailAndPassword(
+      emailInput.value,
+      passwordInput.value
+    );
+
+    // Save additional user data
+    await db
+      .collection("users")
+      .doc(userCredential.user.uid)
+      .set({
+        firstName: firstNameInput.value,
+        lastName: lastNameInput.value,
+        email: emailInput.value,
+        phone: phoneInput.value || null,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+    showToast("Account created successfully!");
+
+    // Redirect to onboarding
+    window.location.href =
+      ROUTES.ONBOARDING + "?uid=" + userCredential.user.uid;
+  } catch (error) {
+    console.error("Error:", error);
+    showToast(error.message, "error");
+    button.classList.remove("loading");
+  }
+});
+
+// Terms checkbox handler
+const termsCheckbox = document.querySelector(".terms-checkbox");
+termsCheckbox.addEventListener("click", (e) => {
+  // Only toggle if the click wasn't on a link
+  if (!e.target.closest("a")) {
+    const checkbox = termsCheckbox.querySelector("input[type='checkbox']");
+    checkbox.checked = !checkbox.checked;
+
+    // Remove error state if checked
+    if (checkbox.checked) {
+      termsCheckbox.classList.remove("error");
+    }
+
+    // Prevent the label's default behavior to avoid double-toggle
+    e.preventDefault();
   }
 });
