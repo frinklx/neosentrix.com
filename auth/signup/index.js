@@ -22,12 +22,16 @@ console.log("[Auth] Initializing signup page...");
 
 // DOM Elements
 const form = document.getElementById("signupForm");
+const firstNameInput = document.getElementById("firstName");
+const lastNameInput = document.getElementById("lastName");
 const emailInput = document.getElementById("email");
+const phoneInput = document.getElementById("phone");
 const passwordInput = document.getElementById("password");
 const agreeTermsCheckbox = document.getElementById("agreeTerms");
 const googleButton = document.querySelector(".google-btn");
 const githubButton = document.querySelector(".github-btn");
 const togglePasswordButton = document.querySelector(".toggle-password");
+const passwordRequirements = document.querySelectorAll(".requirement");
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
@@ -46,7 +50,28 @@ function initializeUI() {
   if (passwordInput) {
     updatePasswordStrength();
   }
+
+  // Setup phone number formatting
+  if (phoneInput) {
+    phoneInput.addEventListener("input", formatPhoneNumber);
+  }
+
   console.log("[UI] UI initialization complete");
+}
+
+function formatPhoneNumber(e) {
+  let value = e.target.value.replace(/\D/g, "");
+  if (value.length > 0) {
+    if (value.length <= 3) {
+      value = value;
+    } else if (value.length <= 6) {
+      value = value.slice(0, 3) + "-" + value.slice(3);
+    } else {
+      value =
+        value.slice(0, 3) + "-" + value.slice(3, 6) + "-" + value.slice(6, 10);
+    }
+  }
+  e.target.value = value;
 }
 
 function setupFormListeners() {
@@ -89,10 +114,21 @@ async function handleGoogleSignup() {
     const isNewUser = result.additionalUserInfo.isNewUser;
     console.log("[Auth] Google auth result:", { isNewUser, email: user.email });
 
+    // Split display name into first and last name
+    let firstName = "",
+      lastName = "";
+    if (user.displayName) {
+      const nameParts = user.displayName.split(" ");
+      firstName = nameParts[0];
+      lastName = nameParts.slice(1).join(" ");
+    }
+
     await saveUserData(user, {
       provider: "google",
       isNewUser,
       email: user.email,
+      firstName,
+      lastName,
       displayName: user.displayName,
       photoURL: user.photoURL,
     });
@@ -134,10 +170,21 @@ async function handleGithubSignup() {
     const isNewUser = result.additionalUserInfo.isNewUser;
     console.log("[Auth] GitHub auth result:", { isNewUser, email: user.email });
 
+    // Split display name into first and last name
+    let firstName = "",
+      lastName = "";
+    if (user.displayName) {
+      const nameParts = user.displayName.split(" ");
+      firstName = nameParts[0];
+      lastName = nameParts.slice(1).join(" ");
+    }
+
     await saveUserData(user, {
       provider: "github",
       isNewUser,
       email: user.email,
+      firstName,
+      lastName,
       displayName: user.displayName,
       photoURL: user.photoURL,
     });
@@ -164,11 +211,14 @@ async function handleSignup(event) {
   event.preventDefault();
   console.log("[Auth] Starting email signup process...");
 
+  const firstName = firstNameInput.value.trim();
+  const lastName = lastNameInput.value.trim();
   const email = emailInput.value.trim();
+  const phone = phoneInput.value.trim();
   const password = passwordInput.value;
   const agreeTerms = agreeTermsCheckbox.checked;
 
-  if (!validateForm(email, password, agreeTerms)) return;
+  if (!validateForm(firstName, lastName, email, password, agreeTerms)) return;
 
   try {
     showLoading(
@@ -189,6 +239,10 @@ async function handleSignup(event) {
       provider: "password",
       isNewUser: true,
       email: user.email,
+      firstName,
+      lastName,
+      displayName: `${firstName} ${lastName}`,
+      phone: phone || null,
     });
 
     hideLoading();
@@ -202,8 +256,22 @@ async function handleSignup(event) {
   }
 }
 
-function validateForm(email, password, agreeTerms) {
+function validateForm(firstName, lastName, email, password, agreeTerms) {
   console.log("[Validation] Validating form data...");
+
+  if (!firstName || firstName.length < 2) {
+    console.log("[Validation] Invalid first name");
+    showToast("Please enter your first name (minimum 2 characters)", "error");
+    firstNameInput.focus();
+    return false;
+  }
+
+  if (!lastName || lastName.length < 2) {
+    console.log("[Validation] Invalid last name");
+    showToast("Please enter your last name (minimum 2 characters)", "error");
+    lastNameInput.focus();
+    return false;
+  }
 
   if (!email || !validateEmail(email)) {
     console.log("[Validation] Invalid email");
@@ -243,6 +311,9 @@ async function saveUserData(user, additionalData = {}) {
     displayName: user.displayName || null,
     photoURL: user.photoURL || null,
     provider: additionalData.provider,
+    firstName: additionalData.firstName || null,
+    lastName: additionalData.lastName || null,
+    phone: additionalData.phone || null,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     hasCompletedSignup: false,
@@ -287,6 +358,16 @@ function updatePasswordStrength() {
       : percentage <= 80
       ? "Strong"
       : "Very Strong";
+
+  // Update requirement indicators
+  passwordRequirements.forEach((req) => {
+    const requirement = req.dataset.requirement;
+    if (strength[requirement]) {
+      req.classList.add("valid");
+    } else {
+      req.classList.remove("valid");
+    }
+  });
 
   console.log("[UI] Password strength updated:", {
     strength: strengthText.textContent,

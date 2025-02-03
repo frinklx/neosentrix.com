@@ -22,6 +22,7 @@
       /* Critical styles to prevent FOUC */
       body {
         opacity: 0;
+        background-color: #0a0a0a;
       }
       .loaded {
         opacity: 1;
@@ -31,7 +32,11 @@
   </head>
   <body>
     <!-- Background Effects -->
-    <div class="bg-effects"></div>
+    <div class="bg-effects">
+      <div class="gradient-blur"></div>
+      <div class="noise-overlay"></div>
+      <div class="grid-overlay"></div>
+    </div>
 
     <!-- Auth Container -->
     <div class="auth-container">
@@ -59,10 +64,35 @@
             </div>
 
             <div class="divider">
-              <span>or</span>
+              <span>or continue with email</span>
             </div>
 
             <form id="signupForm" class="auth-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input
+                      type="text"
+                      id="firstName"
+                      placeholder="First name"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="input-icon">
+                    <i class="fas fa-user"></i>
+                    <input
+                      type="text"
+                      id="lastName"
+                      placeholder="Last name"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div class="form-group">
                 <div class="input-icon">
                   <i class="fas fa-envelope"></i>
@@ -71,6 +101,19 @@
                     id="email"
                     placeholder="Email address"
                     required
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-icon">
+                  <i class="fas fa-phone"></i>
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Singapore phone number (optional)"
+                    pattern="[8-9][0-9]{7}"
+                    maxlength="8"
+                    title="Please enter a valid Singapore phone number starting with 8 or 9"
                   />
                 </div>
               </div>
@@ -90,22 +133,46 @@
                 </div>
                 <div class="password-strength">
                   <div class="strength-meter"></div>
-                  <span class="strength-text"></span>
+                  <div class="strength-text"></div>
+                  <div class="password-requirements">
+                    <div class="requirement" data-requirement="length">
+                      <i class="fas fa-circle"></i>
+                      At least 8 characters
+                    </div>
+                    <div class="requirement" data-requirement="uppercase">
+                      <i class="fas fa-circle"></i>
+                      One uppercase letter
+                    </div>
+                    <div class="requirement" data-requirement="lowercase">
+                      <i class="fas fa-circle"></i>
+                      One lowercase letter
+                    </div>
+                    <div class="requirement" data-requirement="numbers">
+                      <i class="fas fa-circle"></i>
+                      One number
+                    </div>
+                    <div class="requirement" data-requirement="special">
+                      <i class="fas fa-circle"></i>
+                      One special character
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="terms-checkbox">
                   <input type="checkbox" id="agreeTerms" required />
-                  <span
+                  <span class="checkmark"></span>
+                  <span class="terms-text"
                     >I agree to the <a href="/tos">Terms of Service</a> and
                     <a href="/privacy">Privacy Policy</a></span
                   >
                 </label>
               </div>
 
-              <button type="submit" class="primary-btn glow-effect">
-                Create Account
+              <button type="submit" class="primary-btn">
+                <span>Create Account</span>
+                <i class="fas fa-arrow-right"></i>
               </button>
             </form>
 
@@ -120,21 +187,27 @@
             <h2>Why Choose NeoSentrix?</h2>
             <div class="feature-list">
               <div class="feature-item">
-                <i class="fas fa-graduation-cap"></i>
+                <div class="feature-icon">
+                  <i class="fas fa-graduation-cap"></i>
+                </div>
                 <div class="feature-text">
                   <h3>Personalized Learning</h3>
                   <p>Adaptive learning paths tailored to your goals and pace</p>
                 </div>
               </div>
               <div class="feature-item">
-                <i class="fas fa-users"></i>
+                <div class="feature-icon">
+                  <i class="fas fa-users"></i>
+                </div>
                 <div class="feature-text">
                   <h3>Community Support</h3>
                   <p>Connect with peers and mentors in your learning journey</p>
                 </div>
               </div>
               <div class="feature-item">
-                <i class="fas fa-chart-line"></i>
+                <div class="feature-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
                 <div class="feature-text">
                   <h3>Track Progress</h3>
                   <p>
@@ -166,7 +239,6 @@
     <script type="module" src="index.js"></script>
 
     <script>
-      // Add loaded class to body after DOM content is loaded
       document.addEventListener("DOMContentLoaded", () => {
         console.log("[UI] DOM content loaded, adding loaded class...");
         document.body.classList.add("loaded");

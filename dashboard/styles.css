@@ -137,7 +137,7 @@ body {
   font-size: 2rem;
   margin-bottom: 1rem;
   background: var(--gradient-blue);
-  -webkit-background-clip: text;
+  background-clip: text;
   background-clip: text;
   color: transparent;
 }

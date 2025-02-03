@@ -73,7 +73,7 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   background: var(--gradient-blue);
-  -webkit-background-clip: text;
+  background-clip: text;
   background-clip: text;
   color: transparent;
 }

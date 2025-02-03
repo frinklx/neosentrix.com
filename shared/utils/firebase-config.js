@@ -5,13 +5,13 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDXqHXJhzVxX_YfaXKOGPxPAuGGXxCQwYo",
-  authDomain: "neosentrix-learning.firebaseapp.com",
-  projectId: "neosentrix-learning",
-  storageBucket: "neosentrix-learning.appspot.com",
-  messagingSenderId: "1098765432",
-  appId: "1:1098765432:web:abcdef1234567890",
-  measurementId: "G-ABCDEF1234",
+  apiKey: "AIzaSyAacdQXlfBtXB9XxyFrLopsffDH2ZeMzI4",
+  authDomain: "neolearn-b3cb1.firebaseapp.com",
+  projectId: "neolearn-b3cb1",
+  storageBucket: "neolearn-b3cb1.firebasestorage.app",
+  messagingSenderId: "646341343406",
+  appId: "1:646341343406:web:fce6d834b2f81a8d30d53f",
+  measurementId: "G-EZYFSV1NT5",
 };
 
 // Initialize Firebase
