@@ -501,7 +501,51 @@ async function createLearningPath(userId, learningProfile) {
   }
 }
 
-// Handle onboarding form submission
+// Show welcome screen
+async function showWelcome() {
+  const welcomeScreen = document.querySelector(".welcome-screen");
+  const steps = welcomeScreen.querySelectorAll(".welcome-step");
+
+  welcomeScreen.classList.add("visible");
+
+  // Animate steps sequentially
+  for (let i = 0; i < steps.length - 1; i++) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    steps[i].classList.add("completed");
+  }
+
+  // Keep the last step active (spinning)
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  // After all animations, redirect to dashboard
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  window.location.href = ROUTES.DASHBOARD;
+}
+
+// Update the existing navigation function
+async function navigateTo(route, options = {}) {
+  try {
+    if (options.loading) {
+      if (options.welcome) {
+        await showWelcome();
+      } else {
+        await showLoading(options.loadingMessage, options.loadingSubmessage);
+      }
+    }
+
+    if (route.endsWith(".html") || route === "/" || route.startsWith("/")) {
+      window.location.href = route;
+    } else {
+      throw new Error("Invalid route");
+    }
+  } catch (error) {
+    hideLoading();
+    showToast(error.message, "error");
+    window.location.href = ROUTES.LOGIN;
+  }
+}
+
+// Update the onboarding completion handler
 async function handleOnboarding(userId) {
   const onboardingForm = document.getElementById("onboardingForm");
 
@@ -531,13 +575,8 @@ async function handleOnboarding(userId) {
 
       await saveOnboardingData(userId, onboardingData);
 
-      showToast("Onboarding completed successfully!");
-
-      await showLoading(
-        "All Set!",
-        "Taking you to your personalized dashboard"
-      );
-      window.location.href = "/dashboard";
+      hideLoading();
+      await showWelcome();
     } catch (error) {
       hideLoading();
       console.error("Error during onboarding:", error);
@@ -554,22 +593,18 @@ function showOnboarding(userId) {
 }
 
 // Show loading screen with custom message
-async function showLoading(
-  message = "Preparing your experience...",
-  submessage = "Setting up your personalized learning environment..."
-) {
+async function showLoading(message, submessage) {
   const loadingScreen = document.querySelector(".loading-screen");
-  if (!loadingScreen) return;
-
   const loadingText = loadingScreen.querySelector(".loading-text");
   const loadingSubtext = loadingScreen.querySelector(".loading-subtext");
+  const steps = loadingScreen.querySelectorAll(".loading-step");
 
-  loadingText.textContent = message;
-  loadingSubtext.textContent = submessage;
+  loadingText.textContent = message || "Creating Your Account";
+  loadingSubtext.textContent =
+    submessage || "Setting up your personalized learning environment...";
   loadingScreen.classList.add("visible");
 
-  // Update steps every 750ms
-  const steps = loadingScreen.querySelectorAll(".loading-step");
+  // Animate steps
   let currentStep = 0;
   const stepInterval = setInterval(() => {
     steps.forEach((step, index) => {
@@ -587,45 +622,50 @@ async function showLoading(
     }, 10000);
   });
 
-  // Return a promise that resolves after 3 seconds or rejects on timeout
-  return Promise.race([
-    new Promise((resolve) => {
-      setTimeout(() => {
-        clearInterval(stepInterval);
-        resolve();
-      }, 3000);
-    }),
-    timeout,
-  ]);
+  try {
+    // Return a promise that resolves after 2 seconds or rejects on timeout
+    await Promise.race([
+      new Promise((resolve) => setTimeout(resolve, 2000)),
+      timeout,
+    ]);
+  } catch (error) {
+    clearInterval(stepInterval);
+    throw error;
+  }
 }
 
 // Hide loading screen
 function hideLoading() {
   const loadingScreen = document.querySelector(".loading-screen");
-  if (!loadingScreen) return;
-
   loadingScreen.classList.remove("visible");
-  // Reset loading screen state
+
+  // Reset steps
   const steps = loadingScreen.querySelectorAll(".loading-step");
-  steps.forEach((step) => step.classList.remove("active"));
-  steps[0].classList.add("active");
+  steps.forEach((step, index) => {
+    step.classList.toggle("active", index === 0);
+  });
 }
 
 // Show error in loading screen
 function showLoadingError(error) {
   const loadingScreen = document.querySelector(".loading-screen");
-  if (!loadingScreen) return;
-
   const loadingText = loadingScreen.querySelector(".loading-text");
   const loadingSubtext = loadingScreen.querySelector(".loading-subtext");
   const loadingProgress = loadingScreen.querySelector(".loading-progress");
+  const loadingSteps = loadingScreen.querySelector(".loading-steps");
 
+  loadingScreen.classList.add("error");
   loadingText.textContent = "Oops! Something went wrong";
-  loadingText.style.color = "#ff4444";
   loadingSubtext.textContent = error.message;
   loadingProgress.style.display = "none";
+  loadingSteps.style.display = "none";
 
-  setTimeout(hideLoading, 3000);
+  setTimeout(() => {
+    loadingScreen.classList.remove("error");
+    hideLoading();
+    loadingProgress.style.display = "";
+    loadingSteps.style.display = "";
+  }, 3000);
 }
 
 // Check if user exists in Firestore
@@ -636,27 +676,6 @@ async function checkUserExists(userId) {
   } catch (error) {
     console.error("Error checking user:", error);
     return false;
-  }
-}
-
-// Handle navigation with error checking
-async function navigateTo(route, options = {}) {
-  try {
-    if (options.loading) {
-      await showLoading(options.loadingMessage, options.loadingSubmessage);
-    }
-
-    // Check if route exists (you should implement this based on your routing setup)
-    if (route.endsWith(".html") || route === "/" || route.startsWith("/")) {
-      window.location.href = route;
-    } else {
-      throw new Error("Invalid route");
-    }
-  } catch (error) {
-    hideLoading();
-    showToast(error.message, "error");
-    // Fallback to a safe route
-    window.location.href = ROUTES.LOGIN;
   }
 }
 

@@ -80,7 +80,7 @@ async function handleAuthStateChange(user) {
 
   if (!user) {
     console.log("[Onboarding] No user found - redirecting to login");
-    redirectTo("/auth/login.html");
+    redirectTo("/auth/login");
     return;
   }
 
@@ -97,7 +97,7 @@ async function checkOnboardingStatus() {
       console.log(
         "[Onboarding] User document not found - redirecting to signup"
       );
-      redirectTo("/auth/signup.html");
+      redirectTo("/auth/signup");
       return;
     }
 

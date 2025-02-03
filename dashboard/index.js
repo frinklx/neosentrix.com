@@ -149,7 +149,7 @@ async function checkAuthState() {
 
   if (!user) {
     console.log("[Dashboard] No user in auth check - redirecting to login");
-    redirectTo("/auth/login.html");
+    redirectTo("/auth/login");
   }
 }
 
@@ -159,7 +159,7 @@ async function handleLogout() {
     showLoading("Logging out...", "Please wait");
     await signOut(auth);
     console.log("[Dashboard] Logout successful");
-    redirectTo("/auth/login.html");
+    redirectTo("/auth/login");
   } catch (error) {
     console.error("[Dashboard] Error during logout:", error);
     showToast("Failed to log out", "error");
