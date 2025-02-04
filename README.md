@@ -29,10 +29,6 @@ While our codebase is open source, access to our services requires proper authen
 
 We welcome contributions from the developer community! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-## Security
-
-Security is paramount in educational technology. If you discover any security issues, please report them to security@company.com instead of using the public issue tracker.
-
 ## License
 
 This project is proprietary software. While the source code is visible, usage and modification rights are restricted. Contact our legal team for licensing information.
