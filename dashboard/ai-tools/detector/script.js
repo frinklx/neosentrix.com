@@ -3,16 +3,7 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getUserStats, getGlobalStats } from "./services/analytics.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  doc,
-  getDoc,
-  updateDoc,
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { firebaseConfig } from "../../../shared/utils/firebase-config.js";
 import {
   showToast,
@@ -21,74 +12,43 @@ import {
 } from "../../../shared/utils/ui.js";
 
 // DOM Elements
-const textInput = document.getElementById("textInput");
-const wordCount = document.getElementById("wordCount");
-const scanBtn = document.querySelector(".scan-btn");
-const clearBtn = document.querySelector(".clear-btn");
-const resultsContent = document.querySelector(".results-content");
-const emptyState = document.querySelector(".empty-state");
-const aiScore = document.getElementById("aiScore");
-const aiLabel = document.getElementById("aiLabel");
-const plagiarismScore = document.getElementById("plagiarismScore");
-const plagiarismLabel = document.getElementById("plagiarismLabel");
-const styleBar = document.getElementById("styleBar");
-const patternBar = document.getElementById("patternBar");
-const coherenceBar = document.getElementById("coherenceBar");
-const aiSummary = document.getElementById("aiSummary");
-const matchesList = document.getElementById("matchesList");
-const plagiarismSummary = document.getElementById("plagiarismSummary");
-const tabBtns = document.querySelectorAll(".tab-btn");
-const tabContents = document.querySelectorAll(".tab-content");
-
-// Analytics DOM Elements
-const analyticsTabs = document.querySelectorAll(".analytics-tab");
-const analyticsContents = document.querySelectorAll(".analytics-content");
-
-// Personal Stats Elements
-const totalChecks = document.getElementById("totalChecks");
-const avgAiScore = document.getElementById("avgAiScore");
-const plagiarismRate = document.getElementById("plagiarismRate");
-const lowScoreBar = document.getElementById("lowScoreBar");
-const mediumScoreBar = document.getElementById("mediumScoreBar");
-const highScoreBar = document.getElementById("highScoreBar");
-const lowScoreValue = document.getElementById("lowScoreValue");
-const mediumScoreValue = document.getElementById("mediumScoreValue");
-const highScoreValue = document.getElementById("highScoreValue");
-const recentActivity = document.getElementById("recentActivity");
-
-// Global Stats Elements
-const totalUsers = document.getElementById("totalUsers");
-const globalChecks = document.getElementById("globalChecks");
-const globalAiRate = document.getElementById("globalAiRate");
-const globalLowScoreBar = document.getElementById("globalLowScoreBar");
-const globalMediumScoreBar = document.getElementById("globalMediumScoreBar");
-const globalHighScoreBar = document.getElementById("globalHighScoreBar");
-const globalLowScoreValue = document.getElementById("globalLowScoreValue");
-const globalMediumScoreValue = document.getElementById(
-  "globalMediumScoreValue"
-);
-const globalHighScoreValue = document.getElementById("globalHighScoreValue");
+let textInput,
+  wordCount,
+  scanBtn,
+  clearBtn,
+  resultsContent,
+  emptyState,
+  aiScore,
+  aiLabel,
+  plagiarismScore,
+  plagiarismLabel,
+  styleBar,
+  patternBar,
+  coherenceBar,
+  aiSummary,
+  matchesList,
+  plagiarismSummary,
+  tabBtns,
+  tabContents,
+  charCount,
+  wordLimit,
+  showTipsBtn,
+  tipsDropdown,
+  toolBtns,
+  saveBtn,
+  exportBtn,
+  writingTips,
+  citationTips;
 
 // Constants
 const MIN_WORDS = 50;
+const MAX_WORDS = 5000;
+const WORD_WARNING_THRESHOLD = 4500;
 
 // State
 let isAnalyzing = false;
 let currentUser = null;
-
-// Initialize Firebase
-console.log("[Detector] Initializing Firebase...");
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const firestore = getFirestore(app);
-
-// Auth state observer
-onAuthStateChanged(auth, (user) => {
-  currentUser = user;
-  if (!user) {
-    showToast("Please log in to use the detector", "info");
-  }
-});
+let lastResults = null;
 
 // Helper Functions
 function countWords(text) {
@@ -98,10 +58,155 @@ function countWords(text) {
     .filter((word) => word.length > 0).length;
 }
 
-function updateWordCount() {
-  const count = countWords(textInput.value);
-  wordCount.textContent = count;
-  return count;
+function updateCounts() {
+  const text = textInput.value;
+  const words = countWords(text);
+  const chars = text.length;
+
+  wordCount.textContent = words;
+  charCount.textContent = chars;
+
+  // Update word limit warning
+  if (words > WORD_WARNING_THRESHOLD) {
+    wordLimit.textContent = ` (${MAX_WORDS - words} words remaining)`;
+    wordLimit.classList.add("warning");
+  } else {
+    wordLimit.textContent = "";
+    wordLimit.classList.remove("warning");
+  }
+
+  return { words, chars };
+}
+
+function formatText() {
+  const text = textInput.value;
+  // Remove extra whitespace and normalize paragraphs
+  const formatted = text
+    .replace(/[\r\n]+/g, "\n\n")
+    .replace(/[ \t]+/g, " ")
+    .trim();
+  textInput.value = formatted;
+  updateCounts();
+}
+
+function removeFormatting() {
+  const text = textInput.value;
+  // Remove all formatting, keeping only plain text
+  const plainText = text
+    .replace(/[\r\n\t]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  textInput.value = plainText;
+  updateCounts();
+}
+
+async function saveResults() {
+  if (!lastResults) return;
+
+  try {
+    const timestamp = new Date().toISOString();
+    const filename = `analysis_${timestamp}.json`;
+    const blob = new Blob([JSON.stringify(lastResults, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast("Results saved successfully", "success");
+  } catch (error) {
+    console.error("[Detector] Error saving results:", error);
+    showToast("Error saving results", "error");
+  }
+}
+
+async function exportToPDF() {
+  if (!lastResults) return;
+
+  try {
+    showLoading("Generating PDF...");
+
+    // Create PDF content
+    const content = `
+      AI Detection & Plagiarism Report
+      Generated: ${new Date().toLocaleString()}
+      
+      AI Analysis:
+      Overall Score: ${lastResults.aiMetrics.overall}%
+      Writing Style: ${lastResults.aiMetrics.style}%
+      Pattern Analysis: ${lastResults.aiMetrics.pattern}%
+      Language Coherence: ${lastResults.aiMetrics.coherence}%
+      
+      Plagiarism Analysis:
+      Matches Found: ${lastResults.plagiarismMatches.length}
+      
+      ${lastResults.plagiarismMatches
+        .map(
+          (match) => `
+        Source: ${match.source}
+        Similarity: ${match.similarity}%
+        Matched Text: ${match.matchedText || "N/A"}
+      `
+        )
+        .join("\n")}
+    `;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `analysis_${new Date().toISOString()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    hideLoading();
+    showToast("Report exported successfully", "success");
+  } catch (error) {
+    console.error("[Detector] Error exporting PDF:", error);
+    hideLoading();
+    showToast("Error exporting report", "error");
+  }
+}
+
+function updateSuggestions(aiMetrics, plagiarismMatches) {
+  // Writing Tips based on AI analysis
+  const tips = [];
+  if (aiMetrics.style > 70) {
+    tips.push("Consider varying your sentence structure and vocabulary more");
+  }
+  if (aiMetrics.pattern > 70) {
+    tips.push("Try to break up repetitive patterns in your writing");
+  }
+  if (aiMetrics.coherence < 50) {
+    tips.push("Focus on improving transitions between ideas");
+  }
+
+  writingTips.innerHTML = tips
+    .map((tip) => `<li><i class="fas fa-check"></i>${tip}</li>`)
+    .join("");
+
+  // Citation Tips based on plagiarism matches
+  const citationTips = [];
+  if (plagiarismMatches.length > 0) {
+    citationTips.push("Remember to cite all external sources");
+    citationTips.push("Use quotation marks for direct quotes");
+    if (plagiarismMatches.some((m) => m.similarity > 70)) {
+      citationTips.push("Consider paraphrasing instead of direct copying");
+    }
+  }
+
+  citationTips.innerHTML = citationTips
+    .map((tip) => `<li><i class="fas fa-check"></i>${tip}</li>`)
+    .join("");
 }
 
 function setBarWidth(bar, percentage) {
@@ -140,12 +245,13 @@ function getPlagiarismSummary(matches) {
 
 function updateResults(aiMetrics, plagiarismMatches) {
   // Update AI scores and metrics
-  aiScore.textContent = aiMetrics.overall;
-  setBarWidth(styleBar, aiMetrics.style);
-  setBarWidth(patternBar, aiMetrics.pattern);
-  setBarWidth(coherenceBar, aiMetrics.coherence);
+  aiScore.textContent = Math.max(0, Math.round(aiMetrics.overall));
+  setBarWidth(styleBar, Math.max(0, aiMetrics.style));
+  setBarWidth(patternBar, Math.max(0, aiMetrics.pattern));
+  setBarWidth(coherenceBar, Math.max(0, aiMetrics.coherence));
   aiSummary.textContent = getAISummary(aiMetrics);
 
+  // Update AI label
   if (aiMetrics.overall >= 80) {
     aiLabel.textContent = "Likely AI Generated";
     aiLabel.style.color = "#ff4e4e";
@@ -158,13 +264,15 @@ function updateResults(aiMetrics, plagiarismMatches) {
   }
 
   // Update plagiarism results
-  const avgSimilarity =
-    plagiarismMatches.reduce((sum, match) => sum + match.similarity, 0) /
-    (plagiarismMatches.length || 1);
+  const avgSimilarity = plagiarismMatches.length
+    ? plagiarismMatches.reduce((sum, match) => sum + match.similarity, 0) /
+      plagiarismMatches.length
+    : 0;
 
   plagiarismScore.textContent = Math.round(avgSimilarity);
   plagiarismSummary.textContent = getPlagiarismSummary(plagiarismMatches);
 
+  // Update plagiarism label
   if (avgSimilarity >= 70) {
     plagiarismLabel.textContent = "High Risk";
     plagiarismLabel.style.color = "#ff4e4e";
@@ -176,205 +284,250 @@ function updateResults(aiMetrics, plagiarismMatches) {
     plagiarismLabel.style.color = "#00ff9d";
   }
 
-  // Update matches list
+  // Update matches list with improved display
   matchesList.innerHTML = plagiarismMatches
     .map(
       (match) => `
-    <div class="match-item">
-      <div class="match-header">
-        <a href="${match.source}" target="_blank" class="match-source">${match.source}</a>
-        <span class="match-similarity">${match.similarity}% Similar</span>
-      </div>
-      <div class="match-text">
-        <mark>${match.text}</mark>
-      </div>
-    </div>
-  `
+        <div class="match-item">
+          <div class="match-header">
+            <a href="${
+              match.source
+            }" target="_blank" rel="noopener noreferrer" class="match-source">
+              <i class="fas fa-external-link-alt"></i>
+              ${new URL(match.source).hostname}
+            </a>
+            <span class="match-similarity">${match.similarity}% Similar</span>
+          </div>
+          <div class="match-text">
+            <div class="original-text">
+              <strong>Original Text:</strong>
+              <p>${match.text}</p>
+            </div>
+            ${
+              match.matchedText
+                ? `<div class="matched-text">
+                    <strong>Matched Text:</strong>
+                    <p>${match.matchedText}</p>
+                   </div>`
+                : ""
+            }
+          </div>
+        </div>
+      `
     )
     .join("");
 }
 
-// Analytics Functions
-function updateDistributionChart(
-  distribution,
-  { lowBar, mediumBar, highBar, lowValue, mediumValue, highValue }
-) {
-  const total = distribution.low + distribution.medium + distribution.high;
-  if (total === 0) return;
-
-  const lowPercent = (distribution.low / total) * 100;
-  const mediumPercent = (distribution.medium / total) * 100;
-  const highPercent = (distribution.high / total) * 100;
-
-  lowBar.style.width = `${lowPercent}%`;
-  mediumBar.style.width = `${mediumPercent}%`;
-  highBar.style.width = `${highPercent}%`;
-
-  lowValue.textContent = distribution.low;
-  mediumValue.textContent = distribution.medium;
-  highValue.textContent = distribution.high;
+// Initialize DOM elements
+function initializeDOMElements() {
+  textInput = document.getElementById("textInput");
+  wordCount = document.getElementById("wordCount");
+  scanBtn = document.querySelector(".scan-btn");
+  clearBtn = document.querySelector(".clear-btn");
+  resultsContent = document.querySelector(".results-content");
+  emptyState = document.querySelector(".empty-state");
+  aiScore = document.getElementById("aiScore");
+  aiLabel = document.getElementById("aiLabel");
+  plagiarismScore = document.getElementById("plagiarismScore");
+  plagiarismLabel = document.getElementById("plagiarismLabel");
+  styleBar = document.getElementById("styleBar");
+  patternBar = document.getElementById("patternBar");
+  coherenceBar = document.getElementById("coherenceBar");
+  aiSummary = document.getElementById("aiSummary");
+  matchesList = document.getElementById("matchesList");
+  plagiarismSummary = document.getElementById("plagiarismSummary");
+  tabBtns = document.querySelectorAll(".tab-btn");
+  tabContents = document.querySelectorAll(".tab-content");
+  charCount = document.getElementById("charCount");
+  wordLimit = document.getElementById("wordLimit");
+  showTipsBtn = document.getElementById("showTipsBtn");
+  tipsDropdown = document.querySelector(".tips-dropdown");
+  toolBtns = document.querySelectorAll(".tool-btn");
+  saveBtn = document.querySelector(".save-btn");
+  exportBtn = document.querySelector(".export-btn");
+  writingTips = document.getElementById("writingTips");
+  citationTips = document.getElementById("citationTips");
 }
 
-function formatTimestamp(timestamp) {
-  const date = new Date(timestamp);
-  return date.toLocaleString();
-}
-
-function updateRecentActivity(activities) {
-  recentActivity.innerHTML = activities
-    .map(
-      (activity) => `
-    <div class="activity-item">
-      <div class="activity-info">
-        <div class="activity-time">${formatTimestamp(activity.timestamp)}</div>
-        <div class="activity-details">${
-          activity.textLength
-        } characters analyzed</div>
-      </div>
-      <div class="activity-scores">
-        <div class="activity-score ai">
-          <i class="fas fa-robot"></i>
-          ${activity.aiScore}%
-        </div>
-        <div class="activity-score plagiarism">
-          <i class="fas fa-copy"></i>
-          ${activity.plagiarismMatches}
-        </div>
-      </div>
-    </div>
-  `
-    )
-    .join("");
-}
-
-async function updatePersonalStats() {
-  const auth = getAuth();
-  const user = auth.currentUser;
-
-  if (!user) {
-    console.warn("[Analytics] No user logged in");
-    return;
+// Initialize event listeners
+function initializeEventListeners() {
+  if (textInput) {
+    textInput.addEventListener("input", updateCounts);
   }
 
-  const stats = await getUserStats(user.uid);
-  if (!stats.success) {
-    console.error("[Analytics] Failed to fetch user stats:", stats.error);
-    return;
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      if (textInput) textInput.value = "";
+      updateCounts();
+      if (emptyState) emptyState.style.display = "flex";
+      if (resultsContent) resultsContent.style.display = "none";
+      if (saveBtn) saveBtn.disabled = true;
+      if (exportBtn) exportBtn.disabled = true;
+      lastResults = null;
+    });
   }
 
-  totalChecks.textContent = stats.totalChecks;
-  avgAiScore.textContent = `${stats.averageAiScore}%`;
-  plagiarismRate.textContent = `${stats.plagiarismRate}%`;
-
-  updateDistributionChart(stats.aiScoreDistribution, {
-    lowBar,
-    mediumBar,
-    highBar,
-    lowValue,
-    mediumValue,
-    highValue,
-  });
-
-  updateRecentActivity(stats.recentActivity);
-}
-
-async function updateGlobalStats() {
-  const stats = await getGlobalStats();
-  if (!stats.success) {
-    console.error("[Analytics] Failed to fetch global stats:", stats.error);
-    return;
+  if (scanBtn) {
+    scanBtn.addEventListener("click", handleScanClick);
   }
 
-  totalUsers.textContent = stats.uniqueUsers;
-  globalChecks.textContent = stats.totalChecks;
-  globalAiRate.textContent = `${stats.averageAiScore}%`;
-
-  updateDistributionChart(stats.aiScoreDistribution, {
-    lowBar: globalLowScoreBar,
-    mediumBar: globalMediumScoreBar,
-    highBar: globalHighScoreBar,
-    lowValue: globalLowScoreValue,
-    mediumValue: globalMediumScoreValue,
-    highValue: globalHighScoreValue,
-  });
-}
-
-async function analyze() {
-  const text = textInput.value.trim();
-  const words = countWords(text);
-
-  if (words < MIN_WORDS) {
-    alert(`Please enter at least ${MIN_WORDS} words for analysis.`);
-    return;
+  // Initialize tab functionality
+  if (tabBtns) {
+    tabBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.getAttribute("data-tab");
+        tabBtns.forEach((b) => b.classList.remove("active"));
+        tabContents.forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        const targetContent = document.querySelector(
+          `.tab-content[data-tab="${target}"]`
+        );
+        if (targetContent) {
+          targetContent.classList.add("active");
+        }
+      });
+    });
   }
 
-  if (isAnalyzing) return;
-  isAnalyzing = true;
-
-  // Show loading state
-  emptyState.style.display = "none";
-  resultsContent.style.display = "block";
-  aiLabel.textContent = "Analyzing...";
-  plagiarismLabel.textContent = "Analyzing...";
-  scanBtn.disabled = true;
-
-  try {
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (!user) {
-      throw new Error("Please sign in to use this feature.");
-    }
-
-    const result = await analyzeText(text, user.uid);
-
-    if (!result.success) {
-      throw new Error(result.error);
-    }
-
-    updateResults(result.aiMetrics, result.plagiarismMatches);
-  } catch (error) {
-    alert(error.message);
-    clearAll();
-  } finally {
-    isAnalyzing = false;
-    scanBtn.disabled = false;
+  // Initialize text tools
+  if (toolBtns) {
+    toolBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const action = btn.getAttribute("data-action");
+        switch (action) {
+          case "paste":
+            navigator.clipboard
+              .readText()
+              .then((text) => {
+                if (textInput) {
+                  textInput.value = text;
+                  updateCounts();
+                }
+              })
+              .catch(() => showToast("Unable to paste text", "error"));
+            break;
+          case "clear":
+            if (textInput) {
+              textInput.value = "";
+              updateCounts();
+            }
+            break;
+          case "format":
+            formatText();
+            break;
+          case "removeFormatting":
+            removeFormatting();
+            break;
+        }
+      });
+    });
   }
-}
 
-function clearAll() {
-  textInput.value = "";
-  updateWordCount();
-  resultsContent.style.display = "none";
-  emptyState.style.display = "block";
-  scanBtn.disabled = false;
-  isAnalyzing = false;
+  // Initialize help tooltip
+  if (showTipsBtn && tipsDropdown) {
+    showTipsBtn.addEventListener("click", () => {
+      tipsDropdown.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".tip-actions")) {
+        tipsDropdown.classList.remove("show");
+      }
+    });
+  }
+
+  // Initialize save/export buttons
+  if (saveBtn) saveBtn.addEventListener("click", saveResults);
+  if (exportBtn) exportBtn.addEventListener("click", exportToPDF);
 }
 
 // Event Listeners
-textInput.addEventListener("input", updateWordCount);
-scanBtn.addEventListener("click", analyze);
-clearBtn.addEventListener("click", clearAll);
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("[Detector] Initializing...");
 
-// Analytics Tab Event Listeners
-analyticsTabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    analyticsTabs.forEach((t) => t.classList.remove("active"));
-    analyticsContents.forEach((c) => c.classList.remove("active"));
+  try {
+    // Initialize DOM elements
+    initializeDOMElements();
 
-    tab.classList.add("active");
-    const tabId = tab.getAttribute("data-tab");
-    document.getElementById(`${tabId}Stats`).classList.add("active");
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    if (tabId === "personal") {
-      updatePersonalStats();
-    } else {
-      updateGlobalStats();
-    }
-  });
+    // Auth state observer
+    onAuthStateChanged(auth, (user) => {
+      console.log(
+        "[Detector] Auth state changed:",
+        user ? "logged in" : "logged out"
+      );
+      currentUser = user;
+      if (!user) {
+        showToast("Please log in to use the detector", "info");
+      }
+    });
+
+    // Initialize all event listeners
+    initializeEventListeners();
+  } catch (error) {
+    console.error("[Detector] Initialization error:", error);
+    showToast("Error initializing application", "error");
+  }
 });
 
-// Initialize
-updateWordCount();
-updatePersonalStats();
-updateGlobalStats();
+// Move scan button handler to separate function
+async function handleScanClick() {
+  if (isAnalyzing || !textInput) return;
+
+  const text = textInput.value.trim();
+  const { words } = updateCounts();
+
+  if (words < MIN_WORDS) {
+    showToast(`Please enter at least ${MIN_WORDS} words`, "error");
+    return;
+  }
+
+  if (words > MAX_WORDS) {
+    showToast(`Text exceeds maximum limit of ${MAX_WORDS} words`, "error");
+    return;
+  }
+
+  if (!currentUser) {
+    showToast("Please log in to use the detector", "error");
+    return;
+  }
+
+  try {
+    isAnalyzing = true;
+    showLoading("Analyzing text...", "This may take a few moments");
+
+    const result = await analyzeText(text, currentUser.uid);
+
+    if (!result.success) {
+      throw new Error(result.error || "Analysis failed");
+    }
+
+    lastResults = result;
+
+    // Enable save/export buttons
+    if (saveBtn) saveBtn.disabled = false;
+    if (exportBtn) exportBtn.disabled = false;
+
+    // Hide empty state and show results
+    if (emptyState) emptyState.style.display = "none";
+    if (resultsContent) resultsContent.style.display = "block";
+
+    // Update all results
+    updateResults(result.aiMetrics, result.plagiarismMatches);
+    updateSuggestions(result.aiMetrics, result.plagiarismMatches);
+
+    // Show the first tab by default
+    if (tabBtns && tabBtns.length > 0) {
+      tabBtns[0].click();
+    }
+  } catch (error) {
+    console.error("[Detector] Analysis error:", error);
+    showToast(error.message || "An error occurred during analysis", "error");
+  } finally {
+    isAnalyzing = false;
+    hideLoading();
+  }
+}

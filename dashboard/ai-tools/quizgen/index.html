@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Quiz Generator - Neolearn</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-effects"></div>
+
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-brain"></i>
+          <span>Neolearn</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="../../index.html">
+            <i class="fas fa-chart-pie"></i>
+            <span>Analytics</span>
+          </a>
+          <a href="../index.html" class="active">
+            <i class="fas fa-robot"></i>
+            <span>AI Tools</span>
+          </a>
+          <a href="../../settings/index.html">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+        <button id="logoutBtn" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="quiz-generator-container">
+          <!-- Left Column -->
+          <div class="input-section">
+            <div class="section-header">
+              <h2>Generate Quiz</h2>
+              <p>Enter your text or notes to generate smart quiz questions</p>
+            </div>
+
+            <!-- Input Controls -->
+            <div class="input-controls">
+              <div class="control-group">
+                <label>Question Types</label>
+                <div class="checkbox-group">
+                  <label class="checkbox">
+                    <input type="checkbox" id="mcqType" checked />
+                    <span>Multiple Choice</span>
+                  </label>
+                  <label class="checkbox">
+                    <input type="checkbox" id="trueFalseType" checked />
+                    <span>True/False</span>
+                  </label>
+                  <label class="checkbox">
+                    <input type="checkbox" id="fillBlanksType" checked />
+                    <span>Fill in the Blanks</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label>Difficulty Level</label>
+                <select id="difficultyLevel">
+                  <option value="easy">Easy</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label>Number of Questions</label>
+                <input
+                  type="number"
+                  id="questionCount"
+                  min="1"
+                  max="20"
+                  value="10"
+                />
+              </div>
+            </div>
+
+            <!-- Text Input -->
+            <div class="text-input-container">
+              <textarea
+                id="textInput"
+                placeholder="Paste your text or notes here to generate quiz questions..."
+              ></textarea>
+              <div class="input-footer">
+                <div class="word-count">
+                  <i class="fas fa-font"></i>
+                  <span id="wordCount">0</span> words
+                </div>
+                <div class="char-count">
+                  <i class="fas fa-text-width"></i>
+                  <span id="charCount">0</span> characters
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button class="generate-btn" id="generateBtn">
+                <i class="fas fa-magic"></i>
+                Generate Quiz
+              </button>
+              <button class="action-btn" id="saveBtn" disabled>
+                <i class="fas fa-save"></i>
+                Save Quiz
+              </button>
+              <button class="action-btn" id="exportBtn" disabled>
+                <i class="fas fa-file-export"></i>
+                Export PDF
+              </button>
+            </div>
+
+            <!-- Add a help button near the input controls -->
+            <button class="help-btn" id="showExampleBtn">
+              <i class="fas fa-lightbulb"></i>
+              See Example
+            </button>
+          </div>
+
+          <!-- Right Column -->
+          <div class="preview-section">
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+              <i class="fas fa-lightbulb"></i>
+              <p>Your Generated Quiz Will Appear Here</p>
+              <span>Configure options and click Generate to create a quiz</span>
+            </div>
+
+            <!-- Quiz Preview -->
+            <div class="quiz-preview" id="quizPreview" style="display: none">
+              <div class="preview-header">
+                <h3>Generated Quiz</h3>
+                <div class="preview-controls">
+                  <button class="preview-btn active" data-view="questions">
+                    <i class="fas fa-list"></i>
+                    Questions
+                  </button>
+                  <button class="preview-btn" data-view="answers">
+                    <i class="fas fa-check-circle"></i>
+                    Answer Key
+                  </button>
+                </div>
+              </div>
+
+              <!-- Questions List -->
+              <div class="questions-list" id="questionsList"></div>
+
+              <!-- Answer Key -->
+              <div
+                class="answer-key"
+                id="answerKey"
+                style="display: none"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Add this right after the body tag opens -->
+    <div class="loading-screen" id="loadingScreen" style="display: none">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <h2 class="loading-text">Generating Your Quiz</h2>
+        <div class="loading-progress">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <div class="progress-text">Analyzing content...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add this before the main content closes -->
+    <div class="example-modal" id="exampleModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Example Quiz Structure</h2>
+          <button class="close-modal">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="example-section">
+            <h3>Sample Text Input</h3>
+            <pre>
+The solar system consists of the Sun and all the objects that orbit around it. 
+The Sun is a star at the center of our solar system. It provides light and heat 
+to the planets. There are eight planets in our solar system: Mercury, Venus, 
+Earth, Mars, Jupiter, Saturn, Uranus, and Neptune. Each planet has unique 
+characteristics and follows an elliptical orbit around the Sun.
+            </pre>
+          </div>
+          <div class="example-section">
+            <h3>Generated Quiz Format</h3>
+            <div class="quiz-example">
+              <div class="example-question">
+                <span class="label">Multiple Choice:</span>
+                <p>
+                  What provides light and heat to the planets in our solar
+                  system?
+                </p>
+                <ul>
+                  <li>✓ The Sun</li>
+                  <li>Jupiter</li>
+                  <li>Mars</li>
+                  <li>Saturn</li>
+                </ul>
+              </div>
+              <div class="example-question">
+                <span class="label">True/False:</span>
+                <p>There are nine planets in our solar system.</p>
+                <p class="answer">Answer: False</p>
+              </div>
+              <div class="example-question">
+                <span class="label">Fill in the Blank:</span>
+                <p>Each planet follows an _____ orbit around the Sun.</p>
+                <p class="answer">Answer: elliptical</p>
+              </div>
+            </div>
+          </div>
+          <div class="example-tips">
+            <h3>Tips for Best Results</h3>
+            <ul>
+              <li>Use clear, factual content</li>
+              <li>Include specific details and numbers</li>
+              <li>Write in complete sentences</li>
+              <li>Aim for at least 100 words</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add quiz mode container -->
+    <div class="quiz-mode">
+      <div class="quiz-header">
+        <div class="quiz-info">
+          <div class="quiz-progress">
+            <i class="fas fa-tasks"></i>
+            <span>Question 1/10</span>
+          </div>
+          <div class="quiz-score">
+            <i class="fas fa-star"></i>
+            <span>Score: 0</span>
+          </div>
+        </div>
+        <div class="quiz-timer-container">
+          <div class="timer-ring">
+            <svg>
+              <circle class="timer-circle" cx="30" cy="30" r="28"></circle>
+            </svg>
+            <span class="quiz-timer">20</span>
+          </div>
+        </div>
+        <button class="quiz-exit-btn">
+          <i class="fas fa-times"></i>
+          Exit Quiz
+        </button>
+      </div>
+      <div class="quiz-content"></div>
+      <div class="quiz-footer">
+        <div class="quiz-hint">
+          <i class="fas fa-lightbulb"></i>
+          <span>Click on your answer choice</span>
+        </div>
+        <div class="quiz-controls">
+          <button class="skip-btn" style="display: none">
+            <i class="fas fa-forward"></i>
+            Skip Question
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

@@ -18,6 +18,7 @@ import {
   getDocs,
   orderBy,
   setDoc,
+  onSnapshot,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { firebaseConfig } from "../shared/utils/firebase-config.js";
 
@@ -25,7 +26,7 @@ import { firebaseConfig } from "../shared/utils/firebase-config.js";
 console.log("[Dashboard] Initializing Firebase...");
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const firestore = getFirestore(app);
+const db = getFirestore(app);
 
 let currentUser = null;
 
@@ -78,13 +79,13 @@ async function handleAuthStateChange(user) {
     }
 
     // Get user document from Firestore
-    const userDoc = await getDoc(doc(firestore, "users", user.uid));
+    const userDoc = await getDoc(doc(db, "users", user.uid));
 
     if (!userDoc.exists()) {
       console.log("[Dashboard] No user document found, creating one...");
       // Create a new user document
       try {
-        await setDoc(doc(firestore, "users", user.uid), {
+        await setDoc(doc(db, "users", user.uid), {
           email: user.email,
           displayName: user.displayName || user.email.split("@")[0],
           createdAt: new Date().getTime(),
@@ -133,6 +134,15 @@ async function handleAuthStateChange(user) {
 
       // Initialize charts
       initializeCharts(analytics);
+    }
+
+    // Add these lines after loading the user profile
+    await loadUserStats(user.uid);
+    setupStatsListener(user.uid);
+
+    // Welcome message with gradient effect
+    if (welcomeMessage) {
+      welcomeMessage.style.backgroundSize = "200% auto";
     }
   } catch (error) {
     console.error("[Dashboard] Error in auth state change:", error);
@@ -320,7 +330,7 @@ async function getUserAnalytics(userId) {
     let detectorDocs = [];
     try {
       const detectorQuery = query(
-        collection(firestore, "analysis_history"),
+        collection(db, "analysis_history"),
         where("userId", "==", userId),
         orderBy("timestamp", "desc")
       );
@@ -333,7 +343,7 @@ async function getUserAnalytics(userId) {
     let flashcardsDocs = [];
     try {
       const flashcardsQuery = query(
-        collection(firestore, "flashcards"),
+        collection(db, "flashcards"),
         where("userId", "==", userId),
         orderBy("timestamp", "desc")
       );
@@ -704,3 +714,106 @@ logoutBtn.addEventListener("click", async () => {
     hideLoading();
   }
 });
+
+// Add these functions after your existing code
+async function loadUserStats(userId) {
+  try {
+    const userStatsRef = doc(db, "userStats", userId);
+    const statsDoc = await getDoc(userStatsRef);
+
+    if (statsDoc.exists()) {
+      const stats = statsDoc.data();
+
+      // Update AI Processing Stats
+      document.getElementById("aiProcessed").textContent =
+        stats.aiProcessed || 0;
+      document.getElementById("aiProgress").textContent = `↑ ${
+        stats.aiProcessedToday || 0
+      } today`;
+      document.getElementById("aiSuccessRate").textContent = `${
+        stats.aiSuccessRate || 0
+      }%`;
+      document.getElementById("aiProcessingTime").textContent = `${
+        stats.avgProcessingTime || 0
+      }s`;
+
+      // Update Plagiarism Check Stats
+      document.getElementById("plagiarismChecks").textContent =
+        stats.plagiarismChecks || 0;
+      document.getElementById("plagiarismProgress").textContent = `↑ ${
+        stats.checksToday || 0
+      } today`;
+      document.getElementById("plagiarismRate").textContent = `${
+        stats.plagiarismDetectionRate || 0
+      }%`;
+      document.getElementById("aiContentRate").textContent = `${
+        stats.aiContentRate || 0
+      }%`;
+
+      // Update Total Documents
+      document.getElementById("totalDocuments").textContent =
+        stats.totalDocuments || 0;
+      document.getElementById("documentsProgress").textContent = `↑ ${
+        stats.documentsToday || 0
+      } today`;
+
+      // Add trend classes based on progress
+      updateTrendClasses("aiProgress", stats.aiProcessedToday);
+      updateTrendClasses("plagiarismProgress", stats.checksToday);
+      updateTrendClasses("documentsProgress", stats.documentsToday);
+    }
+  } catch (error) {
+    console.error("Error loading user stats:", error);
+  }
+}
+
+function updateTrendClasses(elementId, value) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+
+  element.classList.remove("positive", "negative");
+  if (value > 0) {
+    element.classList.add("positive");
+  } else if (value < 0) {
+    element.classList.add("negative");
+  }
+}
+
+// Real-time updates for stats
+function setupStatsListener(userId) {
+  const userStatsRef = doc(db, "userStats", userId);
+
+  onSnapshot(
+    userStatsRef,
+    (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const stats = docSnapshot.data();
+
+        // Update stats in real-time
+        document.getElementById("aiProcessed").textContent =
+          stats.aiProcessed || 0;
+        document.getElementById("plagiarismChecks").textContent =
+          stats.plagiarismChecks || 0;
+        document.getElementById("totalDocuments").textContent =
+          stats.totalDocuments || 0;
+
+        // Update detailed stats
+        document.getElementById("aiSuccessRate").textContent = `${
+          stats.aiSuccessRate || 0
+        }%`;
+        document.getElementById("aiProcessingTime").textContent = `${
+          stats.avgProcessingTime || 0
+        }s`;
+        document.getElementById("plagiarismRate").textContent = `${
+          stats.plagiarismDetectionRate || 0
+        }%`;
+        document.getElementById("aiContentRate").textContent = `${
+          stats.aiContentRate || 0
+        }%`;
+      }
+    },
+    (error) => {
+      console.error("Error setting up stats listener:", error);
+    }
+  );
+}

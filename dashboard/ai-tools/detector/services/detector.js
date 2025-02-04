@@ -151,7 +151,7 @@ function detectAIPatterns(text) {
   const mean = lengths.reduce((a, b) => a + b, 0) / lengths.length;
   const variance =
     lengths.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / lengths.length;
-  const burstiness = variance / mean;
+  const burstiness = Math.min(1, variance / (mean * 2)); // Normalize burstiness
 
   console.log("[Detector] Sentence analysis:", {
     meanLength: mean,
@@ -177,37 +177,47 @@ function detectAIPatterns(text) {
       length: words.length,
       hasComma: s.includes(","),
       hasConjunction: /\b(and|but|or|because|however)\b/i.test(s),
+      hasTransition:
+        /\b(therefore|thus|consequently|furthermore|moreover)\b/i.test(s),
+      hasComplexStructure: /\b(although|despite|while|unless|if|when)\b/i.test(
+        s
+      ),
     };
   });
 
+  // Calculate structural consistency with improved metrics
   const structuralConsistency =
     structurePatterns.reduce((acc, curr, i, arr) => {
       if (i === 0) return 0;
       const prev = arr[i - 1];
-      return (
-        acc +
-        ((Math.abs(curr.length - prev.length) < 3 ? 1 : 0) +
-          (curr.hasComma === prev.hasComma ? 1 : 0) +
-          (curr.hasConjunction === prev.hasConjunction ? 1 : 0))
+      const lengthSimilarity = Math.min(
+        1,
+        1 / (1 + Math.abs(curr.length - prev.length))
       );
-    }, 0) /
-    (sentences.length - 1);
+      const patternSimilarity =
+        (curr.hasComma === prev.hasComma ? 1 : 0) +
+        (curr.hasConjunction === prev.hasConjunction ? 1 : 0) +
+        (curr.hasTransition === prev.hasTransition ? 1 : 0) +
+        (curr.hasComplexStructure === prev.hasComplexStructure ? 1 : 0);
+      return acc + (lengthSimilarity + patternSimilarity / 4) / 2;
+    }, 0) / Math.max(1, sentences.length - 1);
 
   console.log("[Detector] Structure analysis:", {
     structuralConsistency,
     patterns: structurePatterns,
   });
 
-  // Calculate final metrics
-  const metrics = {
-    style: Math.min(100, (1 - repetitionRate) * 100),
-    pattern: Math.min(100, structuralConsistency * 100),
-    coherence: Math.min(100, (1 - burstiness) * 100),
-  };
+  // Calculate final metrics with improved normalization
+  const styleScore = Math.min(100, Math.max(0, (1 - repetitionRate) * 100));
+  const patternScore = Math.min(100, Math.max(0, structuralConsistency * 100));
+  const coherenceScore = Math.min(100, Math.max(0, (1 - burstiness) * 100));
 
-  metrics.overall = Math.round(
-    (metrics.style + metrics.pattern + metrics.coherence) / 3
-  );
+  const metrics = {
+    style: styleScore,
+    pattern: patternScore,
+    coherence: coherenceScore,
+    overall: Math.round((styleScore + patternScore + coherenceScore) / 3),
+  };
 
   console.log("[Detector] Final AI metrics:", metrics);
   return metrics;
@@ -234,7 +244,7 @@ async function searchForSimilarContent(text) {
   console.log("[Detector] Text split into sentences:", chunks.length);
 
   const matches = [];
-  const processedChunks = new Set(); // To avoid duplicate checks
+  const processedChunks = new Set();
 
   for (const chunk of chunks) {
     const trimmedChunk = chunk.trim();
@@ -246,6 +256,7 @@ async function searchForSimilarContent(text) {
         length: trimmedChunk.length,
         text: trimmedChunk,
       });
+
       const query = encodeURIComponent(trimmedChunk);
       const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${GOOGLE_SEARCH_ENGINE_ID}&q="${query}"&exactTerms=${query}`;
 
@@ -253,69 +264,33 @@ async function searchForSimilarContent(text) {
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data.items) {
+      if (data.items && data.items.length > 0) {
         console.log("[Detector] Search results received:", data.items.length);
+
         for (const item of data.items) {
-          // First check for exact matches
-          const normalizedChunk = trimmedChunk
-            .toLowerCase()
-            .replace(/\s+/g, " ");
-          const normalizedSnippet = item.snippet
-            .toLowerCase()
-            .replace(/\s+/g, " ");
+          const snippet = item.snippet || "";
+          const similarity = getCosineSimilarity(trimmedChunk, snippet);
 
-          if (normalizedSnippet.includes(normalizedChunk)) {
-            console.log("[Detector] Exact match found:", {
-              source: item.link,
-              similarity: 100,
-            });
+          if (similarity > 30) {
             matches.push({
               source: item.link,
-              similarity: 100,
               text: trimmedChunk,
-              exact: true,
-            });
-            break; // Found an exact match, no need to check other results
-          }
-
-          // If no exact match, check similarity
-          const similarity = getCosineSimilarity(trimmedChunk, item.snippet);
-          if (similarity > 40) {
-            // Lowered threshold for better detection
-            console.log("[Detector] Similar content found:", {
-              source: item.link,
-              similarity,
-            });
-            matches.push({
-              source: item.link,
               similarity: Math.round(similarity),
-              text: trimmedChunk,
-              exact: false,
+              matchedText: snippet,
             });
           }
         }
-      } else {
-        console.log("[Detector] No search results for chunk");
       }
     } catch (error) {
-      console.error("[Detector] Search API error:", error);
+      console.error("[Detector] Error in plagiarism check:", error);
     }
   }
 
-  // Sort matches by similarity
-  matches.sort((a, b) => b.similarity - a.similarity);
-
-  // Remove duplicates and keep only the highest similarity matches
-  const uniqueMatches = matches.filter(
-    (match, index, self) =>
-      index === self.findIndex((m) => m.text === match.text)
-  );
-
   console.log(
     "[Detector] Plagiarism check complete. Total matches:",
-    uniqueMatches.length
+    matches.length
   );
-  return uniqueMatches;
+  return matches;
 }
 
 // Check user's rate limit

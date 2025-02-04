@@ -53,7 +53,7 @@
         <!-- Header -->
         <header class="dashboard-header">
           <div class="welcome-section">
-            <h1 id="welcomeMessage">
+            <h1 id="welcomeMessage" class="gradient-text">
               Welcome Back, <span id="userName">User</span>!
             </h1>
             <p>Here's your learning progress overview</p>
@@ -78,6 +78,41 @@
 
         <!-- Stats Grid -->
         <div class="stats-grid">
+          <!-- AI Processing Stats -->
+          <div class="stat-card highlight">
+            <i class="fas fa-robot"></i>
+            <div class="stat-info">
+              <h3>AI Processed</h3>
+              <span id="aiProcessed">0</span>
+              <div class="trend positive" id="aiProgress">Processing Stats</div>
+            </div>
+          </div>
+
+          <!-- Plagiarism Checks -->
+          <div class="stat-card highlight">
+            <i class="fas fa-magnifying-glass"></i>
+            <div class="stat-info">
+              <h3>Plagiarism Checks</h3>
+              <span id="plagiarismChecks">0</span>
+              <div class="trend positive" id="plagiarismProgress">
+                Scanning Stats
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Documents -->
+          <div class="stat-card highlight">
+            <i class="fas fa-file-alt"></i>
+            <div class="stat-info">
+              <h3>Total Documents</h3>
+              <span id="totalDocuments">0</span>
+              <div class="trend positive" id="documentsProgress">
+                Document Count
+              </div>
+            </div>
+          </div>
+
+          <!-- Study Time -->
           <div class="stat-card">
             <i class="fas fa-clock"></i>
             <div class="stat-info">
@@ -88,6 +123,8 @@
               </div>
             </div>
           </div>
+
+          <!-- Flashcards -->
           <div class="stat-card">
             <i class="fas fa-brain"></i>
             <div class="stat-info">
@@ -98,12 +135,46 @@
               </div>
             </div>
           </div>
+
+          <!-- Learning Streak -->
           <div class="stat-card">
             <i class="fas fa-fire"></i>
             <div class="stat-info">
               <h3>Learning Streak</h3>
               <span id="learningStreak">0 days</span>
               <div class="trend">Keep it up!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Stats Section -->
+        <div class="detailed-stats">
+          <div class="stat-row">
+            <div class="stat-detail-card">
+              <h3>AI Processing Details</h3>
+              <div class="stat-details">
+                <div class="detail-item">
+                  <span class="label">Success Rate</span>
+                  <span id="aiSuccessRate" class="value">0%</span>
+                </div>
+                <div class="detail-item">
+                  <span class="label">Average Processing Time</span>
+                  <span id="aiProcessingTime" class="value">0s</span>
+                </div>
+              </div>
+            </div>
+            <div class="stat-detail-card">
+              <h3>Plagiarism Check Details</h3>
+              <div class="stat-details">
+                <div class="detail-item">
+                  <span class="label">Detection Rate</span>
+                  <span id="plagiarismRate" class="value">0%</span>
+                </div>
+                <div class="detail-item">
+                  <span class="label">AI Content Detected</span>
+                  <span id="aiContentRate" class="value">0%</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

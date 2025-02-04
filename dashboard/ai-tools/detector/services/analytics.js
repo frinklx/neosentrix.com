@@ -20,16 +20,22 @@ export async function trackAnalysis(userId, result) {
     const timestamp = Date.now();
     const analysisRef = doc(collection(db, "analysis_history"));
 
-    await setDoc(analysisRef, {
+    const analyticsData = {
       userId,
       timestamp,
-      textLength: result.textLength,
-      aiScore: result.aiMetrics.overall,
-      plagiarismMatches: result.plagiarismMatches.length,
-      aiMetrics: result.aiMetrics,
-      success: result.success,
+      textLength: result.textLength || 0,
+      success: result.success || false,
       error: result.error || null,
-    });
+    };
+
+    // Only add metrics if analysis was successful
+    if (result.success && result.aiMetrics) {
+      analyticsData.aiScore = result.aiMetrics.overall;
+      analyticsData.aiMetrics = result.aiMetrics;
+      analyticsData.plagiarismMatches = (result.plagiarismMatches || []).length;
+    }
+
+    await setDoc(analysisRef, analyticsData);
 
     console.log("[Analytics] Analysis tracked successfully");
     return true;
