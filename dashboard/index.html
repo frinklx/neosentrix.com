@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - NeoSentrix</title>
+    <title>Dashboard - Neolearn</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -13,6 +13,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <!-- Background Effects -->
@@ -24,12 +26,16 @@
       <aside class="sidebar">
         <div class="logo">
           <i class="fas fa-brain"></i>
-          <span>NeoSentrix</span>
+          <span>Neolearn</span>
         </div>
         <nav class="sidebar-nav">
           <a href="#" class="active">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
+            <i class="fas fa-chart-pie"></i>
+            <span>Analytics</span>
+          </a>
+          <a href="ai-tools/index.html">
+            <i class="fas fa-robot"></i>
+            <span>AI Tools</span>
           </a>
           <a href="#">
             <i class="fas fa-book"></i>
@@ -55,31 +61,110 @@
         <header class="dashboard-header">
           <div class="user-welcome">
             <h1>Welcome Back, <span id="userName">[USERNAME]</span>!</h1>
-            <p>Your learning journey continues...</p>
+            <p>Here's your learning progress overview</p>
           </div>
           <div class="user-profile">
             <img id="userAvatar" src="" alt="User Avatar" />
           </div>
         </header>
 
-        <!-- Development Notice -->
-        <div class="dev-notice">
-          <i class="fas fa-code"></i>
-          <h2>Dashboard Under Development</h2>
-          <p>
-            We're working hard to bring you an amazing learning experience.
-            Check back soon for updates!
-          </p>
-          <div class="feature-preview">
-            <h3>Coming Soon:</h3>
-            <ul>
-              <li><i class="fas fa-check"></i> Personalized Learning Paths</li>
-              <li><i class="fas fa-check"></i> AI-Powered Progress Tracking</li>
-              <li><i class="fas fa-check"></i> Interactive Course Content</li>
-              <li>
-                <i class="fas fa-check"></i> Real-time Performance Analytics
-              </li>
-            </ul>
+        <!-- Analytics Grid -->
+        <div class="analytics-grid">
+          <!-- Study Time Card -->
+          <div class="analytics-card">
+            <div class="analytics-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="analytics-info">
+              <h3>Study Time</h3>
+              <p class="analytics-value">12.5 hrs</p>
+              <span class="analytics-trend positive">
+                <i class="fas fa-arrow-up"></i> 15% vs last week
+              </span>
+            </div>
+          </div>
+
+          <!-- Flashcards Created -->
+          <div class="analytics-card">
+            <div class="analytics-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <div class="analytics-info">
+              <h3>Flashcards Created</h3>
+              <p class="analytics-value">48</p>
+              <span class="analytics-trend positive">
+                <i class="fas fa-arrow-up"></i> 8 new today
+              </span>
+            </div>
+          </div>
+
+          <!-- Learning Streak -->
+          <div class="analytics-card">
+            <div class="analytics-icon">
+              <i class="fas fa-fire"></i>
+            </div>
+            <div class="analytics-info">
+              <h3>Learning Streak</h3>
+              <p class="analytics-value">7 days</p>
+              <span class="analytics-trend">Keep it up!</span>
+            </div>
+          </div>
+
+          <!-- Course Progress -->
+          <div class="analytics-card">
+            <div class="analytics-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="analytics-info">
+              <h3>Course Progress</h3>
+              <p class="analytics-value">65%</p>
+              <span class="analytics-trend positive">
+                <i class="fas fa-arrow-up"></i> 5% this week
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+          <!-- Learning Activity Chart -->
+          <div class="chart-card">
+            <h3>Learning Activity</h3>
+            <canvas id="activityChart"></canvas>
+          </div>
+
+          <!-- Performance by Topic -->
+          <div class="chart-card">
+            <h3>Performance by Topic</h3>
+            <canvas id="topicsChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+          <h3>Recent Activity</h3>
+          <div class="activity-list">
+            <div class="activity-item">
+              <i class="fas fa-check-circle"></i>
+              <div class="activity-details">
+                <p>Created 12 new flashcards</p>
+                <span>2 hours ago</span>
+              </div>
+            </div>
+            <div class="activity-item">
+              <i class="fas fa-star"></i>
+              <div class="activity-details">
+                <p>Completed Python Basics module</p>
+                <span>Yesterday</span>
+              </div>
+            </div>
+            <div class="activity-item">
+              <i class="fas fa-trophy"></i>
+              <div class="activity-details">
+                <p>Achieved 7-day study streak!</p>
+                <span>2 days ago</span>
+              </div>
+            </div>
           </div>
         </div>
       </main>
@@ -94,6 +179,6 @@
     <script type="module" src="../shared/utils/firebase-config.js"></script>
 
     <!-- Main Script -->
-    <script type="module" src="index.js"></script>
+    <script type="module" src="dashboard.js"></script>
   </body>
 </html>

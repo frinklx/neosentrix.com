@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Tools - NeoSentrix</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Background Effects -->
+    <div class="bg-effects"></div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-brain"></i>
+          <span>NeoSentrix</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="../index.html">
+            <i class="fas fa-chart-pie"></i>
+            <span>Analytics</span>
+          </a>
+          <a href="#" class="active">
+            <i class="fas fa-robot"></i>
+            <span>AI Tools</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-book"></i>
+            <span>Courses</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-chart-line"></i>
+            <span>Progress</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+        <button id="logoutBtn" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="dashboard-header">
+          <div class="user-welcome">
+            <h1>AI Tools</h1>
+            <p>Enhance your learning with our AI-powered tools</p>
+          </div>
+          <div class="user-profile">
+            <img id="userAvatar" src="" alt="User Avatar" />
+          </div>
+        </header>
+
+        <!-- AI Tools Grid -->
+        <div class="ai-tools-grid">
+          <!-- Flashcard Maker -->
+          <a href="flashcards/index.html" class="tool-card">
+            <div class="tool-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <div class="tool-info">
+              <h3>AI Flashcard Maker</h3>
+              <p>Transform your notes into smart flashcards using AI</p>
+              <span class="tool-status ready">Ready to Use</span>
+            </div>
+          </a>
+
+          <!-- Study Assistant (Coming Soon) -->
+          <div class="tool-card coming-soon">
+            <div class="tool-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div class="tool-info">
+              <h3>AI Study Assistant</h3>
+              <p>Get personalized study recommendations and answers</p>
+              <span class="tool-status">Coming Soon</span>
+            </div>
+          </div>
+
+          <!-- Quiz Generator (Coming Soon) -->
+          <div class="tool-card coming-soon">
+            <div class="tool-icon">
+              <i class="fas fa-question-circle"></i>
+            </div>
+            <div class="tool-info">
+              <h3>AI Quiz Generator</h3>
+              <p>Generate custom quizzes from your study material</p>
+              <span class="tool-status">Coming Soon</span>
+            </div>
+          </div>
+
+          <!-- Study Plan Generator (Coming Soon) -->
+          <div class="tool-card coming-soon">
+            <div class="tool-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="tool-info">
+              <h3>Study Plan Generator</h3>
+              <p>Create optimized study schedules based on your goals</p>
+              <span class="tool-status">Coming Soon</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script type="module" src="../../shared/utils/firebase-config.js"></script>
+
+    <!-- Main Script -->
+    <script type="module" src="ai-tools.js"></script>
+  </body>
+</html>

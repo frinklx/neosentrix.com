@@ -1,0 +1,144 @@
+:root {
+  --primary-black: #0a0a0a;
+  --secondary-black: #121212;
+  --neon-blue: #00f2ff;
+  --neon-green: #00ff9d;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --error-red: #ff4e4e;
+  --success-green: #00ff9d;
+  --glass-bg: rgba(18, 18, 18, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --card-shadow: 0 8px 32px rgba(0, 242, 255, 0.1);
+  --hover-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--primary-black);
+  background-image: radial-gradient(
+      circle at 0% 0%,
+      rgba(0, 242, 255, 0.1),
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(0, 255, 157, 0.1),
+      transparent 50%
+    );
+  color: var(--text-primary);
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* AI Tools Grid */
+.ai-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+.tool-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border-radius: 15px;
+  padding: 2rem;
+  border: 1px solid var(--glass-border);
+  transition: var(--hover-transition);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(0, 242, 255, 0.1),
+    rgba(0, 255, 157, 0.1)
+  );
+  opacity: 0;
+  transition: var(--hover-transition);
+}
+
+.tool-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 242, 255, 0.2);
+}
+
+.tool-card:hover::before {
+  opacity: 1;
+}
+
+.tool-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.3));
+}
+
+.tool-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(to right, var(--neon-blue), var(--neon-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tool-info p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.tool-status {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  background: rgba(255, 87, 34, 0.1);
+  color: #ff5722;
+}
+
+.tool-status.ready {
+  background: rgba(0, 255, 157, 0.1);
+  color: var(--neon-green);
+}
+
+.coming-soon {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.coming-soon:hover {
+  transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .ai-tools-grid {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+}
+
+/* Import existing dashboard styles */
+@import url("../styles.css");
