@@ -38,6 +38,55 @@ body {
   overflow-x: hidden;
 }
 
+/* Import base dashboard styles */
+@import url("../styles.css");
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  background: rgba(18, 18, 18, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.toast.success {
+  border-left: 4px solid var(--success-green);
+}
+
+.toast.error {
+  border-left: 4px solid var(--error-red);
+}
+
+.toast i {
+  font-size: 1.2rem;
+}
+
+.toast.success i {
+  color: var(--success-green);
+}
+
+.toast.error i {
+  color: var(--error-red);
+}
+
 /* AI Tools Grid */
 .ai-tools-grid {
   display: grid;
@@ -58,6 +107,9 @@ body {
   color: var(--text-primary);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .tool-card::before {
@@ -74,48 +126,101 @@ body {
   );
   opacity: 0;
   transition: var(--hover-transition);
+  z-index: 1;
+}
+
+.tool-card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(0, 242, 255, 0.1) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: var(--hover-transition);
+  transform: scale(0.5);
+  z-index: 0;
 }
 
 .tool-card:hover {
   transform: translateY(-5px);
   border-color: rgba(0, 242, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 242, 255, 0.1);
 }
 
 .tool-card:hover::before {
   opacity: 1;
 }
 
+.tool-card:hover::after {
+  opacity: 0.5;
+  transform: scale(1);
+}
+
 .tool-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.3));
+  filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.3));
+  position: relative;
+  z-index: 2;
+  transition: var(--hover-transition);
+}
+
+.tool-card:hover .tool-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.5));
+}
+
+.tool-info {
+  position: relative;
+  z-index: 2;
 }
 
 .tool-info h3 {
   font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   background: linear-gradient(to right, var(--neon-blue), var(--neon-green));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  position: relative;
+  display: inline-block;
 }
 
 .tool-info p {
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
 }
 
 .tool-status {
-  display: inline-block;
-  padding: 0.4rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   background: rgba(255, 87, 34, 0.1);
   color: #ff5722;
+  transition: var(--hover-transition);
+}
+
+.tool-status::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 2s infinite;
 }
 
 .tool-status.ready {
@@ -130,6 +235,26 @@ body {
 
 .coming-soon:hover {
   transform: none;
+  box-shadow: none;
+}
+
+.coming-soon .tool-icon {
+  filter: grayscale(0.5) drop-shadow(0 0 10px rgba(0, 242, 255, 0.1));
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
 }
 
 /* Responsive Design */
@@ -138,7 +263,16 @@ body {
     grid-template-columns: 1fr;
     padding: 1rem;
   }
-}
 
-/* Import existing dashboard styles */
-@import url("../styles.css");
+  .tool-card {
+    padding: 1.5rem;
+  }
+
+  .tool-icon {
+    font-size: 2.5rem;
+  }
+
+  .tool-info h3 {
+    font-size: 1.25rem;
+  }
+}

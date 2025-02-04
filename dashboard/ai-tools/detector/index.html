@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plagiarism & AI Detector - NeoSentrix</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-effects"></div>
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-brain"></i>
+          <span>NeoSentrix</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="../../index.html">
+            <i class="fas fa-chart-pie"></i>
+            <span>Analytics</span>
+          </a>
+          <a href="../index.html" class="active">
+            <i class="fas fa-robot"></i>
+            <span>AI Tools</span>
+          </a>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <header class="dashboard-header">
+          <h1>Plagiarism & AI Detector</h1>
+          <p>Check text for plagiarism and AI-generated content</p>
+        </header>
+
+        <!-- Analytics Section -->
+        <div class="analytics-section">
+          <div class="analytics-header">
+            <h2>Your Analytics</h2>
+            <div class="analytics-tabs">
+              <button class="analytics-tab active" data-tab="personal">
+                Personal Stats
+              </button>
+              <button class="analytics-tab" data-tab="global">
+                Global Stats
+              </button>
+            </div>
+          </div>
+
+          <!-- Personal Stats -->
+          <div class="analytics-content active" id="personalStats">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <i class="fas fa-check-circle"></i>
+                <div class="stat-info">
+                  <h3>Total Checks</h3>
+                  <span id="totalChecks">0</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-robot"></i>
+                <div class="stat-info">
+                  <h3>Average AI Score</h3>
+                  <span id="avgAiScore">0%</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-copy"></i>
+                <div class="stat-info">
+                  <h3>Plagiarism Rate</h3>
+                  <span id="plagiarismRate">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="charts-container">
+              <div class="chart-card">
+                <h3>AI Score Distribution</h3>
+                <div class="distribution-chart" id="aiScoreChart">
+                  <div class="chart-bar">
+                    <div class="bar-label">Low</div>
+                    <div class="bar-container">
+                      <div class="bar-fill" id="lowScoreBar"></div>
+                    </div>
+                    <div class="bar-value" id="lowScoreValue">0</div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="bar-label">Medium</div>
+                    <div class="bar-container">
+                      <div class="bar-fill" id="mediumScoreBar"></div>
+                    </div>
+                    <div class="bar-value" id="mediumScoreValue">0</div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="bar-label">High</div>
+                    <div class="bar-container">
+                      <div class="bar-fill" id="highScoreBar"></div>
+                    </div>
+                    <div class="bar-value" id="highScoreValue">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-card">
+                <h3>Recent Activity</h3>
+                <div class="activity-list" id="recentActivity">
+                  <!-- Activity items will be added here dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Global Stats -->
+          <div class="analytics-content" id="globalStats">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-info">
+                  <h3>Total Users</h3>
+                  <span id="totalUsers">0</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <div class="stat-info">
+                  <h3>Total Analyses</h3>
+                  <span id="globalChecks">0</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <i class="fas fa-percentage"></i>
+                <div class="stat-info">
+                  <h3>Global AI Rate</h3>
+                  <span id="globalAiRate">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="charts-container">
+              <div class="chart-card">
+                <h3>Global AI Score Distribution</h3>
+                <div class="distribution-chart" id="globalAiScoreChart">
+                  <div class="chart-bar">
+                    <div class="bar-label">Low</div>
+                    <div class="bar-container">
+                      <div class="bar-fill" id="globalLowScoreBar"></div>
+                    </div>
+                    <div class="bar-value" id="globalLowScoreValue">0</div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="bar-label">Medium</div>
+                    <div class="bar-container">
+                      <div class="bar-fill" id="globalMediumScoreBar"></div>
+                    </div>
+                    <div class="bar-value" id="globalMediumScoreValue">0</div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="bar-label">High</div>
+                    <div class="bar-container">
+                      <div class="bar-fill" id="globalHighScoreBar"></div>
+                    </div>
+                    <div class="bar-value" id="globalHighScoreValue">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detector-container">
+          <!-- Input Section -->
+          <div class="input-section">
+            <div class="text-input-container">
+              <textarea
+                id="textInput"
+                placeholder="Paste your text here to check for plagiarism and AI-generated content..."
+              ></textarea>
+              <div class="word-count"><span id="wordCount">0</span> words</div>
+            </div>
+            <div class="action-buttons">
+              <button class="scan-btn">
+                <i class="fas fa-magnifying-glass"></i>
+                Scan Text
+              </button>
+              <button class="clear-btn">
+                <i class="fas fa-eraser"></i>
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Results Section -->
+          <div class="results-section">
+            <div class="results-container">
+              <!-- Empty State -->
+              <div class="empty-state">
+                <i class="fas fa-magnifying-glass"></i>
+                <p>No Results Yet</p>
+                <span>Paste your text and click Scan to analyze</span>
+              </div>
+
+              <!-- Results Content (Initially Hidden) -->
+              <div class="results-content" style="display: none">
+                <!-- Overall Score -->
+                <div class="score-cards">
+                  <div class="score-card">
+                    <div class="score-header">
+                      <i class="fas fa-robot"></i>
+                      <h3>AI Detection</h3>
+                    </div>
+                    <div class="score-value"><span id="aiScore">0</span>%</div>
+                    <div class="score-label" id="aiLabel">Analyzing...</div>
+                  </div>
+                  <div class="score-card">
+                    <div class="score-header">
+                      <i class="fas fa-copy"></i>
+                      <h3>Plagiarism</h3>
+                    </div>
+                    <div class="score-value">
+                      <span id="plagiarismScore">0</span>%
+                    </div>
+                    <div class="score-label" id="plagiarismLabel">
+                      Analyzing...
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Detailed Analysis -->
+                <div class="analysis-section">
+                  <h3>Detailed Analysis</h3>
+                  <div class="analysis-tabs">
+                    <button class="tab-btn active" data-tab="ai">
+                      <i class="fas fa-robot"></i>
+                      AI Analysis
+                    </button>
+                    <button class="tab-btn" data-tab="plagiarism">
+                      <i class="fas fa-copy"></i>
+                      Plagiarism Check
+                    </button>
+                  </div>
+
+                  <!-- AI Analysis Tab -->
+                  <div class="tab-content active" id="aiTab">
+                    <div class="analysis-metrics">
+                      <div class="metric">
+                        <div class="metric-header">
+                          <i class="fas fa-fingerprint"></i>
+                          <span>Writing Style</span>
+                        </div>
+                        <div class="metric-bar">
+                          <div class="bar-fill" id="styleBar"></div>
+                        </div>
+                      </div>
+                      <div class="metric">
+                        <div class="metric-header">
+                          <i class="fas fa-random"></i>
+                          <span>Pattern Analysis</span>
+                        </div>
+                        <div class="metric-bar">
+                          <div class="bar-fill" id="patternBar"></div>
+                        </div>
+                      </div>
+                      <div class="metric">
+                        <div class="metric-header">
+                          <i class="fas fa-language"></i>
+                          <span>Language Coherence</span>
+                        </div>
+                        <div class="metric-bar">
+                          <div class="bar-fill" id="coherenceBar"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="analysis-summary" id="aiSummary"></div>
+                  </div>
+
+                  <!-- Plagiarism Tab -->
+                  <div class="tab-content" id="plagiarismTab">
+                    <div class="matches-list" id="matchesList"></div>
+                    <div class="analysis-summary" id="plagiarismSummary"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js" type="module"></script>
+  </body>
+</html>

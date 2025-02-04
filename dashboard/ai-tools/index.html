@@ -13,6 +13,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../styles.css" />
   </head>
   <body>
     <!-- Background Effects -->
@@ -35,15 +36,7 @@
             <i class="fas fa-robot"></i>
             <span>AI Tools</span>
           </a>
-          <a href="#">
-            <i class="fas fa-book"></i>
-            <span>Courses</span>
-          </a>
-          <a href="#">
-            <i class="fas fa-chart-line"></i>
-            <span>Progress</span>
-          </a>
-          <a href="#">
+          <a href="../settings/index.html">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
           </a>
@@ -76,6 +69,18 @@
             <div class="tool-info">
               <h3>AI Flashcard Maker</h3>
               <p>Transform your notes into smart flashcards using AI</p>
+              <span class="tool-status ready">Ready to Use</span>
+            </div>
+          </a>
+
+          <!-- Plagiarism & AI Detector -->
+          <a href="detector/index.html" class="tool-card">
+            <div class="tool-icon">
+              <i class="fas fa-magnifying-glass"></i>
+            </div>
+            <div class="tool-info">
+              <h3>Plagiarism & AI Detector</h3>
+              <p>Check text for plagiarism and AI-generated content</p>
               <span class="tool-status ready">Ready to Use</span>
             </div>
           </a>
@@ -124,10 +129,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    <!-- Firebase Config -->
-    <script type="module" src="../../shared/utils/firebase-config.js"></script>
-
     <!-- Main Script -->
-    <script type="module" src="ai-tools.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>

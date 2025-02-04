@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flashcards Generator - Neolearn</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Background Effects -->
+    <div class="bg-effects"></div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-brain"></i>
+          <span>NeoSentrix</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="../../index.html">
+            <i class="fas fa-chart-pie"></i>
+            <span>Analytics</span>
+          </a>
+          <a href="../index.html" class="active">
+            <i class="fas fa-robot"></i>
+            <span>AI Tools</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-book"></i>
+            <span>Courses</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-chart-line"></i>
+            <span>Progress</span>
+          </a>
+          <a href="#">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+        <button id="logoutBtn" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="dashboard-header">
+          <div class="user-welcome">
+            <h1>AI Flashcard Maker</h1>
+            <p>Transform your notes into smart flashcards</p>
+          </div>
+          <div class="user-profile">
+            <img id="userAvatar" src="" alt="User Avatar" />
+          </div>
+        </header>
+
+        <!-- Flashcard Maker Section -->
+        <section class="flashcard-maker">
+          <div class="input-section">
+            <div class="format-guide">
+              <div class="guide-header">
+                <i class="fas fa-lightbulb"></i>
+                <h3>How to Format Your Notes</h3>
+              </div>
+              <ul>
+                <li>
+                  <i class="fas fa-check"></i>
+                  Use "Topic:" to start a new topic
+                </li>
+                <li>
+                  <i class="fas fa-check"></i>
+                  Use "-" for key points
+                </li>
+                <li>
+                  <i class="fas fa-check"></i>
+                  Use "Definition:" for important terms
+                </li>
+                <li>
+                  <i class="fas fa-check"></i>
+                  Use "Example:" to provide examples
+                </li>
+              </ul>
+              <div class="example-format">
+                <div class="example-header">
+                  <i class="fas fa-code"></i>
+                  <h4>Example Format</h4>
+                </div>
+                <pre>
+Topic: Neural Networks
+
+Definition: Artificial Neural Network
+- A computing system inspired by biological neural networks
+- Consists of interconnected nodes (neurons)
+
+Example:
+- Image recognition
+- Natural language processing
+
+Key Points:
+- Learn from examples without being programmed
+- Can handle complex patterns
+- Require large amounts of training data</pre
+                >
+              </div>
+            </div>
+
+            <div class="notes-input-container">
+              <textarea
+                id="notesInput"
+                placeholder="Paste your study notes here following the format guide above..."
+              ></textarea>
+              <div class="action-buttons">
+                <button class="format-btn">
+                  <i class="fas fa-magic"></i>
+                  Format Notes
+                </button>
+                <button class="generate-btn">
+                  <i class="fas fa-wand-sparkles"></i>
+                  Generate Flashcards
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flashcards-section">
+            <div class="flashcards-container">
+              <div class="flashcards-wrapper">
+                <div class="empty-state">
+                  <i class="fas fa-lightbulb"></i>
+                  <p>No flashcards yet</p>
+                  <span
+                    >Paste your notes and click Generate to create
+                    flashcards</span
+                  >
+                </div>
+                <!-- Flashcards will be dynamically inserted here -->
+              </div>
+              <div class="flashcard-controls">
+                <button class="nav-btn" id="prevCard">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <span id="cardCounter">0 / 0</span>
+                <button class="nav-btn" id="nextCard">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- Main Script -->
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

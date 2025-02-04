@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - Neolearn</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <!-- Background Effects -->
+    <div class="bg-effects"></div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-brain"></i>
+          <span>Neolearn</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="../index.html">
+            <i class="fas fa-chart-pie"></i>
+            <span>Analytics</span>
+          </a>
+          <a href="../ai-tools/">
+            <i class="fas fa-robot"></i>
+            <span>AI Tools</span>
+          </a>
+          <a href="#" class="active">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+        <button id="logoutBtn" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="dashboard-header">
+          <div class="welcome-section">
+            <h1>Settings</h1>
+            <p>Customize your profile and preferences</p>
+          </div>
+          <div class="user-profile">
+            <div class="avatar-container">
+              <span id="userInitials" class="user-initials">NA</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Settings Content -->
+        <div class="settings-content">
+          <!-- Profile Section -->
+          <section class="settings-section">
+            <h2>Profile Settings</h2>
+            <div class="profile-form">
+              <div class="form-group">
+                <label for="displayName">Display Name</label>
+                <input type="text" id="displayName" placeholder="Your name" />
+              </div>
+              <div class="form-group">
+                <label for="nickname">Nickname</label>
+                <input type="text" id="nickname" placeholder="Your nickname" />
+              </div>
+              <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea
+                  id="bio"
+                  rows="4"
+                  placeholder="Tell us about yourself"
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Learning Goals Section -->
+          <section class="settings-section">
+            <h2>Learning Goals</h2>
+            <div class="goals-section">
+              <div class="goals-list" id="goalsList">
+                <!-- Goals will be added here dynamically -->
+              </div>
+              <div class="add-goal">
+                <input
+                  type="text"
+                  id="newGoal"
+                  placeholder="Enter a new learning goal"
+                />
+                <button id="addGoalBtn" class="primary-btn">
+                  <i class="fas fa-plus"></i>
+                  Add Goal
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Save Changes -->
+          <div class="settings-actions">
+            <button id="saveChanges" class="primary-btn">
+              <i class="fas fa-save"></i>
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- Main Script -->
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

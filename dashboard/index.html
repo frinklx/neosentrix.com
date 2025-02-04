@@ -13,7 +13,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
-    <!-- Chart.js for analytics -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
@@ -33,138 +33,90 @@
             <i class="fas fa-chart-pie"></i>
             <span>Analytics</span>
           </a>
-          <a href="ai-tools/index.html">
+          <a href="ai-tools/">
             <i class="fas fa-robot"></i>
             <span>AI Tools</span>
           </a>
-          <a href="#">
-            <i class="fas fa-book"></i>
-            <span>Courses</span>
-          </a>
-          <a href="#">
-            <i class="fas fa-chart-line"></i>
-            <span>Progress</span>
-          </a>
-          <a href="#">
+          <a href="settings/">
             <i class="fas fa-cog"></i>
             <span>Settings</span>
           </a>
+          <button id="logoutBtn" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
         </nav>
-        <button id="logoutBtn" class="logout-btn">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
-        </button>
       </aside>
 
       <!-- Main Content -->
       <main class="main-content">
+        <!-- Header -->
         <header class="dashboard-header">
-          <div class="user-welcome">
-            <h1>Welcome Back, <span id="userName">[USERNAME]</span>!</h1>
+          <div class="welcome-section">
+            <h1 id="welcomeMessage">
+              Welcome Back, <span id="userName">User</span>!
+            </h1>
             <p>Here's your learning progress overview</p>
           </div>
           <div class="user-profile">
-            <img id="userAvatar" src="" alt="User Avatar" />
+            <div class="avatar-container" id="profileDropdownTrigger">
+              <span id="userInitials" class="user-initials">NA</span>
+              <!-- Profile Dropdown Menu -->
+              <div class="profile-dropdown">
+                <a href="settings/" class="dropdown-item">
+                  <i class="fas fa-cog"></i>
+                  Settings
+                </a>
+                <button id="logoutBtn" class="dropdown-item">
+                  <i class="fas fa-sign-out-alt"></i>
+                  Logout
+                </button>
+              </div>
+            </div>
           </div>
         </header>
 
-        <!-- Analytics Grid -->
-        <div class="analytics-grid">
-          <!-- Study Time Card -->
-          <div class="analytics-card">
-            <div class="analytics-icon">
-              <i class="fas fa-clock"></i>
-            </div>
-            <div class="analytics-info">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="fas fa-clock"></i>
+            <div class="stat-info">
               <h3>Study Time</h3>
-              <p class="analytics-value">12.5 hrs</p>
-              <span class="analytics-trend positive">
-                <i class="fas fa-arrow-up"></i> 15% vs last week
-              </span>
+              <span id="timeLearning">0 hrs</span>
+              <div class="trend positive" id="timeProgress">
+                ↑ 15% vs last week
+              </div>
             </div>
           </div>
-
-          <!-- Flashcards Created -->
-          <div class="analytics-card">
-            <div class="analytics-icon">
-              <i class="fas fa-brain"></i>
-            </div>
-            <div class="analytics-info">
+          <div class="stat-card">
+            <i class="fas fa-brain"></i>
+            <div class="stat-info">
               <h3>Flashcards Created</h3>
-              <p class="analytics-value">48</p>
-              <span class="analytics-trend positive">
-                <i class="fas fa-arrow-up"></i> 8 new today
-              </span>
+              <span id="flashcardsCreated">0</span>
+              <div class="trend positive" id="flashcardsProgress">
+                ↑ 8 new today
+              </div>
             </div>
           </div>
-
-          <!-- Learning Streak -->
-          <div class="analytics-card">
-            <div class="analytics-icon">
-              <i class="fas fa-fire"></i>
-            </div>
-            <div class="analytics-info">
+          <div class="stat-card">
+            <i class="fas fa-fire"></i>
+            <div class="stat-info">
               <h3>Learning Streak</h3>
-              <p class="analytics-value">7 days</p>
-              <span class="analytics-trend">Keep it up!</span>
-            </div>
-          </div>
-
-          <!-- Course Progress -->
-          <div class="analytics-card">
-            <div class="analytics-icon">
-              <i class="fas fa-graduation-cap"></i>
-            </div>
-            <div class="analytics-info">
-              <h3>Course Progress</h3>
-              <p class="analytics-value">65%</p>
-              <span class="analytics-trend positive">
-                <i class="fas fa-arrow-up"></i> 5% this week
-              </span>
+              <span id="learningStreak">0 days</span>
+              <div class="trend">Keep it up!</div>
             </div>
           </div>
         </div>
 
         <!-- Charts Section -->
         <div class="charts-section">
-          <!-- Learning Activity Chart -->
-          <div class="chart-card">
-            <h3>Learning Activity</h3>
+          <div class="chart-container">
+            <h2>Learning Activity</h2>
             <canvas id="activityChart"></canvas>
           </div>
-
-          <!-- Performance by Topic -->
-          <div class="chart-card">
-            <h3>Performance by Topic</h3>
+          <div class="chart-container">
+            <h2>Performance by Topic</h2>
             <canvas id="topicsChart"></canvas>
-          </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="recent-activity">
-          <h3>Recent Activity</h3>
-          <div class="activity-list">
-            <div class="activity-item">
-              <i class="fas fa-check-circle"></i>
-              <div class="activity-details">
-                <p>Created 12 new flashcards</p>
-                <span>2 hours ago</span>
-              </div>
-            </div>
-            <div class="activity-item">
-              <i class="fas fa-star"></i>
-              <div class="activity-details">
-                <p>Completed Python Basics module</p>
-                <span>Yesterday</span>
-              </div>
-            </div>
-            <div class="activity-item">
-              <i class="fas fa-trophy"></i>
-              <div class="activity-details">
-                <p>Achieved 7-day study streak!</p>
-                <span>2 days ago</span>
-              </div>
-            </div>
           </div>
         </div>
       </main>
