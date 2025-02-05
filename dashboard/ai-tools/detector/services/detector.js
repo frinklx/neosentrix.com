@@ -29,8 +29,8 @@ const db = getFirestore(app);
 console.log("[Detector] Firebase services initialized successfully");
 
 // Rate limiting constants
-const MAX_REQUESTS_PER_DAY = 10;
-const REQUEST_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
+const MAX_REQUESTS_PER_DAY = 1000000;
+const REQUEST_WINDOW_MS = 1 * 60 * 60 * 1000; // 1 hour
 
 // Text preprocessing
 function preprocessText(text) {

@@ -9,6 +9,12 @@ import {
   showLoading,
   hideLoading,
 } from "../../../shared/utils/ui.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // DOM Elements
 let textInput,
@@ -46,6 +52,14 @@ let textInput,
 let currentUser = null;
 let lastQuiz = null;
 let isGenerating = false;
+let quizStartTime = null;
+let questionStartTimes = {};
+let questionAttempts = {};
+let analyticsData = {
+  quizStats: {},
+  questionStats: [],
+  userInteractions: [],
+};
 
 // Constants
 const MIN_WORDS = 100;
@@ -847,6 +861,13 @@ function startQuiz(questions) {
   quizMode.classList.add("active");
   quizMode.style.display = "flex";
 
+  // Track quiz start
+  trackQuizStart(questions);
+  trackUserInteraction("quiz_start", {
+    questionCount: questions.length,
+    types: questions.map((q) => q.type),
+  });
+
   if (questions && questions.length > 0) {
     showQuestion(questions[0]);
   } else {
@@ -857,6 +878,13 @@ function startQuiz(questions) {
 
 function showQuestion(question) {
   if (!quizContent || !quizProgress || !quizTimer) return;
+
+  // Track question start
+  trackQuestionStart(question.id);
+  trackUserInteraction("question_shown", {
+    questionId: question.id,
+    type: question.type,
+  });
 
   // Update progress and score
   quizProgress.querySelector("span").textContent = `Question ${
@@ -974,6 +1002,21 @@ function handleAnswer(e, question) {
       ? (selectedIndex === 0) === question.correctAnswer
       : false;
 
+  // Track answer attempt
+  trackQuestionAttempt(
+    question.id,
+    isCorrect,
+    question.type === "mcq"
+      ? question.options[selectedIndex]
+      : String(selectedIndex === 0)
+  );
+
+  trackUserInteraction("answer_submitted", {
+    questionId: question.id,
+    isCorrect,
+    timeSpent: new Date() - questionStartTimes[question.id],
+  });
+
   // Show result
   e.target.classList.add(isCorrect ? "correct" : "incorrect");
 
@@ -1015,28 +1058,37 @@ function showResults() {
 
   const percentage = Math.round((score / lastQuiz.questions.length) * 100);
 
-  quizContent.innerHTML = `
-    <div class="quiz-results show">
-      <h1 class="results-header">Quiz Complete!</h1>
-      <div class="results-score">${percentage}%</div>
-      <div class="results-stats">
-        <div class="stat-card">
-          <div class="stat-label">Correct Answers</div>
-          <div class="stat-value">${score}/${lastQuiz.questions.length}</div>
+  // Save analytics before showing results
+  saveQuizAnalytics().then(() => {
+    trackUserInteraction("quiz_completed", {
+      finalScore: score,
+      totalQuestions: lastQuiz.questions.length,
+      percentage,
+    });
+
+    quizContent.innerHTML = `
+      <div class="quiz-results show">
+        <h1 class="results-header">Quiz Complete!</h1>
+        <div class="results-score">${percentage}%</div>
+        <div class="results-stats">
+          <div class="stat-card">
+            <div class="stat-label">Correct Answers</div>
+            <div class="stat-value">${score}/${lastQuiz.questions.length}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Time Taken</div>
+            <div class="stat-value">${Math.round(
+              (lastQuiz.questions.length * 20) / 60
+            )} min</div>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Time Taken</div>
-          <div class="stat-value">${Math.round(
-            (lastQuiz.questions.length * 20) / 60
-          )} min</div>
-        </div>
+        <button class="action-btn" onclick="location.reload()">
+          <i class="fas fa-redo"></i>
+          Try Again
+        </button>
       </div>
-      <button class="action-btn" onclick="location.reload()">
-        <i class="fas fa-redo"></i>
-        Try Again
-      </button>
-    </div>
-  `;
+    `;
+  });
 }
 
 // Add new function to handle fill in the blank answers
@@ -1045,6 +1097,15 @@ function handleFillBlankAnswer(answer, question) {
 
   const isCorrect =
     answer.toLowerCase() === question.correctAnswer.toLowerCase();
+
+  // Track answer attempt
+  trackQuestionAttempt(question.id, isCorrect, answer);
+  trackUserInteraction("fill_blank_submitted", {
+    questionId: question.id,
+    isCorrect,
+    timeSpent: new Date() - questionStartTimes[question.id],
+  });
+
   const input = document.querySelector(".fill-blank-input");
   const submitBtn = document.querySelector(".fill-blank-submit");
 
@@ -1081,6 +1142,14 @@ function handleFillBlankAnswer(answer, question) {
 // Add function to handle skipping questions
 function handleSkip(question) {
   if (timer) clearInterval(timer);
+
+  // Track skip
+  trackQuestionAttempt(question.id, false, "skipped");
+  trackUserInteraction("question_skipped", {
+    questionId: question.id,
+    timeSpent: new Date() - questionStartTimes[question.id],
+  });
+
   showToast(`The answer was: ${question.correctAnswer}`, "info");
 
   setTimeout(() => {
@@ -1272,6 +1341,88 @@ async function handleExport() {
     console.error("[Quiz Generator] Error exporting quiz:", error);
     hideLoading();
     showToast("Error exporting quiz", "error");
+  }
+}
+
+// Add analytics tracking functions
+async function trackQuizStart(questions) {
+  quizStartTime = new Date();
+  analyticsData.quizStats = {
+    startTime: quizStartTime,
+    totalQuestions: questions.length,
+    questionTypes: questions.reduce((acc, q) => {
+      acc[q.type] = (acc[q.type] || 0) + 1;
+      return acc;
+    }, {}),
+    inputTextLength: textInput.value.length,
+    wordCount: countWords(textInput.value),
+    difficulty: difficultyLevel.value,
+  };
+}
+
+function trackQuestionStart(questionId) {
+  questionStartTimes[questionId] = new Date();
+  questionAttempts[questionId] = 0;
+}
+
+function trackQuestionAttempt(questionId, isCorrect, answer) {
+  questionAttempts[questionId] = (questionAttempts[questionId] || 0) + 1;
+
+  analyticsData.questionStats.push({
+    questionId,
+    timeSpent: new Date() - questionStartTimes[questionId],
+    attempts: questionAttempts[questionId],
+    isCorrect,
+    answerGiven: answer,
+    timestamp: new Date(),
+  });
+}
+
+function trackUserInteraction(type, details) {
+  analyticsData.userInteractions.push({
+    type,
+    details,
+    timestamp: new Date(),
+  });
+}
+
+async function saveQuizAnalytics() {
+  if (!currentUser) return;
+
+  try {
+    const db = getFirestore();
+    const quizData = {
+      userId: currentUser.uid,
+      timestamp: serverTimestamp(),
+      quizStats: {
+        ...analyticsData.quizStats,
+        endTime: new Date(),
+        duration: new Date() - quizStartTime,
+        finalScore: score,
+        scorePercentage: Math.round((score / lastQuiz.questions.length) * 100),
+      },
+      questionStats: analyticsData.questionStats.map((stat) => ({
+        ...stat,
+        timestamp: stat.timestamp.toISOString(),
+      })),
+      userInteractions: analyticsData.userInteractions.map((interaction) => ({
+        ...interaction,
+        timestamp: interaction.timestamp.toISOString(),
+      })),
+      metadata: {
+        browser: navigator.userAgent,
+        platform: navigator.platform,
+        screenSize: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        },
+      },
+    };
+
+    await addDoc(collection(db, "quiz_analytics"), quizData);
+    console.log("[Quiz Analytics] Data saved successfully");
+  } catch (error) {
+    console.error("[Quiz Analytics] Error saving data:", error);
   }
 }
 

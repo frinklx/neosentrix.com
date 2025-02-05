@@ -1,11 +1,10 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - Neolearn</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
       rel="stylesheet"
     />
     <link
@@ -15,6 +14,53 @@
     <link rel="stylesheet" href="styles.css" />
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link type="text/css" rel="stylesheet" id="dark-mode-custom-link" />
+    <link type="text/css" rel="stylesheet" id="dark-mode-general-link" />
+    <style lang="en" type="text/css" id="dark-mode-custom-style"></style>
+    <style lang="en" type="text/css" id="dark-mode-native-style"></style>
+    <style lang="en" type="text/css" id="dark-mode-native-sheet"></style>
+    <style id="custom-cursor" type="text/css">
+      body button,
+      body [type="button"],
+      body input[type="reset"],
+      body input[type="submit"],
+      body [role="button"],
+      ::-webkit-search-cancel-button,
+      ::-webkit-search-decoration,
+      ::-webkit-scrollbar-button,
+      ::-webkit-file-upload-button,
+      [role^="button"],
+      .cc_pointer,
+      [type="search"]::-webkit-search-cancel-button,
+      a,
+      select,
+      [type="search"]::-webkit-search-decoration,
+      .paper-button,
+      .ytp-progress-bar-container,
+      input[type="submit"],
+      :link,
+      :visited,
+      a > *,
+      img,
+      ::-webkit-scrollbar-button,
+      .ogdlpmhglpejoiomcodnpjnfgcpmgale_pointer,
+      ::-webkit-file-upload-button,
+      .ytp-volume-panel,
+      #myogdlpmhglpejoiomcodnpjnfgcpmgale .icon,
+      body .custom-cursor-on-hover {
+        cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAi1JREFUWEfdl89PE0EUx99ruyRey637g5akNZ4U1AMheIAC/stE8ELEi4lGPBhKusvMELm0N5UA3Udms29ddX817jTBOTXd+fF533m/BqHi6LreTwRo6ulEdBUo6VVcWjgNq27Sc9xbQGxFAADfAik6VdcWzSsFYMvH4kJb39CbTafT8MWztVkdSpQCsOVjcZEYMplM4OXaeqkStm0PlhrNL7yQAE4DKZ6nFTEK0Ot0HkOz9TU5kOizr+RT4wCO49gWNvz+YEAHh2+W+MDz0Sjc2xnOCOhtIOVr/b8RBWIA1e/34eDoMDF4dHYG+8Nd7cVHvhLD/wCAiBDxLifMLOMKlOUB4wDtdhs+fPoIHJa248DxyTtQUsGrzU14WABd1/uOAFacameBFI/076JEVKsCPde7gRgAiO58JSMY4wBseTrXA0C46q3M4srXQkRMp+Iy58v7npkH2PI/D1j1Vn7bZ+EAfDqDGAPout4PJLLGUuhSG5Xb9DAOwIflXUXWfXLc1xoFZUqkQYwAzKPEgwWI+oHtnZAQdD+wn1mOq/jCvAr8iv8KHVHKF3QTmtmwGAVIfCFuw7PifzEArncNRM2xFH8pMS9AcveAp4ES6//clFatBUV3z3uUN6UFSpSB1AKQ9on28nJLd0B5gzsh7owWDnCpLsOtjY3Qdhw6fn9i1Q7Aj9NcCYhGvpIDfhck8zJeRJV9IJWio6gouncCPA+UeBIBAAY8lzK8n7/dAyvr3j/2vpL/AAAAAElFTkSuQmCC")
+            12 0,
+          pointer !important;
+      }
+      html,
+      body,
+      body select,
+      body .custom-cursor-default-hover {
+        cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAABFtJREFUWEfFl89PImcYx9+ZEUUnoESkmphC1BsHbcC0aprag6K2MXFP/AHsiTTYsIk/YhQPu0piuWy0JlXjxdh4qbSmatIa16zZmMiiJbGJygCuP3CAIoyjgjDTvBPGsNZuEdBygUxm5vm83+f7fN8XBAAQycnJ+T0Wi7WB/+GDAACuBQLBtkwmGygtLXXYbLaDx+TgAAAAGAAAkcvlTz0ez8SjAyiVSrSzsxNZW1t7tbCwsGcwGDpNJtPFY4BwCmg0GnRpaQnR6XTs5OQk0tXVJTGbzaFHB7i4uGCj0SioqKgIMQyzHQqFvnxoCKhAVKPRYFABAAADvdDe3g4ikcjuxsaGvri4eJ8giAczJt+C9wDgqm02G6NWqzGRSPSMoqjvHkoJDqClpQVdXFy8UQAW83q97OzsLGq3219Zrda3dXV1z5eXl//KNsi/KpBoB2Y0GuMWiwVraGiQr6+vZ70VvAe4KQAAsEkrhH7AgsEgEw6H0ebm5nfhcNjl9XqzakxYNJIwIawNAXgQ+BtNKIG2tbWxFEW9Oz8/f4IgCGm324+z0Y7/bAEAIJ5ISsbpdIKqqioUx/EhmqZ7swXAj+EHFYDqBINBdnx8HN3d3V2fm5t7XVBQ8NLv959kAnIvBRKF0KGhoXhvby+Wm5tbHY1G/8gUACqQbMI7PZDwAqyFkiTJnJycoDqdbtfj8Xh9Pl/axrw9BVwSJlbETUGyB3gF+Gutra3MwcFBUKVSfSoWi8Ojo6OB+6qRVguSoQKBACKVSoFMJvueJEl9OgApjWFiRN8bTXiNpmkwODiIBAKBNzMzM9ZIJPIjAOAwVZCMFeBbNjY2BvR6PXzf5wCA1/cBSHkMj46O2I6ODhRBEOgP+M0lJ8uyyOnpKevxeCDAF+kA/GMK4vE4TD40Pz+fycvLg4nIOp1OFgYRhmGXAoEgciu6IQsSi8W+jsVib+6jQPJueBPFm5ubbG1tLToyMsIYjUYukgmCAJWVlahQKHxxdXXVl2qRD91352Y0PT0NSJIkLRbLL1qtVq1UKmu0Wi1zeXkJ+vr6UL/f/+vKysrPOI7/dHx87M8E5E4TSiQScH19/ZamabVIJBqhKMrodrsZuVzOBZHZbI53d3djOI7X0DS9nSnATRJaLBYWbss+n+/J2dmZ1+12byQAvnW5XKxCoeDGcHh4mOnp6YGb0ic0TWccxddNTU3o/Pw8YjAYIlNTU/H+/v5yk8l0BldWWFg4RFHUNzs7O0KogFAo5HwxMDCAKhSKzyYmJhz19fWX6arA/zGBJkPKy8ufHh4eTt71MpFIRMhkso/39/dvzgg1NTWAIAg/RVGytAGkUulsIkyQsrKyHxwOx293vUwsFhMlJSU8AHdGqK6uZtxudyAcDn+UNkCqD4rFYhdUYG9vDyqQDOB/FACVSvVVUVGRQiKRvOSPaT6f71koFHJubW1ZU13I7fv4rTel5xsbG6tWV1f/5AFwHFdnOoZ/A8/dVT/OfamUAAAAAElFTkSuQmCC")
+            0 0,
+          auto !important;
+      }
+    </style>
   </head>
   <body>
     <!-- Background Effects -->
@@ -53,14 +99,22 @@
         <!-- Header -->
         <header class="dashboard-header">
           <div class="welcome-section">
-            <h1 id="welcomeMessage" class="gradient-text">
-              Welcome Back, <span id="userName">User</span>!
+            <h1
+              id="welcomeMessage"
+              class="gradient-text"
+              style="background-size: 200%"
+            >
+              Welcome Back, nair4pranav!
             </h1>
             <p>Here's your learning progress overview</p>
           </div>
           <div class="user-profile">
             <div class="avatar-container" id="profileDropdownTrigger">
-              <span id="userInitials" class="user-initials">NA</span>
+              <span
+                id="userInitials"
+                class="user-initials custom-cursor-on-hover"
+                >N</span
+              >
               <!-- Profile Dropdown Menu -->
               <div class="profile-dropdown">
                 <a href="settings/" class="dropdown-item">
@@ -77,7 +131,7 @@
         </header>
 
         <!-- Stats Grid -->
-        <div class="stats-grid">
+        <div class="stats-grid" style="opacity: 1">
           <!-- AI Processing Stats -->
           <div class="stat-card highlight">
             <i class="fas fa-robot"></i>
@@ -117,9 +171,9 @@
             <i class="fas fa-clock"></i>
             <div class="stat-info">
               <h3>Study Time</h3>
-              <span id="timeLearning">0 hrs</span>
+              <span id="timeLearning">5.1 hrs</span>
               <div class="trend positive" id="timeProgress">
-                ↑ 15% vs last week
+                Making progress
               </div>
             </div>
           </div>
@@ -129,9 +183,9 @@
             <i class="fas fa-brain"></i>
             <div class="stat-info">
               <h3>Flashcards Created</h3>
-              <span id="flashcardsCreated">0</span>
+              <span id="flashcardsCreated">136</span>
               <div class="trend positive" id="flashcardsProgress">
-                ↑ 8 new today
+                ↑ 136 total
               </div>
             </div>
           </div>
@@ -141,7 +195,7 @@
             <i class="fas fa-fire"></i>
             <div class="stat-info">
               <h3>Learning Streak</h3>
-              <span id="learningStreak">0 days</span>
+              <span id="learningStreak">2 days</span>
               <div class="trend">Keep it up!</div>
             </div>
           </div>
@@ -180,14 +234,34 @@
         </div>
 
         <!-- Charts Section -->
-        <div class="charts-section">
+        <div class="charts-section" style="opacity: 1">
           <div class="chart-container">
             <h2>Learning Activity</h2>
-            <canvas id="activityChart"></canvas>
+            <canvas
+              id="activityChart"
+              style="
+                display: block;
+                box-sizing: border-box;
+                height: 352px;
+                width: 612px;
+              "
+              width="1224"
+              height="705"
+            ></canvas>
           </div>
           <div class="chart-container">
             <h2>Performance by Topic</h2>
-            <canvas id="topicsChart"></canvas>
+            <canvas
+              id="topicsChart"
+              style="
+                display: block;
+                box-sizing: border-box;
+                height: 352px;
+                width: 612px;
+              "
+              width="1224"
+              height="705"
+            ></canvas>
           </div>
         </div>
       </main>
