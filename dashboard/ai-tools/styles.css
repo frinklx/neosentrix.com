@@ -92,24 +92,20 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  padding: 1rem 0;
+  padding: 2rem;
 }
 
 .tool-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  border-radius: 15px;
+  background: rgba(18, 18, 18, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
   padding: 2rem;
-  border: 1px solid var(--glass-border);
-  transition: var(--hover-transition);
-  cursor: pointer;
+  transition: all 0.3s ease;
   text-decoration: none;
   color: var(--text-primary);
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
 
 .tool-card::before {
@@ -125,26 +121,7 @@ body {
     rgba(0, 255, 157, 0.1)
   );
   opacity: 0;
-  transition: var(--hover-transition);
-  z-index: 1;
-}
-
-.tool-card::after {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(0, 242, 255, 0.1) 0%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: var(--hover-transition);
-  transform: scale(0.5);
-  z-index: 0;
+  transition: all 0.3s ease;
 }
 
 .tool-card:hover {
@@ -157,46 +134,33 @@ body {
   opacity: 1;
 }
 
-.tool-card:hover::after {
-  opacity: 0.5;
-  transform: scale(1);
-}
-
 .tool-icon {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--neon-blue), var(--neon-green));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.3));
-  position: relative;
-  z-index: 2;
-  transition: var(--hover-transition);
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #00f2ff;
+  transition: all 0.3s ease;
 }
 
 .tool-card:hover .tool-icon {
   transform: scale(1.1);
-  filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.5));
+  color: #00ff9d;
 }
 
 .tool-info {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 .tool-info h3 {
   font-size: 1.5rem;
   margin-bottom: 0.75rem;
-  background: linear-gradient(to right, var(--neon-blue), var(--neon-green));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  position: relative;
-  display: inline-block;
+  color: #00f2ff;
+  font-weight: 600;
 }
 
 .tool-info p {
-  color: var(--text-secondary);
-  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
   margin-bottom: 1.5rem;
   line-height: 1.6;
 }
@@ -207,30 +171,19 @@ body {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   background: rgba(255, 87, 34, 0.1);
   color: #ff5722;
-  transition: var(--hover-transition);
-}
-
-.tool-status::before {
-  content: "";
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-  animation: pulse 2s infinite;
 }
 
 .tool-status.ready {
   background: rgba(0, 255, 157, 0.1);
-  color: var(--neon-green);
+  color: #00ff9d;
 }
 
 .coming-soon {
+  opacity: 0.5;
   cursor: not-allowed;
-  opacity: 0.7;
 }
 
 .coming-soon:hover {
@@ -238,23 +191,63 @@ body {
   box-shadow: none;
 }
 
-.coming-soon .tool-icon {
-  filter: grayscale(0.5) drop-shadow(0 0 10px rgba(0, 242, 255, 0.1));
+/* Header Styles */
+.header {
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: #fff;
+  margin: 0;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatar-container {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(0, 242, 255, 0.1);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.avatar-container:hover {
+  transform: scale(1.05);
+}
+
+.avatar-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #00f2ff;
+  background: rgba(0, 242, 255, 0.1);
 }
 
 /* Responsive Design */
@@ -264,15 +257,11 @@ body {
     padding: 1rem;
   }
 
-  .tool-card {
-    padding: 1.5rem;
+  .header {
+    padding: 1rem;
   }
 
-  .tool-icon {
-    font-size: 2.5rem;
-  }
-
-  .tool-info h3 {
-    font-size: 1.25rem;
+  .header h1 {
+    font-size: 1.5rem;
   }
 }

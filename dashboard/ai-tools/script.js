@@ -28,12 +28,25 @@ function updateUIWithUserData(userData) {
   if (!userData) return;
 
   if (userAvatar) {
-    const avatarUrl =
-      userData.photoURL ||
-      `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        userData.email.split("@")[0]
+    // Check for profile picture in userData
+    if (
+      userData.profilePicture &&
+      userData.profilePicture !== "/assets/images/default-avatar.png"
+    ) {
+      userAvatar.src = userData.profilePicture;
+    } else {
+      // Generate initials avatar as fallback
+      const initialsSource = userData.displayName || userData.email || "User";
+      const initials = initialsSource
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+      userAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        initials
       )}&background=00f2ff&color=000000`;
-    userAvatar.src = avatarUrl;
+    }
   }
 }
 

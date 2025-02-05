@@ -12,6 +12,12 @@ import {
   updateDoc,
   setDoc,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 import { firebaseConfig } from "../../shared/utils/firebase-config.js";
 import { showToast, showLoading, hideLoading } from "../../shared/utils/ui.js";
 
@@ -19,28 +25,51 @@ import { showToast, showLoading, hideLoading } from "../../shared/utils/ui.js";
 console.log("[Settings] Initializing Firebase...");
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const firestore = getFirestore(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
 // DOM Elements
-const displayNameInput = document.getElementById("displayName");
-const nicknameInput = document.getElementById("nickname");
-const bioInput = document.getElementById("bio");
-const newGoalInput = document.getElementById("newGoal");
-const addGoalBtn = document.getElementById("addGoalBtn");
-const goalsList = document.getElementById("goalsList");
-const saveChangesBtn = document.getElementById("saveChanges");
-const logoutBtn = document.getElementById("logoutBtn");
-const userInitials = document.getElementById("userInitials");
+const elements = {
+  displayName: document.getElementById("displayName"),
+  nickname: document.getElementById("nickname"),
+  bio: document.getElementById("bio"),
+  newGoal: document.getElementById("newGoal"),
+  addGoalBtn: document.getElementById("addGoalBtn"),
+  goalsList: document.getElementById("goalsList"),
+  saveChanges: document.getElementById("saveChanges"),
+  logoutBtn: document.getElementById("logoutBtn"),
+  userInitials: document.getElementById("userInitials"),
+  profilePicture: document.getElementById("profilePicture"),
+  profilePictureInput: document.getElementById("profilePictureInput"),
+};
 
 let currentUser = null;
 let userProfile = null;
 
-// Event Listeners
-addGoalBtn.addEventListener("click", addNewGoal);
-saveChangesBtn.addEventListener("click", saveChanges);
-logoutBtn.addEventListener("click", handleLogout);
+// Initialize event listeners only after DOM is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+  // Event Listeners
+  if (elements.addGoalBtn) {
+    elements.addGoalBtn.addEventListener("click", addNewGoal);
+  }
 
-// Initialize
+  if (elements.saveChanges) {
+    elements.saveChanges.addEventListener("click", saveChanges);
+  }
+
+  if (elements.logoutBtn) {
+    elements.logoutBtn.addEventListener("click", handleLogout);
+  }
+
+  if (elements.profilePictureInput) {
+    elements.profilePictureInput.addEventListener(
+      "change",
+      handleProfilePictureChange
+    );
+  }
+});
+
+// Auth state observer
 onAuthStateChanged(auth, handleAuthStateChange);
 
 async function handleAuthStateChange(user) {
@@ -65,7 +94,7 @@ async function loadUserProfile() {
       return;
     }
 
-    const userDoc = await getDoc(doc(firestore, "users", currentUser.uid));
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
 
     if (!userDoc.exists()) {
       // Create default profile if none exists
@@ -76,13 +105,14 @@ async function loadUserProfile() {
         nickname: "",
         bio: "",
         learningGoals: [],
+        profilePicture: "/assets/images/default-avatar.png",
         createdAt: new Date().toISOString(),
         lastUpdated: new Date().toISOString(),
       };
 
       // Save the default profile
       try {
-        await setDoc(doc(firestore, "users", currentUser.uid), userProfile);
+        await setDoc(doc(db, "users", currentUser.uid), userProfile);
         console.log("[Settings] Created default profile for user");
       } catch (error) {
         console.error("[Settings] Error creating default profile:", error);
@@ -103,36 +133,44 @@ async function loadUserProfile() {
 }
 
 function updateProfileUI() {
-  // Update user initials with proper null checks
-  let displayName = userProfile?.displayName;
-  let email = userProfile?.email;
+  if (!userProfile) return;
 
-  let initialsSource = displayName || email || "User";
-  if (initialsSource.includes("@")) {
-    initialsSource = initialsSource.split("@")[0];
+  // Update profile picture or show initials
+  if (elements.profilePicture && elements.userInitials) {
+    if (
+      userProfile.profilePicture &&
+      userProfile.profilePicture !== "/assets/images/default-avatar.png"
+    ) {
+      elements.profilePicture.src = userProfile.profilePicture;
+      elements.profilePicture.style.display = "block";
+      elements.userInitials.style.display = "none";
+    } else {
+      const initials = (userProfile.displayName || userProfile.email || "User")
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+      elements.userInitials.textContent = initials;
+      elements.profilePicture.style.display = "none";
+      elements.userInitials.style.display = "flex";
+    }
   }
 
-  const initials = initialsSource
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  // Update form fields
+  if (elements.displayName)
+    elements.displayName.value = userProfile.displayName || "";
+  if (elements.nickname) elements.nickname.value = userProfile.nickname || "";
+  if (elements.bio) elements.bio.value = userProfile.bio || "";
 
-  userInitials.textContent = initials;
-
-  // Update form fields with null checks
-  displayNameInput.value = userProfile?.displayName || "";
-  nicknameInput.value = userProfile?.nickname || "";
-  bioInput.value = userProfile?.bio || "";
-
-  // Update goals list with null check
+  // Update goals list
   updateGoalsList();
 }
 
 function updateGoalsList() {
-  const goals = userProfile?.learningGoals || [];
-  goalsList.innerHTML = goals
+  if (!elements.goalsList || !userProfile?.learningGoals) return;
+
+  elements.goalsList.innerHTML = userProfile.learningGoals
     .map(
       (goal, index) => `
     <div class="goal-item">
@@ -152,7 +190,9 @@ function updateGoalsList() {
 }
 
 function addNewGoal() {
-  const goalText = newGoalInput.value.trim();
+  if (!elements.newGoal || !userProfile) return;
+
+  const goalText = elements.newGoal.value.trim();
   if (!goalText) return;
 
   if (!userProfile.learningGoals) {
@@ -160,7 +200,7 @@ function addNewGoal() {
   }
 
   userProfile.learningGoals.push(goalText);
-  newGoalInput.value = "";
+  elements.newGoal.value = "";
   updateGoalsList();
 }
 
@@ -191,13 +231,13 @@ async function saveChanges() {
     showLoading("Saving changes...");
 
     // Update profile object with form values
-    userProfile.displayName = displayNameInput.value.trim();
-    userProfile.nickname = nicknameInput.value.trim();
-    userProfile.bio = bioInput.value.trim();
+    userProfile.displayName = elements.displayName.value.trim();
+    userProfile.nickname = elements.nickname.value.trim();
+    userProfile.bio = elements.bio.value.trim();
     userProfile.lastUpdated = new Date().toISOString();
 
     // Save to Firestore
-    await updateDoc(doc(firestore, "users", currentUser.uid), userProfile);
+    await updateDoc(doc(db, "users", currentUser.uid), userProfile);
     showToast("Changes saved successfully", "success");
   } catch (error) {
     console.error("[Settings] Error saving changes:", error);
@@ -218,3 +258,140 @@ async function handleLogout() {
     hideLoading();
   }
 }
+
+async function handleProfilePictureChange(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      showToast("Please select an image file", "error");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("Image size should be less than 5MB", "error");
+      return;
+    }
+
+    showLoading("Uploading profile picture...");
+
+    const user = auth.currentUser;
+    if (!user) throw new Error("No user logged in");
+
+    // Upload to Firebase Storage
+    const storageRef = ref(storage, `profile_pictures/${user.uid}`);
+    await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(storageRef);
+
+    // Update user document in Firestore
+    const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, {
+      profilePicture: downloadURL,
+      updatedAt: new Date().toISOString(),
+    });
+
+    // Update UI
+    if (elements.profilePicture) {
+      elements.profilePicture.src = downloadURL;
+      elements.profilePicture.style.display = "block";
+      if (elements.userInitials) elements.userInitials.style.display = "none";
+    }
+
+    showToast("Profile picture updated successfully", "success");
+  } catch (error) {
+    console.error("[Settings] Error updating profile picture:", error);
+    showToast("Failed to update profile picture", "error");
+  } finally {
+    hideLoading();
+  }
+}
+
+// Update UI with user data
+async function updateUIWithUserData(userData) {
+  if (!userData) return;
+
+  // Update profile picture or show initials
+  if (elements.profilePicture && elements.userInitials) {
+    if (
+      userData.profilePicture &&
+      userData.profilePicture !== "/assets/images/default-avatar.png"
+    ) {
+      elements.profilePicture.src = userData.profilePicture;
+      elements.profilePicture.style.display = "block";
+      elements.userInitials.style.display = "none";
+    } else {
+      const initials = (userData.displayName || userData.email || "User")
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+      elements.userInitials.textContent = initials;
+      elements.profilePicture.style.display = "none";
+      elements.userInitials.style.display = "flex";
+    }
+  }
+}
+
+// Add CSS for profile picture styling
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+  .avatar-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: rgba(0, 242, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .avatar-container:hover {
+    transform: scale(1.05);
+  }
+
+  .avatar-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-container .user-initials {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #00f2ff;
+    background: rgba(0, 242, 255, 0.1);
+  }
+
+  .avatar-container .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .avatar-container:hover .overlay {
+    opacity: 1;
+  }
+
+  .avatar-container .overlay i {
+    color: white;
+    font-size: 2rem;
+  }
+`;
+document.head.appendChild(styleSheet);

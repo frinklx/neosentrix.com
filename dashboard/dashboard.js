@@ -35,33 +35,47 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function updateUIWithUserData(userData) {
-  try {
-    console.log("[Dashboard] Updating UI with user data:", userData);
-    const userName = document.getElementById("userName");
-    const userInitials = document.getElementById("userInitials");
-    const welcomeMessage = document.getElementById("welcomeMessage");
+  if (!userData) return;
 
-    if (!userData) {
-      console.warn("[Dashboard] No user data provided");
-      return;
-    }
+  // Update welcome message
+  const welcomeMessage = document.getElementById("welcomeMessage");
+  if (welcomeMessage) {
+    welcomeMessage.textContent = `Welcome Back, ${
+      userData.displayName || userData.email.split("@")[0]
+    }!`;
+  }
 
-    const displayName =
-      userData.displayName ||
-      (userData.email ? userData.email.split("@")[0] : "User");
-    const initials = displayName
+  // Update user initials and profile picture
+  const userInitials = document.getElementById("userInitials");
+  if (userInitials) {
+    const initials = (userData.displayName || userData.email.split("@")[0])
       .split(" ")
       .map((n) => n[0])
       .join("")
       .toUpperCase()
       .slice(0, 2);
+    userInitials.textContent = initials;
 
-    if (userName) userName.textContent = displayName;
-    if (userInitials) userInitials.textContent = initials;
-    if (welcomeMessage)
-      welcomeMessage.textContent = `Welcome Back, ${displayName}!`;
-  } catch (error) {
-    console.error("[Dashboard] Error updating UI:", error);
+    // If profile picture exists, hide initials and show profile picture
+    if (
+      userData.profilePicture &&
+      userData.profilePicture !== "/assets/images/default-avatar.png"
+    ) {
+      const avatarContainer = document.querySelector(".avatar-container");
+      if (avatarContainer) {
+        userInitials.style.display = "none";
+
+        // Create or update profile image
+        let profileImg = avatarContainer.querySelector(".profile-image");
+        if (!profileImg) {
+          profileImg = document.createElement("img");
+          profileImg.className = "profile-image";
+          avatarContainer.insertBefore(profileImg, userInitials);
+        }
+        profileImg.src = userData.profilePicture;
+        profileImg.alt = userData.displayName || "Profile Picture";
+      }
+    }
   }
 }
 
@@ -817,3 +831,18 @@ function setupStatsListener(userId) {
     }
   );
 }
+
+// Add this CSS style block to the head
+const styleSheet = document.createElement("style");
+styleSheet.textContent = `
+  .avatar-container .profile-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+`;
+document.head.appendChild(styleSheet);

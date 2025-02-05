@@ -54,13 +54,23 @@
 
       <!-- Main Content -->
       <main class="main-content">
-        <header class="dashboard-header">
-          <div class="user-welcome">
+        <header class="header">
+          <div class="header-content">
             <h1>AI Tools</h1>
-            <p>Enhance your learning with our AI-powered tools</p>
-          </div>
-          <div class="user-profile">
-            <img id="userAvatar" src="" alt="User Avatar" />
+            <div class="user-section">
+              <div class="avatar-container">
+                <img
+                  id="userAvatar"
+                  alt="User Avatar"
+                  src="/assets/images/default-avatar.png"
+                />
+                <div id="userInitials" class="user-initials"></div>
+              </div>
+              <button id="logoutBtn" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+              </button>
+            </div>
           </div>
         </header>
 
