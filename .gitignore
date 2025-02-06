@@ -17,21 +17,27 @@ package-lock.json
 .env.test
 .env.production
 
-# Firebase
+# Firebase - DO NOT IGNORE these files:
+# firebase.json - Project configuration
+# firestore.rules - Security rules
+# firestore.indexes.json - Index definitions
+
+# Firebase - DO IGNORE these files:
 .firebase/
 .firebaserc
+*-debug.log
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
-*-debug.log
-.runtimeconfig.json
-.firebase/*.cache
 database-debug.log
 pubsub-debug.log
+.runtimeconfig.json
+.firebase/*.cache
 firebase-export-*
 firestore-export-*
 firebase-data.json
 serviceAccountKey.json
+firebase-adminsdk-*.json
 
 # Build and Distribution
 /dist
