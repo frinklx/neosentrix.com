@@ -1,5 +1,71 @@
-package-lock.json
-package.json
+# Dependencies
 /node_modules
-/.vscode
+package-lock.json
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+*-debug.log
+.runtimeconfig.json
+.firebase/*.cache
+database-debug.log
+pubsub-debug.log
+firebase-export-*
+firestore-export-*
+firebase-data.json
+serviceAccountKey.json
+
+# Build and Distribution
+/dist
+/build
+/.cache
+/coverage
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# System Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary files
+*.swp
+*.swo
+*~
 
