@@ -23,6 +23,28 @@ service cloud.firestore {
       allow write: if isAuthenticated() && isOwner(userId);
     }
     
+    // Resources collection - authenticated users can read all resources
+    // but can only edit/delete their own resources
+    match /resources/{resourceId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      
+      // Allow comments on resources
+      match /comments/{commentId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated();
+        allow update, delete: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      }
+      
+      // Allow ratings on resources
+      match /ratings/{ratingId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated();
+        allow update, delete: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      }
+    }
+    
     // Learning content - any authenticated user can read/write
     match /learning/{document=**} {
       allow read, write: if isAuthenticated();
