@@ -622,7 +622,6 @@ function createResourceElement(resource, view) {
     resource.author?.name ||
     resource.author?.email ||
     "Anonymous";
-
   const authorInitials = authorName
     .split(" ")
     .map((n) => n[0])
@@ -636,14 +635,14 @@ function createResourceElement(resource, view) {
         <div class="author-avatar" title="${authorName}">
           ${
             resource.author?.profilePicture
-              ? `<img src="${resource.author.profilePicture}" alt="${authorName}" />`
+              ? `<img src="${resource.author.profilePicture}" alt="${authorName}'s profile picture">`
               : `<span class="author-initials">${authorInitials}</span>`
           }
         </div>
         <div class="author-info">
-          <span class="author-name" title="${
-            resource.author?.email || ""
-          }">${authorName}</span>
+          <a class="author-name" onclick="showUserProfile('${
+            resource.userId
+          }')" style="cursor: pointer; color: #00f2ff;">${authorName}</a>
           <span class="post-date">${formatDate(resource.createdAt)}</span>
         </div>
       </div>
@@ -1388,3 +1387,223 @@ window.deleteResource = deleteResource;
 window.toggleLike = toggleLike;
 window.toggleFavorite = toggleFavorite;
 window.removeFilter = removeFilter;
+window.showUserProfile = async function (userId) {
+  console.log("[Resources] Opening user profile modal for userId:", userId);
+
+  if (!userId) {
+    console.error("[Resources] No user ID provided for profile");
+    return;
+  }
+
+  try {
+    const modal = document.getElementById("userProfileModal");
+    if (!modal) {
+      console.error("[Resources] User profile modal not found");
+      return;
+    }
+
+    console.log("[Resources] Fetching user settings for userId:", userId);
+    const settingsDoc = await getDoc(doc(db, "userSettings", userId));
+
+    if (!settingsDoc.exists()) {
+      console.error("[Resources] User settings not found for userId:", userId);
+      showToast("User profile not found", "error");
+      return;
+    }
+
+    const settings = settingsDoc.data();
+    console.log("[Resources] Retrieved user settings:", settings);
+
+    const authorInitials = (
+      settings.displayName ||
+      settings.nickname ||
+      "Anonymous"
+    )
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+
+    modal.innerHTML = `
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>User Profile</h2>
+          <button class="close-modal" onclick="closeUserProfileModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              ${
+                settings.profilePicture
+                  ? `<img src="${settings.profilePicture}" alt="Profile Picture">`
+                  : `<span class="author-initials">${authorInitials}</span>`
+              }
+            </div>
+            <div class="profile-info">
+              <h3>${
+                settings.displayName || settings.nickname || "Anonymous"
+              }</h3>
+              ${
+                settings.nickname
+                  ? `<p class="nickname">@${settings.nickname}</p>`
+                  : ""
+              }
+            </div>
+          </div>
+          
+          ${
+            settings.bio
+              ? `
+            <div class="profile-section">
+              <h4><i class="fas fa-user"></i> About</h4>
+              <p>${settings.bio}</p>
+            </div>
+          `
+              : ""
+          }
+
+          ${
+            settings.location
+              ? `
+            <div class="profile-section">
+              <h4><i class="fas fa-map-marker-alt"></i> Location</h4>
+              <p>${settings.location}</p>
+            </div>
+          `
+              : ""
+          }
+
+          ${
+            settings.education
+              ? `
+            <div class="profile-section">
+              <h4><i class="fas fa-graduation-cap"></i> Education</h4>
+              <p>${settings.education}</p>
+            </div>
+          `
+              : ""
+          }
+
+          ${
+            settings.expertise?.length
+              ? `
+            <div class="profile-section">
+              <h4><i class="fas fa-star"></i> Areas of Expertise</h4>
+              <div class="tags">
+                ${settings.expertise
+                  .map((item) => `<span class="tag">${item}</span>`)
+                  .join("")}
+              </div>
+            </div>
+          `
+              : ""
+          }
+
+          ${
+            settings.interests?.length
+              ? `
+            <div class="profile-section">
+              <h4><i class="fas fa-lightbulb"></i> Learning Interests</h4>
+              <div class="tags">
+                ${settings.interests
+                  .map((item) => `<span class="tag">${item}</span>`)
+                  .join("")}
+              </div>
+            </div>
+          `
+              : ""
+          }
+
+          ${
+            settings.learningGoals?.length
+              ? `
+            <div class="profile-section">
+              <h4><i class="fas fa-bullseye"></i> Learning Goals</h4>
+              <ul class="goals-list">
+                ${settings.learningGoals
+                  .map((goal) => `<li>${goal}</li>`)
+                  .join("")}
+              </ul>
+            </div>
+          `
+              : ""
+          }
+
+          ${
+            settings.website || settings.socialLinks?.length
+              ? `
+            <div class="profile-section">
+              <h4><i class="fas fa-link"></i> Links</h4>
+              <div class="profile-links">
+                ${
+                  settings.website
+                    ? `
+                  <a href="${settings.website}" target="_blank" rel="noopener noreferrer" class="profile-link">
+                    <i class="fas fa-globe"></i>
+                    <span>Website</span>
+                  </a>
+                `
+                    : ""
+                }
+                ${
+                  settings.socialLinks
+                    ?.map(
+                      (link) => `
+                  <a href="${link}" target="_blank" rel="noopener noreferrer" class="profile-link">
+                    <i class="fab ${getLinkIcon(link)}"></i>
+                    <span>${getLinkPlatform(link)}</span>
+                  </a>
+                `
+                    )
+                    .join("") || ""
+                }
+              </div>
+            </div>
+          `
+              : ""
+          }
+        </div>
+      </div>
+    `;
+
+    console.log("[Resources] Showing user profile modal");
+    modal.classList.add("active");
+  } catch (error) {
+    console.error("[Resources] Error loading user profile:", error);
+    showToast("Failed to load user profile", "error");
+  }
+};
+
+window.closeUserProfileModal = function () {
+  console.log("[Resources] Closing user profile modal");
+  const modal = document.getElementById("userProfileModal");
+  if (modal) {
+    modal.classList.remove("active");
+  }
+};
+
+// Close modal when clicking outside
+document.addEventListener("click", (e) => {
+  const modal = document.getElementById("userProfileModal");
+  if (e.target === modal) {
+    closeUserProfileModal();
+  }
+});
+
+// Helper functions for social links
+function getLinkIcon(link) {
+  if (link.includes("linkedin")) return "fa-linkedin";
+  if (link.includes("twitter")) return "fa-twitter";
+  if (link.includes("github")) return "fa-github";
+  if (link.includes("instagram")) return "fa-instagram";
+  return "fa-link";
+}
+
+function getLinkPlatform(link) {
+  if (link.includes("linkedin")) return "LinkedIn";
+  if (link.includes("twitter")) return "Twitter";
+  if (link.includes("github")) return "GitHub";
+  if (link.includes("instagram")) return "Instagram";
+  return "Link";
+}
