@@ -361,15 +361,56 @@ async function handleResourceSubmit(e) {
 
   try {
     const form = e.target;
-    const title = form.querySelector("#resourceTitle").value;
-    const description = form.querySelector("#resourceDescription").value;
-    const school = form.querySelector("#resourceSchool").value;
-    const subject = form.querySelector("#resourceSubject").value;
-    const type = document.querySelector(".type-btn.active").dataset.type;
+
+    // Validate form elements exist
+    const titleInput = form.querySelector("#resourceTitle");
+    const descriptionInput = form.querySelector("#resourceDescription");
+    const schoolInput = form.querySelector("#resourceSchool");
+    const subjectInput = form.querySelector("#resourceSubject");
+    const typeButton = document.querySelector(".type-btn.active");
+
+    // Check if all required elements exist
+    if (
+      !titleInput ||
+      !descriptionInput ||
+      !schoolInput ||
+      !subjectInput ||
+      !typeButton
+    ) {
+      console.error("[Resources] Form elements not found:", {
+        titleInput: !!titleInput,
+        descriptionInput: !!descriptionInput,
+        schoolInput: !!schoolInput,
+        subjectInput: !!subjectInput,
+        typeButton: !!typeButton,
+      });
+      throw new Error("Required form elements not found");
+    }
+
+    // Get values after validation
+    const title = titleInput.value;
+    const description = descriptionInput.value;
+    const school = schoolInput.value;
+    const subject = subjectInput.value;
+    const type = typeButton.dataset.type;
+
+    // Validate required fields
+    if (!title || !description || !school || !subject || !type) {
+      showToast("Please fill in all required fields", "error");
+      return;
+    }
 
     // Get current user data
     const userDoc = await getDoc(doc(db, "users", currentUser.uid));
     const userData = userDoc.exists() ? userDoc.data() : null;
+
+    // Determine the display name in order of preference: nickname > displayName > name > email
+    const displayName =
+      userData?.nickname ||
+      userData?.displayName ||
+      userData?.name ||
+      currentUser.displayName ||
+      currentUser.email;
 
     const resourceData = {
       title,
@@ -379,9 +420,12 @@ async function handleResourceSubmit(e) {
       type,
       userId: currentUser.uid,
       author: {
-        displayName: userData?.displayName || currentUser.email,
+        displayName,
         email: currentUser.email,
-        profilePicture: userData?.profilePicture || null,
+        profilePicture:
+          userData?.profilePicture || currentUser.photoURL || null,
+        nickname: userData?.nickname || null,
+        name: userData?.name || currentUser.displayName || null,
       },
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -571,9 +615,14 @@ function createResourceElement(resource, view) {
     ? resource.favorited_by
     : [];
 
-  // Get author info
+  // Get author info - prefer nickname over other names
   const authorName =
-    resource.author?.displayName || resource.author?.email || "Anonymous";
+    resource.author?.nickname ||
+    resource.author?.displayName ||
+    resource.author?.name ||
+    resource.author?.email ||
+    "Anonymous";
+
   const authorInitials = authorName
     .split(" ")
     .map((n) => n[0])
@@ -584,7 +633,7 @@ function createResourceElement(resource, view) {
   element.innerHTML = `
     <div class="resource-header">
       <div class="resource-author">
-        <div class="author-avatar">
+        <div class="author-avatar" title="${authorName}">
           ${
             resource.author?.profilePicture
               ? `<img src="${resource.author.profilePicture}" alt="${authorName}" />`
@@ -592,7 +641,9 @@ function createResourceElement(resource, view) {
           }
         </div>
         <div class="author-info">
-          <span class="author-name">${authorName}</span>
+          <span class="author-name" title="${
+            resource.author?.email || ""
+          }">${authorName}</span>
           <span class="post-date">${formatDate(resource.createdAt)}</span>
         </div>
       </div>
@@ -631,15 +682,16 @@ function createResourceElement(resource, view) {
         </span>
       </div>
       <div class="resource-actions">
-        <button class="preview-btn" onclick="previewResource('${resource.id}')">
+        <button class="preview-btn" onclick="previewResource('${
+          resource.id
+        }')" title="Preview">
           <i class="fas fa-eye"></i>
         </button>
         ${
           resource.userId === currentUser?.uid
             ? `
-          <button class="delete-btn" onclick="deleteResource('${resource.id}')">
+          <button class="delete-btn" onclick="deleteResource('${resource.id}')" title="Delete">
             <i class="fas fa-trash"></i>
-            Delete
           </button>
         `
             : ""
@@ -961,12 +1013,29 @@ function getFileIcon(mimeType) {
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
+
   const date = timestamp.toDate();
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+
+  if (diffInSeconds < 60) {
+    return "just now";
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return `${minutes}m ago`;
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return `${hours}h ago`;
+  } else if (diffInSeconds < 604800) {
+    const days = Math.floor(diffInSeconds / 86400);
+    return `${days}d ago`;
+  } else {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(date);
+  }
 }
 
 // Content Type Toggle
@@ -1009,6 +1078,16 @@ function initializeContentTypeToggle() {
 function openModal() {
   modalOverlay.classList.add("active");
   document.body.style.overflow = "hidden";
+
+  // Re-attach form submit handler after modal is opened
+  const form = document.getElementById("resourceForm");
+  if (form) {
+    // Remove any existing handlers to prevent duplicates
+    form.removeEventListener("submit", handleResourceSubmit);
+    form.addEventListener("submit", handleResourceSubmit);
+  } else {
+    console.error("[Resources] Resource form not found");
+  }
 }
 
 function closeModal() {
@@ -1017,15 +1096,24 @@ function closeModal() {
   resetForm();
 }
 
-createResourceBtn.addEventListener("click", openModal);
-closeModalBtn.addEventListener("click", closeModal);
-cancelBtn.addEventListener("click", closeModal);
+// Initialize Modal Event Listeners
+if (createResourceBtn) {
+  createResourceBtn.addEventListener("click", openModal);
+}
+if (closeModalBtn) {
+  closeModalBtn.addEventListener("click", closeModal);
+}
+if (cancelBtn) {
+  cancelBtn.addEventListener("click", closeModal);
+}
 
-modalOverlay.addEventListener("click", (e) => {
-  if (e.target === modalOverlay) {
-    closeModal();
-  }
-});
+if (modalOverlay) {
+  modalOverlay.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) {
+      closeModal();
+    }
+  });
+}
 
 // Form Reset
 function resetForm() {
