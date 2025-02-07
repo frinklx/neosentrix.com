@@ -360,33 +360,38 @@ async function handleResourceSubmit(e) {
   console.log("[Resources] Handling resource submission");
 
   try {
-    const formData = new FormData(e.target);
-    console.log("[Resources] Form data entries:", Object.fromEntries(formData));
+    const form = e.target;
+    const title = form.querySelector("#resourceTitle").value;
+    const description = form.querySelector("#resourceDescription").value;
+    const school = form.querySelector("#resourceSchool").value;
+    const subject = form.querySelector("#resourceSubject").value;
+    const type = document.querySelector(".type-btn.active").dataset.type;
 
-    const activeContentType =
-      document.querySelector(".type-btn.active")?.dataset.type;
-    console.log("[Resources] Active content type:", activeContentType);
+    // Get current user data
+    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const userData = userDoc.exists() ? userDoc.data() : null;
 
     const resourceData = {
-      title: formData.get("title") || "",
-      description: formData.get("description") || "",
-      school: formData.get("school") || "",
-      subject: formData.get("subject") || "",
-      type: formData.get("type") || "other",
-      grade: formData.get("grade") || "",
-      tags: Array.from(tags) || [],
+      title,
+      description,
+      school,
+      subject,
+      type,
+      userId: currentUser.uid,
+      author: {
+        displayName: userData?.displayName || currentUser.email,
+        email: currentUser.email,
+        profilePicture: userData?.profilePicture || null,
+      },
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-      userId: currentUser.uid,
-      userName: currentUser.displayName || currentUser.email,
-      likes: 0,
-      saves: 0,
+      likes: [],
+      favorited_by: [],
       views: 0,
-      content: {},
     };
 
     // Handle content based on type
-    if (activeContentType === "file") {
+    if (type === "file") {
       const fileInput = document.getElementById("resourceFile");
       const files = fileInput.files;
 
@@ -400,8 +405,8 @@ async function handleResourceSubmit(e) {
         type: "file",
         files: fileUrls,
       };
-    } else if (activeContentType === "text") {
-      const textContent = formData.get("resourceText")?.trim();
+    } else if (type === "text") {
+      const textContent = form.querySelector("#resourceText")?.value?.trim();
 
       if (!textContent) {
         showToast("Please enter some text content", "error");
@@ -411,8 +416,8 @@ async function handleResourceSubmit(e) {
         type: "text",
         text: textContent,
       };
-    } else if (activeContentType === "link") {
-      const linkContent = formData.get("resourceLink")?.trim();
+    } else if (type === "link") {
+      const linkContent = form.querySelector("#resourceLink")?.value?.trim();
 
       if (!linkContent) {
         showToast("Please enter a valid URL", "error");
@@ -555,38 +560,75 @@ function displayResources(resources) {
 
 // Create Resource Element
 function createResourceElement(resource, view) {
-  const div = document.createElement("div");
-  div.className = `resource-${view}-item`;
-  div.dataset.id = resource.id;
+  const isGridView = view === "grid";
+  const element = document.createElement("div");
+  element.className = isGridView ? "resource-grid-item" : "resource-list-item";
+  element.dataset.id = resource.id;
 
-  const isLiked = resource.likedBy?.includes(currentUser.uid);
-  const isFavorited = resource.favorited_by?.includes(currentUser.uid);
+  // Ensure likes and favorited_by are arrays
+  const likes = Array.isArray(resource.likes) ? resource.likes : [];
+  const favoritedBy = Array.isArray(resource.favorited_by)
+    ? resource.favorited_by
+    : [];
 
-  const contentHTML = `
+  // Get author info
+  const authorName =
+    resource.author?.displayName || resource.author?.email || "Anonymous";
+  const authorInitials = authorName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  element.innerHTML = `
     <div class="resource-header">
-      <h3>${resource.title || "Untitled"}</h3>
-      <span class="resource-type">${resource.type || "Other"}</span>
+      <div class="resource-author">
+        <div class="author-avatar">
+          ${
+            resource.author?.profilePicture
+              ? `<img src="${resource.author.profilePicture}" alt="${authorName}" />`
+              : `<span class="author-initials">${authorInitials}</span>`
+          }
+        </div>
+        <div class="author-info">
+          <span class="author-name">${authorName}</span>
+          <span class="post-date">${formatDate(resource.createdAt)}</span>
+        </div>
+      </div>
+      <h3>${resource.title}</h3>
+      <div class="resource-type">
+        <i class="${getResourceTypeIcon(resource.type)}"></i>
+        <span>${formatResourceType(resource.type)}</span>
+      </div>
+      <div class="resource-meta">
+        <span class="resource-school">${resource.school}</span>
+        <span class="resource-subject">${formatSubject(resource.subject)}</span>
+      </div>
     </div>
-    <div class="resource-meta">
-      <span class="resource-school">${resource.school || "N/A"}</span>
-      <span class="resource-subject">${resource.subject || "General"}</span>
-    </div>
-    <p class="resource-description">${
-      resource.description || "No description provided"
-    }</p>
+    <p class="resource-description">${resource.description}</p>
     <div class="resource-footer">
       <div class="resource-stats">
-        <span><i class="fas fa-eye"></i> ${resource.views || 0}</span>
         <button class="stat-btn ${
-          isLiked ? "active" : ""
-        }" onclick="toggleLike('${resource.id}')">
-          <i class="fas fa-heart"></i> ${resource.likes || 0}
+          likes.includes(currentUser?.uid) ? "active" : ""
+        }" 
+                onclick="toggleLike('${resource.id}')" 
+                title="Like">
+          <i class="fas fa-heart"></i>
+          <span class="likes-count">${likes.length}</span>
         </button>
         <button class="stat-btn ${
-          isFavorited ? "active" : ""
-        }" onclick="toggleFavorite('${resource.id}')">
-          <i class="fas fa-bookmark"></i>
+          favoritedBy.includes(currentUser?.uid) ? "active" : ""
+        }" 
+                onclick="toggleFavorite('${resource.id}')" 
+                title="Favorite">
+          <i class="fas fa-star"></i>
+          <span class="favorites-count">${favoritedBy.length}</span>
         </button>
+        <span class="views-count" title="Views">
+          <i class="fas fa-eye"></i>
+          <span>${resource.views || 0}</span>
+        </span>
       </div>
       <div class="resource-actions">
         <button class="preview-btn" onclick="previewResource('${resource.id}')">
@@ -594,17 +636,19 @@ function createResourceElement(resource, view) {
         </button>
         ${
           resource.userId === currentUser?.uid
-            ? `<button class="delete-btn" onclick="deleteResource('${resource.id}')">
-                <i class="fas fa-trash"></i>
-              </button>`
+            ? `
+          <button class="delete-btn" onclick="deleteResource('${resource.id}')">
+            <i class="fas fa-trash"></i>
+            Delete
+          </button>
+        `
             : ""
         }
       </div>
     </div>
   `;
 
-  div.innerHTML = contentHTML;
-  return div;
+  return element;
 }
 
 function showEmptyState() {
@@ -740,16 +784,32 @@ async function previewResource(resourceId) {
       case "file":
         if (resource.content.files && resource.content.files.length > 0) {
           contentArea.innerHTML = resource.content.files
-            .map(
-              (file) => `
-            <div class="file-item">
-              <i class="${getFileIcon(file.type)}"></i>
-              <a href="${file.url}" target="_blank" rel="noopener noreferrer">${
-                file.name
-              }</a>
-            </div>
-          `
-            )
+            .map((file) => {
+              if (file.type === "application/pdf") {
+                return `
+                  <div class="pdf-viewer">
+                    <iframe
+                      src="${file.url}#toolbar=0"
+                      type="application/pdf"
+                      width="100%"
+                      height="600px"
+                      frameborder="0"
+                    ></iframe>
+                  </div>
+                `;
+              } else {
+                return `
+                  <div class="file-item">
+                    <i class="${getFileIcon(file.type)}"></i>
+                    <a href="${
+                      file.url
+                    }" target="_blank" rel="noopener noreferrer">${
+                  file.name
+                }</a>
+                  </div>
+                `;
+              }
+            })
             .join("");
         } else {
           contentArea.innerHTML =
@@ -1149,11 +1209,12 @@ async function toggleLike(resourceId) {
     }
 
     const resource = resourceDoc.data();
-    const isLiked = resource.likedBy?.includes(currentUser.uid);
+    const likes = Array.isArray(resource.likes) ? resource.likes : [];
+    const isLiked = likes.includes(currentUser.uid);
 
+    // Update Firestore
     await updateDoc(resourceRef, {
-      likes: increment(isLiked ? -1 : 1),
-      likedBy: isLiked
+      likes: isLiked
         ? arrayRemove(currentUser.uid)
         : arrayUnion(currentUser.uid),
     });
@@ -1161,12 +1222,12 @@ async function toggleLike(resourceId) {
     // Update UI
     const resourceElement = document.querySelector(`[data-id="${resourceId}"]`);
     if (resourceElement) {
-      const likeBtn = resourceElement.querySelector(".like-btn");
-      const likesCount = likeBtn.querySelector("span");
+      const likeBtn = resourceElement.querySelector(".stat-btn");
+      const likesCount = likeBtn.querySelector(".likes-count");
 
       likeBtn.classList.toggle("active");
-      likesCount.textContent =
-        parseInt(likesCount.textContent) + (isLiked ? -1 : 1);
+      const currentCount = parseInt(likesCount.textContent);
+      likesCount.textContent = currentCount + (isLiked ? -1 : 1);
     }
 
     showToast(isLiked ? "Resource unliked" : "Resource liked", "success");
