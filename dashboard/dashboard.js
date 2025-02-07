@@ -22,6 +22,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import { firebaseConfig } from "../shared/utils/firebase-config.js";
 
+// Import detector analytics
+import {
+  getUserStats,
+  getGlobalStats,
+} from "./ai-tools/detector/services/analytics.js";
+
 // Initialize Firebase
 console.log("[Dashboard] Initializing Firebase...");
 const app = initializeApp(firebaseConfig);
@@ -732,104 +738,85 @@ logoutBtn.addEventListener("click", async () => {
 // Add these functions after your existing code
 async function loadUserStats(userId) {
   try {
-    const userStatsRef = doc(db, "userStats", userId);
-    const statsDoc = await getDoc(userStatsRef);
+    // Get detector stats
+    const detectorStats = await getUserStats(userId);
+    const globalStats = await getGlobalStats();
 
-    if (statsDoc.exists()) {
-      const stats = statsDoc.data();
-
+    if (detectorStats.success) {
       // Update AI Processing Stats
       document.getElementById("aiProcessed").textContent =
-        stats.aiProcessed || 0;
-      document.getElementById("aiProgress").textContent = `↑ ${
-        stats.aiProcessedToday || 0
-      } today`;
-      document.getElementById("aiSuccessRate").textContent = `${
-        stats.aiSuccessRate || 0
-      }%`;
-      document.getElementById("aiProcessingTime").textContent = `${
-        stats.avgProcessingTime || 0
-      }s`;
+        detectorStats.totalChecks;
+      document.getElementById(
+        "aiProgress"
+      ).textContent = `${detectorStats.averageAiScore}% average AI score`;
 
-      // Update Plagiarism Check Stats
+      // Update Plagiarism Stats
       document.getElementById("plagiarismChecks").textContent =
-        stats.plagiarismChecks || 0;
-      document.getElementById("plagiarismProgress").textContent = `↑ ${
-        stats.checksToday || 0
-      } today`;
-      document.getElementById("plagiarismRate").textContent = `${
-        stats.plagiarismDetectionRate || 0
-      }%`;
-      document.getElementById("aiContentRate").textContent = `${
-        stats.aiContentRate || 0
-      }%`;
+        detectorStats.totalPlagiarismFound;
+      document.getElementById(
+        "plagiarismProgress"
+      ).textContent = `${detectorStats.plagiarismRate}% detection rate`;
 
       // Update Total Documents
       document.getElementById("totalDocuments").textContent =
-        stats.totalDocuments || 0;
-      document.getElementById("documentsProgress").textContent = `↑ ${
-        stats.documentsToday || 0
-      } today`;
+        detectorStats.totalChecks;
+      document.getElementById(
+        "documentsProgress"
+      ).textContent = `${detectorStats.recentActivity.length} recent checks`;
 
-      // Add trend classes based on progress
-      updateTrendClasses("aiProgress", stats.aiProcessedToday);
-      updateTrendClasses("plagiarismProgress", stats.checksToday);
-      updateTrendClasses("documentsProgress", stats.documentsToday);
+      // Update detailed stats
+      document.getElementById("aiSuccessRate").textContent = `${Math.round(
+        ((detectorStats.totalChecks -
+          detectorStats.recentActivity.filter((a) => !a.success).length) /
+          detectorStats.totalChecks) *
+          100
+      )}%`;
+      document.getElementById("aiProcessingTime").textContent = `${Math.round(
+        detectorStats.recentActivity.reduce(
+          (acc, curr) => acc + curr.textLength,
+          0
+        ) /
+          detectorStats.recentActivity.length /
+          1000
+      )}s`;
+      document.getElementById(
+        "plagiarismRate"
+      ).textContent = `${detectorStats.plagiarismRate}%`;
+      document.getElementById(
+        "aiContentRate"
+      ).textContent = `${detectorStats.averageAiScore}%`;
+    }
+
+    // Update with global stats context
+    if (globalStats.success) {
+      const userRank = Math.round(
+        (detectorStats.totalChecks / globalStats.totalChecks) * 100
+      );
+      document.getElementById(
+        "aiProgress"
+      ).textContent += ` (Top ${userRank}%)`;
     }
   } catch (error) {
-    console.error("Error loading user stats:", error);
+    console.error("[Dashboard] Error loading detector stats:", error);
   }
 }
 
-function updateTrendClasses(elementId, value) {
-  const element = document.getElementById(elementId);
-  if (!element) return;
-
-  element.classList.remove("positive", "negative");
-  if (value > 0) {
-    element.classList.add("positive");
-  } else if (value < 0) {
-    element.classList.add("negative");
-  }
-}
-
-// Real-time updates for stats
+// Setup real-time stats listener
 function setupStatsListener(userId) {
-  const userStatsRef = doc(db, "userStats", userId);
-
-  onSnapshot(
-    userStatsRef,
-    (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const stats = docSnapshot.data();
-
-        // Update stats in real-time
-        document.getElementById("aiProcessed").textContent =
-          stats.aiProcessed || 0;
-        document.getElementById("plagiarismChecks").textContent =
-          stats.plagiarismChecks || 0;
-        document.getElementById("totalDocuments").textContent =
-          stats.totalDocuments || 0;
-
-        // Update detailed stats
-        document.getElementById("aiSuccessRate").textContent = `${
-          stats.aiSuccessRate || 0
-        }%`;
-        document.getElementById("aiProcessingTime").textContent = `${
-          stats.avgProcessingTime || 0
-        }s`;
-        document.getElementById("plagiarismRate").textContent = `${
-          stats.plagiarismDetectionRate || 0
-        }%`;
-        document.getElementById("aiContentRate").textContent = `${
-          stats.aiContentRate || 0
-        }%`;
-      }
-    },
-    (error) => {
-      console.error("Error setting up stats listener:", error);
-    }
+  const analysisRef = collection(db, "analysis_history");
+  const q = query(
+    analysisRef,
+    where("userId", "==", userId),
+    orderBy("timestamp", "desc")
   );
+
+  onSnapshot(q, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "added" || change.type === "modified") {
+        loadUserStats(userId);
+      }
+    });
+  });
 }
 
 // Add this CSS style block to the head
