@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Chat - NeoSentrix</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-EZYFSV1NT5"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", "G-EZYFSV1NT5");
+  </script>
+  <body>
+    <!-- Background Effects -->
+    <div class="bg-effects"></div>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-brain"></i>
+          <span>NeoSentrix</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="../index.html">
+            <i class="fas fa-chart-pie"></i>
+            <span>Analytics</span>
+          </a>
+          <a href="../ai-tools/">
+            <i class="fas fa-robot"></i>
+            <span>AI Tools</span>
+          </a>
+          <a href="../resources/">
+            <i class="fas fa-book"></i>
+            <span>Resources</span>
+          </a>
+          <a href="../settings/">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+          <a href="#" class="active">
+            <i class="fas fa-comments"></i>
+            <span>Chat</span>
+          </a>
+        </nav>
+        <button id="logoutBtn" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Chat Header -->
+        <header class="chat-header">
+          <div class="header-content">
+            <h1>Global Chat</h1>
+            <div class="header-actions">
+              <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input
+                  type="text"
+                  id="messageSearch"
+                  placeholder="Search messages..."
+                />
+              </div>
+              <div class="chat-settings">
+                <button class="settings-btn" id="chatSettingsBtn">
+                  <i class="fas fa-sliders-h"></i>
+                </button>
+                <div class="settings-dropdown">
+                  <div class="settings-item">
+                    <span>Theme</span>
+                    <select id="themeSelect">
+                      <option value="default">Default</option>
+                      <option value="dark">Dark</option>
+                      <option value="light">Light</option>
+                      <option value="contrast">High Contrast</option>
+                    </select>
+                  </div>
+                  <div class="settings-item">
+                    <span>Background</span>
+                    <select id="backgroundSelect">
+                      <option value="default">Default</option>
+                      <option value="gradient">Gradient</option>
+                      <option value="pattern">Pattern</option>
+                      <option value="solid">Solid</option>
+                    </select>
+                  </div>
+                  <div class="settings-item">
+                    <span>Bubble Style</span>
+                    <select id="bubbleSelect">
+                      <option value="default">Default</option>
+                      <option value="rounded">Rounded</option>
+                      <option value="sharp">Sharp</option>
+                      <option value="modern">Modern</option>
+                    </select>
+                  </div>
+                  <div class="settings-item">
+                    <span>Notification Sound</span>
+                    <label class="switch">
+                      <input type="checkbox" id="notificationSound" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Sound Effects</span>
+                    <label class="switch">
+                      <input type="checkbox" id="soundEffects" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Message Preview</span>
+                    <label class="switch">
+                      <input type="checkbox" id="messagePreview" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Read Receipts</span>
+                    <label class="switch">
+                      <input type="checkbox" id="readReceipts" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Show Online Status</span>
+                    <label class="switch">
+                      <input type="checkbox" id="onlineStatus" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Message Retention</span>
+                    <select id="retentionSelect">
+                      <option value="24h">24 Hours</option>
+                      <option value="7d">7 Days</option>
+                      <option value="30d">30 Days</option>
+                      <option value="forever">Forever</option>
+                    </select>
+                  </div>
+                  <div class="settings-item">
+                    <span>Font Size</span>
+                    <select id="fontSizeSelect">
+                      <option value="small">Small</option>
+                      <option value="medium" selected>Medium</option>
+                      <option value="large">Large</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="online-users">
+              <div class="user-avatars" id="onlineUsersAvatars">
+                <!-- Online users avatars will be dynamically added here -->
+              </div>
+              <span class="online-count">
+                <i class="fas fa-circle"></i>
+                <span id="onlineCount">0</span> online
+              </span>
+            </div>
+          </div>
+          <div class="user-profile">
+            <div class="avatar-container">
+              <img id="userAvatar" alt="User Avatar" src="" />
+              <div id="userInitials" class="user-initials"></div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+          <!-- Chat Messages -->
+          <div class="messages-container">
+            <div class="date-separator">
+              <span>Today</span>
+            </div>
+            <div class="messages" id="messagesContainer">
+              <!-- Messages will be dynamically added here -->
+            </div>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="chat-input-container">
+            <div class="attachment-preview" id="attachmentPreview">
+              <!-- Attachment previews will be shown here -->
+            </div>
+            <div class="input-wrapper">
+              <button class="attachment-btn" id="attachmentBtn">
+                <i class="fas fa-paperclip"></i>
+              </button>
+              <div class="emoji-btn" id="emojiBtn">
+                <i class="fas fa-smile"></i>
+              </div>
+              <div class="input-field">
+                <textarea
+                  id="messageInput"
+                  placeholder="Type a message..."
+                  rows="1"
+                ></textarea>
+                <div class="typing-indicator" id="typingIndicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+              <button class="send-btn" id="sendBtn" disabled>
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- File Input (Hidden) -->
+          <input
+            type="file"
+            id="fileInput"
+            multiple
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+            style="display: none"
+          />
+        </div>
+
+        <!-- Emoji Picker -->
+        <div class="emoji-picker" id="emojiPicker">
+          <!-- Emoji categories and emojis will be dynamically added here -->
+        </div>
+
+        <!-- User Profile Modal -->
+        <div class="user-profile-modal" id="userProfileModal">
+          <div class="modal-content">
+            <!-- User profile content will be dynamically added here -->
+          </div>
+        </div>
+
+        <!-- Add Chat Settings Modal -->
+        <div class="settings-modal" id="settingsModal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Chat Settings</h2>
+              <button class="close-modal">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="settings-section">
+                <h3>Appearance</h3>
+                <div class="settings-group">
+                  <div class="settings-item">
+                    <span>Theme</span>
+                    <select id="themeSelect">
+                      <option value="system">System Default</option>
+                      <option value="dark">Dark</option>
+                      <option value="light">Light</option>
+                    </select>
+                  </div>
+                  <div class="settings-item">
+                    <span>Chat Background</span>
+                    <select id="backgroundSelect">
+                      <option value="default">Default</option>
+                      <option value="gradient">Gradient</option>
+                      <option value="pattern">Pattern</option>
+                    </select>
+                  </div>
+                  <div class="settings-item">
+                    <span>Message Bubble Style</span>
+                    <select id="bubbleStyle">
+                      <option value="modern">Modern</option>
+                      <option value="classic">Classic</option>
+                      <option value="minimal">Minimal</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="settings-section">
+                <h3>Notifications</h3>
+                <div class="settings-group">
+                  <div class="settings-item">
+                    <span>Desktop Notifications</span>
+                    <label class="switch">
+                      <input type="checkbox" id="desktopNotif" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Sound Effects</span>
+                    <label class="switch">
+                      <input type="checkbox" id="soundEffects" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Message Preview</span>
+                    <label class="switch">
+                      <input type="checkbox" id="msgPreview" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="settings-section">
+                <h3>Privacy</h3>
+                <div class="settings-group">
+                  <div class="settings-item">
+                    <span>Read Receipts</span>
+                    <label class="switch">
+                      <input type="checkbox" id="readReceipts" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Online Status</span>
+                    <label class="switch">
+                      <input type="checkbox" id="onlineStatus" checked />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                  <div class="settings-item">
+                    <span>Message Retention</span>
+                    <select id="messageRetention">
+                      <option value="forever">Forever</option>
+                      <option value="30">30 days</option>
+                      <option value="7">7 days</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Message Template -->
+    <template id="messageTemplate">
+      <div class="message">
+        <div class="message-content">
+          <div class="message-header">
+            <div class="message-avatar">
+              <img src="" alt="User Avatar" />
+              <div class="user-initials"></div>
+            </div>
+            <div class="message-info">
+              <span class="message-author"></span>
+              <span class="message-time"></span>
+            </div>
+          </div>
+          <div class="message-body">
+            <div class="message-text"></div>
+            <div class="message-attachments"></div>
+            <div class="message-metadata">
+              <div class="reactions-container"></div>
+              <div class="message-actions">
+                <button class="reaction-btn" title="Add reaction">
+                  <i class="fas fa-smile"></i>
+                </button>
+                <button class="reply-btn" title="Reply">
+                  <i class="fas fa-reply"></i>
+                </button>
+                <button class="copy-btn" title="Copy message">
+                  <i class="fas fa-copy"></i>
+                </button>
+                <button class="share-btn" title="Share message">
+                  <i class="fas fa-share"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="reply-to"></div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Emoji Picker Template -->
+    <template id="emojiPickerTemplate">
+      <div class="emoji-picker">
+        <div class="emoji-header">
+          <div class="emoji-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search emoji..." />
+          </div>
+          <button class="close-emoji">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="emoji-categories"></div>
+        <div class="emoji-content">
+          <div class="emoji-tabs"></div>
+          <div class="emojis-container"></div>
+        </div>
+        <div class="emoji-footer">
+          <div class="emoji-skin-tones"></div>
+          <div class="emoji-frequently-used"></div>
+        </div>
+      </div>
+    </template>
+
+    <!-- User Profile Modal Template -->
+    <template id="userProfileTemplate">
+      <div class="user-profile-modal">
+        <div class="modal-content">
+          <div class="profile-header">
+            <div class="profile-avatar">
+              <img src="" alt="Profile Picture" />
+              <div class="user-initials"></div>
+            </div>
+            <div class="profile-info">
+              <h3 class="profile-name"></h3>
+              <p class="profile-status"></p>
+            </div>
+            <button class="close-profile">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="profile-body">
+            <div class="profile-section">
+              <h4>About</h4>
+              <p class="profile-bio"></p>
+            </div>
+            <div class="profile-section">
+              <h4>Expertise</h4>
+              <div class="profile-tags expertise-tags"></div>
+            </div>
+            <div class="profile-section">
+              <h4>Interests</h4>
+              <div class="profile-tags interest-tags"></div>
+            </div>
+            <div class="profile-section">
+              <h4>Stats</h4>
+              <div class="profile-stats"></div>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="message-user-btn">
+              <i class="fas fa-paper-plane"></i>
+              Message
+            </button>
+            <button class="view-resources-btn">
+              <i class="fas fa-book"></i>
+              View Resources
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+    <!-- Main Script -->
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
