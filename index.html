@@ -117,34 +117,52 @@
       });
 
       // Mobile menu functionality
-      const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
-      const navMenu = document.querySelector(".nav-menu");
+      document.addEventListener("DOMContentLoaded", () => {
+        const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
+        const navMenu = document.querySelector(".nav-menu");
+        const body = document.body;
 
-      mobileMenuToggle.addEventListener("click", () => {
-        navMenu.classList.toggle("active");
-        document.body.style.overflow = navMenu.classList.contains("active")
-          ? "hidden"
-          : "";
-      });
+        // Toggle menu
+        mobileMenuToggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          navMenu.classList.toggle("active");
+          body.classList.toggle("menu-open");
+          mobileMenuToggle.setAttribute(
+            "aria-expanded",
+            navMenu.classList.contains("active").toString()
+          );
+        });
 
-      // Close mobile menu when clicking outside
-      document.addEventListener("click", (e) => {
-        if (
-          navMenu.classList.contains("active") &&
-          !navMenu.contains(e.target) &&
-          !mobileMenuToggle.contains(e.target)
-        ) {
-          navMenu.classList.remove("active");
-          document.body.style.overflow = "";
-        }
-      });
+        // Close menu when clicking outside
+        document.addEventListener("click", (e) => {
+          if (
+            navMenu.classList.contains("active") &&
+            !navMenu.contains(e.target) &&
+            !mobileMenuToggle.contains(e.target)
+          ) {
+            navMenu.classList.remove("active");
+            body.classList.remove("menu-open");
+            mobileMenuToggle.setAttribute("aria-expanded", "false");
+          }
+        });
 
-      // Close mobile menu when clicking a nav link
-      const navLinks = document.querySelectorAll(".nav-menu li");
-      navLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-          navMenu.classList.remove("active");
-          document.body.style.overflow = "";
+        // Close menu when clicking a nav link
+        const navLinks = document.querySelectorAll(".nav-menu li");
+        navLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+            body.classList.remove("menu-open");
+            mobileMenuToggle.setAttribute("aria-expanded", "false");
+          });
+        });
+
+        // Handle escape key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && navMenu.classList.contains("active")) {
+            navMenu.classList.remove("active");
+            body.classList.remove("menu-open");
+            mobileMenuToggle.setAttribute("aria-expanded", "false");
+          }
         });
       });
     </script>
@@ -161,13 +179,19 @@
             />
             <span>neolearn</span>
           </a>
-          <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+          <button
+            class="mobile-menu-toggle"
+            aria-label="Toggle mobile menu"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+          >
             <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
             >
               <path
                 d="M3 12H21M3 6H21M3 18H21"
@@ -177,7 +201,7 @@
               />
             </svg>
           </button>
-          <ul class="nav-menu">
+          <ul class="nav-menu" id="mobile-menu" role="menu">
             <li>Privacy</li>
             <li>Features</li>
             <li>Pricing</li>

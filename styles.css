@@ -3434,6 +3434,7 @@ footer::before {
   padding: 8px;
   cursor: pointer;
   transition: transform 0.2s;
+  z-index: 1000;
 }
 
 .mobile-menu-toggle:hover {
@@ -3443,17 +3444,15 @@ footer::before {
 @media (max-width: 768px) {
   .mobile-menu-toggle {
     display: flex;
-    z-index: 101;
+    position: relative;
+    z-index: 1000;
   }
 
   .nav-left {
     width: 100%;
     justify-content: space-between;
     align-items: center;
-  }
-
-  .logo {
-    font-size: 20px;
+    position: relative;
   }
 
   .nav-menu {
@@ -3464,7 +3463,7 @@ footer::before {
     width: 100%;
     height: 100vh;
     background: var(--surface-color);
-    z-index: 100;
+    z-index: 999;
     padding: 80px 24px 24px;
     flex-direction: column;
     align-items: center;
@@ -3479,7 +3478,7 @@ footer::before {
   @keyframes slideIn {
     from {
       opacity: 0;
-      transform: translateY(-10px);
+      transform: translateY(-20px);
     }
     to {
       opacity: 1;
@@ -3494,222 +3493,18 @@ footer::before {
     text-align: center;
     border-radius: 12px;
     transition: background-color 0.2s;
+    cursor: pointer;
   }
 
   .nav-menu li:hover {
     background-color: var(--hover-color);
   }
-}
 
-@media (max-width: 768px) {
-  .hero {
-    padding: 80px 24px;
-    text-align: center;
-    min-height: auto;
-  }
-
-  .hero-content {
-    padding: 0;
-    max-width: 100%;
-  }
-
-  h1 {
-    font-size: 40px;
-    line-height: 1.2;
-    margin-bottom: 16px;
-  }
-
-  .subtitle {
-    font-size: 18px;
-    margin: 16px auto;
-    max-width: 100%;
-  }
-
-  .cta-buttons {
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    max-width: 300px;
-    margin: 32px auto;
-  }
-
-  .cta-buttons .btn {
-    width: 100%;
-    text-align: center;
-    padding: 16px 24px;
-    font-size: 16px;
-  }
-
-  .showcase {
-    padding: 40px 24px;
-    margin-top: 0;
-  }
-
-  .browser-window {
-    transform: none;
-    margin: 0;
-    width: 100%;
-    border-radius: 16px;
-  }
-
-  .stats-section {
-    padding: 60px 24px;
-    margin: 0;
-  }
-
-  .stats {
-    flex-direction: column;
-    padding: 32px 24px;
-    gap: 32px;
-    border-radius: 16px;
-    backdrop-filter: blur(8px);
-  }
-
-  .stat-item {
-    text-align: center;
-    padding: 0;
-    width: 100%;
-  }
-
-  .stat-item:not(:last-child)::after {
+  .nav-right {
     display: none;
   }
 
-  .stat-number {
-    font-size: 48px;
-    background: linear-gradient(
-      135deg,
-      var(--accent-color),
-      var(--accent-color-2)
-    );
-    -webkit-background-clip: text;
-    color: transparent;
-    margin-bottom: 8px;
-  }
-
-  .stat-label {
-    font-size: 18px;
-    opacity: 0.9;
-  }
-
-  .features {
-    padding: 60px 24px;
-  }
-
-  .features h2 {
-    font-size: 32px;
-    text-align: center;
-    margin-bottom: 16px;
-  }
-
-  .section-subtitle {
-    font-size: 18px;
-    text-align: center;
-    margin-bottom: 40px;
-  }
-
-  .bento-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-
-  .bento-item {
-    padding: 24px;
-    border-radius: 16px;
-  }
-
-  .bento-item.large {
-    grid-column: auto;
-  }
-
-  .feature-icon {
-    font-size: 32px;
-    margin-bottom: 16px;
-  }
-
-  .bento-item h3 {
-    font-size: 20px;
-    margin-bottom: 8px;
-  }
-
-  .bento-item p {
-    font-size: 16px;
-    line-height: 1.5;
-  }
-}
-
-@media (max-width: 768px) {
-  /* Improved touch targets */
-  .btn,
-  .nav-menu li,
-  .bento-item,
-  .feature-list li,
-  .privacy-feature {
-    min-height: 44px;
-    padding: 12px 20px;
-  }
-
-  /* Better spacing */
-  .section-padding {
-    padding: 60px 24px;
-  }
-
-  /* Improved typography */
-  .body-text {
-    font-size: 16px;
-    line-height: 1.6;
-  }
-
-  h1,
-  h2 {
-    font-size: clamp(32px, 8vw, 40px);
-    line-height: 1.2;
-  }
-
-  h3 {
-    font-size: clamp(20px, 6vw, 24px);
-  }
-
-  /* Stack items on mobile */
-  .flex-container {
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  /* Full width containers */
-  .container {
-    width: 100%;
-    padding: 0 24px;
-  }
-
-  /* Center align text */
-  .text-center-mobile {
-    text-align: center;
-  }
-
-  /* Improved button layout */
-  .button-group {
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-  }
-
-  .button-group .btn {
-    width: 100%;
-  }
-}
-
-/* Touch device optimizations */
-@media (hover: none) {
-  .interactive-element {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  .btn:active,
-  .nav-item:active,
-  .card:active {
-    transform: scale(0.98);
-    transition: transform 0.1s;
+  body.menu-open {
+    overflow: hidden;
   }
 }
