@@ -38,47 +38,162 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Cursor trailer effect
-  console.log("Setting up cursor trailer effect");
-  const cursor = document.createElement("div");
-  cursor.className = "cursor-trailer";
-  document.body.appendChild(cursor);
+  // Mouse trail effect
+  const createTrail = () => {
+    const trail = document.createElement("div");
+    trail.className = "cursor-trail";
+    document.body.appendChild(trail);
+    return trail;
+  };
 
-  let mouseX = 0;
-  let mouseY = 0;
-  let cursorX = 0;
-  let cursorY = 0;
+  const trails = Array(20).fill(null).map(createTrail);
+  let currentTrail = 0;
 
-  document.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+  window.addEventListener("mousemove", (e) => {
+    const trail = trails[currentTrail];
+    trail.style.left = e.clientX + "px";
+    trail.style.top = e.clientY + "px";
+    trail.style.opacity = "0.5";
+
+    setTimeout(() => {
+      trail.style.opacity = "0";
+    }, 100);
+
+    currentTrail = (currentTrail + 1) % trails.length;
   });
 
-  function animateCursor() {
-    const dx = mouseX - cursorX;
-    const dy = mouseY - cursorY;
+  // Parallax effect for floating icons
+  const hero = document.querySelector(".hero");
+  const icons = document.querySelectorAll(".icon-box");
 
-    cursorX += dx * 0.1;
-    cursorY += dy * 0.1;
+  hero.addEventListener("mousemove", (e) => {
+    const { left, top, width, height } = hero.getBoundingClientRect();
+    const x = (e.clientX - left) / width - 0.5;
+    const y = (e.clientY - top) / height - 0.5;
 
-    cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
-    requestAnimationFrame(animateCursor);
-  }
-
-  animateCursor();
-
-  // Mouse move effect for hero section
-  const heroContent = document.querySelector(".hero-content");
-  const maxTilt = 5;
-
-  if (heroContent) {
-    console.log("Hero content found - Setting up tilt effect");
-    document.addEventListener("mousemove", (e) => {
-      const xPos = (e.clientX / window.innerWidth - 0.5) * maxTilt;
-      const yPos = (e.clientY / window.innerHeight - 0.5) * maxTilt;
-      heroContent.style.transform = `perspective(1000px) rotateX(${-yPos}deg) rotateY(${xPos}deg)`;
+    icons.forEach((icon) => {
+      const speed = 20;
+      const xPos = x * speed;
+      const yPos = y * speed;
+      icon.style.transform = `translate(${xPos}px, ${yPos}px)`;
     });
+  });
+
+  hero.addEventListener("mouseleave", () => {
+    icons.forEach((icon) => {
+      icon.style.transform = "translate(0, 0)";
+    });
+  });
+
+  // Magnetic effect for buttons
+  const magneticButtons = document.querySelectorAll(
+    ".get-started-btn, .play-button"
+  );
+
+  magneticButtons.forEach((button) => {
+    button.addEventListener("mousemove", (e) => {
+      const { left, top, width, height } = button.getBoundingClientRect();
+      const x = (e.clientX - left) / width - 0.5;
+      const y = (e.clientY - top) / height - 0.5;
+
+      const moveX = x * 10;
+      const moveY = y * 10;
+
+      button.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.1)`;
+    });
+
+    button.addEventListener("mouseleave", () => {
+      button.style.transform = "";
+    });
+  });
+
+  // Text scramble effect for logo
+  class TextScramble {
+    constructor(el) {
+      this.el = el;
+      this.chars = "!<>-_\\/[]{}—=+*^?#________";
+      this.update = this.update.bind(this);
+    }
+
+    setText(newText) {
+      const oldText = this.el.innerText;
+      const length = Math.max(oldText.length, newText.length);
+      const promise = new Promise((resolve) => (this.resolve = resolve));
+      this.queue = [];
+
+      for (let i = 0; i < length; i++) {
+        const from = oldText[i] || "";
+        const to = newText[i] || "";
+        const start = Math.floor(Math.random() * 40);
+        const end = start + Math.floor(Math.random() * 40);
+        this.queue.push({ from, to, start, end });
+      }
+
+      cancelAnimationFrame(this.frameRequest);
+      this.frame = 0;
+      this.update();
+      return promise;
+    }
+
+    update() {
+      let output = "";
+      let complete = 0;
+
+      for (let i = 0, n = this.queue.length; i < n; i++) {
+        let { from, to, start, end, char } = this.queue[i];
+
+        if (this.frame >= end) {
+          complete++;
+          output += to;
+        } else if (this.frame >= start) {
+          if (!char || Math.random() < 0.28) {
+            char = this.randomChar();
+            this.queue[i].char = char;
+          }
+          output += char;
+        } else {
+          output += from;
+        }
+      }
+
+      this.el.innerText = output;
+
+      if (complete === this.queue.length) {
+        this.resolve();
+      } else {
+        this.frameRequest = requestAnimationFrame(this.update);
+        this.frame++;
+      }
+    }
+
+    randomChar() {
+      return this.chars[Math.floor(Math.random() * this.chars.length)];
+    }
   }
+
+  // Initialize text scramble on logo hover
+  const logo = document.querySelector(".logo");
+  const logoScramble = new TextScramble(logo);
+  let isScrambling = false;
+
+  logo.addEventListener("mouseenter", () => {
+    if (!isScrambling) {
+      isScrambling = true;
+      logoScramble.setText("neolearn").then(() => {
+        isScrambling = false;
+      });
+    }
+  });
+
+  // Play button click effect
+  const playButton = document.querySelector(".play-button");
+
+  playButton.addEventListener("click", () => {
+    playButton.style.transform = "translateY(8px) scale(0.95)";
+    setTimeout(() => {
+      playButton.style.transform = "translateY(8px) scale(1)";
+    }, 150);
+  });
 
   // Intersection Observer for animations
   console.log("Setting up Intersection Observer");

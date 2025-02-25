@@ -3,408 +3,861 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Neolearn</title>
-
-    <!-- Primary Meta Tags -->
-    <meta name="title" content="Neolearn | AI Powered tools for students" />
-    <meta
-      name="description"
-      content="Transform your learning experience with Neolearn's AI-powered tools. Features include smart flashcards, performance analytics, plagiarism detection, and personalized study planning. Join our beta program today! Built from scratch by a 12 year old. Security managed by firebase."
-    />
-    <meta
-      name="keywords"
-      content="AI learning platform, educational technology, smart flashcards, study tools, plagiarism detector, performance analytics, personalized learning, edtech, student tools, learning management system"
-    />
-    <meta name="author" content="Neolearn" />
-    <meta name="robots" content="index, follow" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://neosentrix.com/" />
-    <meta
-      property="og:title"
-      content="Neolearn | AI Powered Tools for Students"
-    />
-    <meta
-      property="og:description"
-      content="Transform your learning experience with Neolearn's AI-powered tools. Features include smart flashcards, performance analytics, plagiarism detection, and personalized study planning."
-    />
-    <meta
-      property="og:image"
-      content="https://neolearn.com/assets/images/social-preview.jpg"
-    />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://neolearn.com/" />
-    <meta
-      property="twitter:title"
-      content="Neolearn - AI-Powered Learning Platform | Smart Study Tools"
-    />
-    <meta
-      property="twitter:description"
-      content="Transform your learning experience with Neolearn's AI-powered tools. Features include smart flashcards, performance analytics, plagiarism detection, and personalized study planning."
-    />
-    <meta
-      property="twitter:image"
-      content="https://neolearn.com/assets/images/social-preview.jpg"
-    />
-
-    <!-- Additional SEO Meta Tags -->
-    <meta name="application-name" content="Neolearn" />
-    <meta name="apple-mobile-web-app-title" content="Neolearn" />
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="theme-color" content="#4A90E2" />
-    <meta name="msapplication-TileColor" content="#4A90E2" />
-    <meta name="msapplication-config" content="browserconfig.xml" />
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://neolearn.com/" />
-
-    <!-- Fonts and Stylesheets -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
+    <title>neolearn - Supercharge your learning</title>
     <link rel="stylesheet" href="styles.css" />
     <link
-      rel="shortcut icon"
-      href="assets/images/logo.png"
-      type="image/x-icon"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
     />
-    <style>
-      * {
-        font-family: "Poppins", sans-serif;
-      }
-    </style>
-  </head>
-  <!-- Google tag (gtag.js) -->
-  <script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-EZYFSV1NT5"
-  ></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
+    <meta
+      name="description"
+      content="Transform your learning experience with AI-powered tools and collaborative features"
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <script>
+      // Check for saved theme preference, otherwise use system preference
+      const getTheme = () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+          return savedTheme;
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
 
-    gtag("config", "G-EZYFSV1NT5");
-  </script>
+      // Apply theme to document
+      const setTheme = (theme) => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        updateThemeIcon(theme);
+      };
+
+      // Update theme icon
+      const updateThemeIcon = (theme) => {
+        const themeIcon = document.getElementById("theme-icon");
+        if (themeIcon) {
+          themeIcon.textContent = theme === "dark" ? "🌙" : "☀️";
+        }
+      };
+
+      // Initialize theme
+      setTheme(getTheme());
+
+      // Listen for system theme changes
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (e) => {
+          if (!localStorage.getItem("theme")) {
+            setTheme(e.matches ? "dark" : "light");
+          }
+        });
+
+      // Number animation function
+      function animateValue(element, start, end, duration) {
+        const range = end - start;
+        const startTime = performance.now();
+
+        function updateNumber(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Easing function for smooth animation
+          const easing = (t) =>
+            t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+          const currentValue = start + range * easing(progress);
+
+          // Handle different number formats
+          if (element.textContent.includes("%")) {
+            element.textContent = currentValue.toFixed(1) + "%";
+          } else if (element.textContent.includes("+")) {
+            element.textContent = Math.round(currentValue) + "+";
+          } else {
+            element.textContent = Math.round(currentValue);
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+          }
+        }
+
+        requestAnimationFrame(updateNumber);
+      }
+
+      // Intersection Observer for triggering animations
+      const observerOptions = {
+        threshold: 0.5,
+        rootMargin: "0px",
+      };
+
+      const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const statNumbers = entry.target.querySelectorAll(".stat-number");
+            statNumbers.forEach((stat) => {
+              if (!stat.classList.contains("animated")) {
+                const finalValue = parseFloat(
+                  stat.textContent.replace(/[+%]/g, "")
+                );
+                stat.classList.add("animate", "animated");
+                animateValue(stat, 0, finalValue, 2000);
+              }
+            });
+            statsObserver.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Start observing when the page loads
+      window.addEventListener("load", () => {
+        const statsSection = document.querySelector(".stats");
+        if (statsSection) {
+          statsObserver.observe(statsSection);
+        }
+      });
+
+      // Mobile menu functionality
+      const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
+      const navMenu = document.querySelector(".nav-menu");
+
+      mobileMenuToggle.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
+        document.body.style.overflow = navMenu.classList.contains("active")
+          ? "hidden"
+          : "";
+      });
+
+      // Close mobile menu when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          navMenu.classList.contains("active") &&
+          !navMenu.contains(e.target) &&
+          !mobileMenuToggle.contains(e.target)
+        ) {
+          navMenu.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+      });
+
+      // Close mobile menu when clicking a nav link
+      const navLinks = document.querySelectorAll(".nav-menu li");
+      navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          navMenu.classList.remove("active");
+          document.body.style.overflow = "";
+        });
+      });
+    </script>
+  </head>
   <body>
-    <div class="nav-container">
-      <nav>
-        <div class="logo">
-          <img src="assets/images/logo.png" alt="Neolearn Logo" />
-          <h1>Neolearn</h1>
-        </div>
-        <div class="menu-toggle">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <div class="nav-links">
-          <a href="#hero">Home</a>
-          <a href="#features">Tools & Features</a>
-          <a href="#status">Development Status</a>
-          <!-- <div class="auth-buttons">
-            <button
-              class="login-btn"
-              onclick="window.location.href='/auth/login'"
+    <header>
+      <nav class="main-nav">
+        <div class="nav-left">
+          <a href="/" class="logo">
+            <img
+              src="assets/favicon.svg"
+              alt="neolearn logo"
+              class="notion-logo"
+            />
+            <span>neolearn</span>
+          </a>
+          <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              Login
-            </button>
-            <button
-              class="signup-btn"
-              onclick="window.location.href='/auth/signup'"
-            >
-              Sign Up
-            </button>
-          </div> -->
+              <path
+                d="M3 12H21M3 6H21M3 18H21"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <ul class="nav-menu">
+            <li>Privacy</li>
+            <li>Features</li>
+            <li>Pricing</li>
+            <li>Contact</li>
+          </ul>
+        </div>
+        <div class="nav-right">
+          <button
+            class="theme-toggle"
+            onclick="setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')"
+            aria-label="Toggle theme"
+          >
+            <span id="theme-icon">☀️</span>
+          </button>
+          <a href="/auth/login" class="btn btn-secondary">Log in</a>
+          <a href="/auth/signup" class="btn btn-primary">Get started free →</a>
         </div>
       </nav>
-    </div>
+    </header>
 
-    <div class="hero-container" id="hero">
-      <div class="hero-content-text">
-        <h1>Supercharge your learning with AI powered tools.</h1>
-        <p>
-          We are currently in development.
-          <strong>Join our beta program</strong>
-          to get early access to our AI tools. Be the first to experience the
-          future of learning. Enter your
-          <strong>email below to get updates on our progress.</strong>
+    <main>
+      <section class="hero">
+        <div class="hero-content">
+          <span class="badge">Introducing AI Tools 🚀</span>
+          <h1>Supercharge your<br />learning</h1>
+          <p class="subtitle">
+            Enforcing learning with amazing AI tools.<br />from helpful things
+            like funny memes to ways to improve.
+          </p>
+          <div class="cta-buttons">
+            <a href="#" class="btn btn-primary">Start learning free →</a>
+            <a href="#" class="btn btn-secondary">Beta Program</a>
+          </div>
+        </div>
+
+        <section class="showcase">
+          <div class="browser-window">
+            <div class="browser-header">
+              <div class="browser-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="browser-address">
+                <span>neosentrix.com/dashboard</span>
+              </div>
+              <div class="browser-actions">
+                <span class="action-dot"></span>
+                <span class="action-dot"></span>
+              </div>
+            </div>
+            <div class="browser-content">
+              <div class="dashboard-layout">
+                <!-- Sidebar -->
+                <div class="dashboard-sidebar">
+                  <div class="sidebar-top">
+                    <div class="workspace-switcher">
+                      <span class="workspace-icon">🚀</span>
+                      <div class="workspace-info">
+                        <h3>AI Workspace</h3>
+                        <span>Personal</span>
+                      </div>
+                    </div>
+
+                    <nav class="sidebar-nav">
+                      <a href="#" class="nav-item active">
+                        <span class="nav-icon">📊</span>
+                        <span>Overview</span>
+                      </a>
+                      <a href="#" class="nav-item">
+                        <span class="nav-icon">🤖</span>
+                        <span>AI Tools</span>
+                      </a>
+                      <a href="#" class="nav-item">
+                        <span class="nav-icon">📈</span>
+                        <span>Analytics</span>
+                      </a>
+                      <a href="#" class="nav-item">
+                        <span class="nav-icon">⚡️</span>
+                        <span>Quick Actions</span>
+                      </a>
+                      <a href="#" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Settings</span>
+                      </a>
+                    </nav>
+                  </div>
+
+                  <div class="sidebar-bottom">
+                    <div class="user-profile">
+                      <div class="user-avatar">A</div>
+                      <div class="user-info">
+                        <h4>Alex Chen</h4>
+                        <span>Pro Plan</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="dashboard-main">
+                  <div class="dashboard-header">
+                    <div class="header-title">
+                      <h2>Overview</h2>
+                      <span class="header-subtitle">Welcome back, Alex 👋</span>
+                    </div>
+                    <div class="header-actions">
+                      <button class="action-btn">
+                        <span>⚡️</span>
+                        Quick Action
+                      </button>
+                      <button class="action-btn primary">
+                        <span>+</span>
+                        New Project
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="dashboard-grid">
+                    <!-- Quick Stats -->
+                    <div class="dashboard-card stats-card">
+                      <div class="stats-grid">
+                        <div class="stat-item">
+                          <span class="stat-icon">⚡️</span>
+                          <div class="stat-info">
+                            <span class="stat-value">98%</span>
+                            <span class="stat-label">AI Accuracy</span>
+                          </div>
+                        </div>
+                        <div class="stat-item">
+                          <span class="stat-icon">🎯</span>
+                          <div class="stat-info">
+                            <span class="stat-value">2.5x</span>
+                            <span class="stat-label">Efficiency</span>
+                          </div>
+                        </div>
+                        <div class="stat-item">
+                          <span class="stat-icon">🔄</span>
+                          <div class="stat-info">
+                            <span class="stat-value">Real-time</span>
+                            <span class="stat-label">Processing</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- AI Assistant -->
+                    <div class="dashboard-card assistant-card">
+                      <div class="card-header">
+                        <h3>AI Assistant</h3>
+                        <span class="status-badge">Active</span>
+                      </div>
+                      <div class="assistant-preview">
+                        <div class="assistant-message">
+                          <span class="assistant-icon">🤖</span>
+                          <p>How can I help you today?</p>
+                        </div>
+                        <button class="btn-chat">Start Chat →</button>
+                      </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="dashboard-card activity-card">
+                      <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <button class="view-all">View All</button>
+                      </div>
+                      <div class="activity-list">
+                        <div class="activity-item">
+                          <span class="activity-icon">📝</span>
+                          <div class="activity-info">
+                            <h4>Generated Report</h4>
+                            <span>2 minutes ago</span>
+                          </div>
+                        </div>
+                        <div class="activity-item">
+                          <span class="activity-icon">🔍</span>
+                          <div class="activity-info">
+                            <h4>Data Analysis Complete</h4>
+                            <span>1 hour ago</span>
+                          </div>
+                        </div>
+                        <div class="activity-item">
+                          <span class="activity-icon">🎯</span>
+                          <div class="activity-info">
+                            <h4>New Milestone Reached</h4>
+                            <span>3 hours ago</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="dashboard-card actions-card">
+                      <div class="card-header">
+                        <h3>Quick Actions</h3>
+                      </div>
+                      <div class="actions-grid">
+                        <button class="quick-action">
+                          <span class="action-icon">📊</span>
+                          <span>Analytics</span>
+                        </button>
+                        <button class="quick-action">
+                          <span class="action-icon">📈</span>
+                          <span>Reports</span>
+                        </button>
+                        <button class="quick-action">
+                          <span class="action-icon">⚡️</span>
+                          <span>Automate</span>
+                        </button>
+                        <button class="quick-action">
+                          <span class="action-icon">🔄</span>
+                          <span>Sync</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="stats-section">
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-number">30+</span>
+            <span class="stat-label">Active learners</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">10+</span>
+            <span class="stat-label">Countries</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">97.9%</span>
+            <span class="stat-label">Success rate</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="features" id="features">
+        <h2>Everything you need to learn effectively</h2>
+        <p class="section-subtitle">
+          Powerful features to
+          <strong class="gradient-text">supercharge</strong> your learning
+          journey
         </p>
-        <div class="hero-buttons">
-          <!-- <button
-            class="get-started-btn"
-            onclick="window.location.href='/auth/login'"
-          >
-            Get Started
-          </button> -->
-          <!-- <button
-            class="learn-more-btn"
-            onclick="window.location.href='#features'"
-          >
-            Learn More
-          </button> -->
-        </div>
-        <p>
-          Don't worry we won't advertise in your inbox. Just emailing you when
-          we launch!!
-        </p>
-        <div class="subscription-form">
-          <input
-            type="email"
-            id="beta-email"
-            placeholder="Enter your email address"
-          />
-          <button id="subscribe-beta-btn">Get Updates</button>
-        </div>
-        <p id="subscription-message" class="subscription-message"></p>
-      </div>
-      <br />
-      <br />
-      <div class="hero-content-image">
-        <img src="assets/images/dashboard_real.png" alt="Hero Image" />
-      </div>
-    </div>
 
-    <div class="features-section" id="features">
-      <h2>AI Tools in Development</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <i class="fas fa-book"></i>
-          <h3>Flashcards</h3>
-          <p>
-            Upload your notes and wait for the AI to create flashcards for you!
-            Using the power of AI, you can create flashcards for your notes in
-            seconds!
-          </p>
-          <span class="status in-progress">Deployed - 75%</span>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-chart-line"></i>
-          <h3>Performance Analytics</h3>
-          <p>
-            Advanced analytics and progress tracking with AI insights. So far I
-            have built a basic dashboard for you to see how much you use
-            neolearn and our tools.
-          </p>
-          <span class="status in-progress">Deployed - 75%</span>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-brain"></i>
-          <h3>Plagerism Detector</h3>
-          <p>
-            Detect plagerism and AI generated content with ease. View reports,
-            citations and more!
-          </p>
-          <span class="status in-progress">Deployed - 75%</span>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-link"></i>
-          <h3>Integrations</h3>
-          <p>
-            Using Axios and other packages I am working on integrating our OFS
-            school website information (Homework portal, Timetable, etc) into
-            our dashboard for more data and features.
-          </p>
-          <span class="status planned">Planned - Q3 2025</span>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-comments"></i>
-          <h3>Fine Tuned ChatGPT</h3>
-          <p>
-            Trained on our database, the chatgpt is ready to help you with your
-            questions regarding learning!
-          </p>
-          <span class="status planned">Planned - Q4 2025</span>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-brain"></i>
-          <h3>Session Planner</h3>
-          <p>
-            Plan your study sessions based on your goals and preferences. Create
-            custom study plans and track your progress.
-          </p>
-          <span class="status planned">Planned - Q3 2025</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="status-section" id="status">
-      <h2>Development Status</h2>
-      <div class="status-timeline">
-        <div class="timeline-item">
-          <div class="timeline-dot completed"></div>
-          <div class="timeline-content">
-            <h3>Phase 1: Foundation</h3>
-            <p>Core platform development and basic features</p>
-            <span class="status completed">Completed</span>
+        <div class="bento-grid">
+          <div class="bento-item large">
+            <div class="feature-icon">🛠️</div>
+            <h3>AI Tools</h3>
+            <p>
+              Powerful AI tools to generate flashcards, quizzes, study notes,
+              and find learning resources - all tailored to your needs and
+              learning style.
+            </p>
+          </div>
+          <div class="bento-item">
+            <div class="feature-icon">📚</div>
+            <h3>Smart Notes</h3>
+            <p>
+              Take notes that automatically organize and link related concepts.
+            </p>
+          </div>
+          <div class="bento-item">
+            <div class="feature-icon">📊</div>
+            <h3>Progress Tracking</h3>
+            <p>
+              Visual insights into your learning journey and achievements on a
+              dashboard.
+            </p>
+          </div>
+          <div class="bento-item">
+            <div class="feature-icon">🎯</div>
+            <h3>Integrated Calenders</h3>
+            <p>Review materials at optimal intervals for better retention.</p>
+          </div>
+          <div class="bento-item">
+            <div class="feature-icon">🤝</div>
+            <h3>Community Resources</h3>
+            <p>
+              Connect with peers and form study groups for collaborative
+              learning.
+            </p>
+          </div>
+          <div class="bento-item">
+            <div class="feature-icon">💀</div>
+            <h3>Funny Memes</h3>
+            <p>
+              Memes and funny anecdotes to keep you entertained and motivated.
+            </p>
+          </div>
+          <div class="bento-item large">
+            <div class="feature-icon">🎮</div>
+            <h3>Gamification</h3>
+            <p>
+              Gamifying all possible ways to learn and make it more fun!
+              Including XP systems, quests, hall of fame leaderboards and much
+              much more coming soon!
+            </p>
           </div>
         </div>
-        <div class="timeline-item">
-          <div class="timeline-dot active"></div>
-          <div class="timeline-content">
-            <h3>Phase 2: AI Integration</h3>
-            <p>Implementation of core AI features</p>
-            <span class="status in-progress">In Progress</span>
-          </div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <h3>Phase 3: Advanced Features</h3>
-            <p>Enhanced AI capabilities and community features</p>
-            <span class="status planned">Planned</span>
-          </div>
-        </div>
-      </div>
-    </div>
+      </section>
 
-    <footer class="footer">
-      <div class="footer-top">
-        <div class="footer-logo">
-          <img src="assets/images/logo.png" alt="Neolearn Logo" />
-          <h3>Neolearn</h3>
-          <p>
-            Revolutionizing learning with AI-powered tools and personalized
-            education.
-          </p>
-          <div class="social-links">
-            <a href="#" class="social-link">
-              <i class="fab fa-twitter"></i>
-              <span class="tooltip">Twitter</span>
-            </a>
-            <a href="#" class="social-link">
-              <i class="fab fa-linkedin"></i>
-              <span class="tooltip">LinkedIn</span>
-            </a>
-            <a
-              href="https://github.com/frinklx/neosentrix.com"
-              class="social-link"
-            >
-              <i class="fab fa-github"></i>
-              <span class="tooltip">GitHub</span>
-            </a>
-            <a href="#" class="social-link">
-              <i class="fab fa-discord"></i>
-              <span class="tooltip">Discord</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="footer-content">
-          <div class="footer-section">
-            <h4>Platform</h4>
-            <ul>
-              <li><a href="#features">Features</a></li>
-              <li><a href="#status">Roadmap</a></li>
-              <li><a href="/betadocs">Beta Access</a></li>
+      <!-- Detailed Features -->
+      <section class="feature-details">
+        <!-- Smart Notes Section -->
+        <div class="feature-detail-section reverse">
+          <div class="feature-detail-content">
+            <span class="feature-badge">Smart Notes 📝</span>
+            <h2>Notes That Think With You</h2>
+            <p class="feature-description">
+              Transform your note-taking experience with AI-powered organization
+              and automatic linking of related concepts.
+            </p>
+            <ul class="feature-list">
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Auto-Organization</strong>
+                  <p>
+                    Your notes automatically organize themselves by topic and
+                    relevance
+                  </p>
+                </div>
+              </li>
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Smart Connections</strong>
+                  <p>
+                    Discover relationships between different concepts
+                    automatically
+                  </p>
+                </div>
+              </li>
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Rich Media Support</strong>
+                  <p>Embed videos, images, code snippets, and more</p>
+                </div>
+              </li>
             </ul>
           </div>
+          <div class="feature-detail-demo">
+            <div class="notes-preview">
+              <div class="note-card">
+                <div class="note-header">
+                  <h4>Physics Notes</h4>
+                  <span class="note-date">Last edited 2m ago</span>
+                </div>
+                <div class="note-content">
+                  <h5>Quantum Mechanics Basics</h5>
+                  <p>Key concepts covered:</p>
+                  <ul>
+                    <li>Wave-particle duality</li>
+                    <li>Schrödinger's equation</li>
+                    <li>Quantum entanglement</li>
+                  </ul>
+                  <div class="note-connections">
+                    <span>Connected to:</span>
+                    <a href="#">Wave Theory</a>
+                    <a href="#">Particle Physics</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Tracking Section -->
+        <div class="feature-detail-section">
+          <div class="feature-detail-content">
+            <span class="feature-badge">Progress Tracking 📈</span>
+            <h2>Watch Your Growth in Real-time</h2>
+            <p class="feature-description">
+              Visualize your learning journey with beautiful analytics and
+              insights that help you understand your progress and identify areas
+              for improvement.
+            </p>
+            <ul class="feature-list">
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Learning Analytics</strong>
+                  <p>
+                    Track your study time, comprehension, and mastery of topics
+                  </p>
+                </div>
+              </li>
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Progress Heatmap</strong>
+                  <p>See your most productive study times and patterns</p>
+                </div>
+              </li>
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Achievement System</strong>
+                  <p>Earn badges and track milestones as you learn</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="feature-detail-demo">
+            <div class="analytics-preview">
+              <div class="chart-container">
+                <div class="chart-header">
+                  <h4>Learning Progress</h4>
+                  <div class="chart-legend">
+                    <span class="legend-item">
+                      <span class="legend-color physics"></span>
+                      Physics
+                    </span>
+                    <span class="legend-item">
+                      <span class="legend-color math"></span>
+                      Math
+                    </span>
+                  </div>
+                </div>
+                <div class="progress-chart">
+                  <div class="chart-bar">
+                    <div class="bar-fill physics" style="height: 75%"></div>
+                    <div class="bar-fill math" style="height: 85%"></div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="bar-fill physics" style="height: 85%"></div>
+                    <div class="bar-fill math" style="height: 90%"></div>
+                  </div>
+                  <div class="chart-bar">
+                    <div class="bar-fill physics" style="height: 95%"></div>
+                    <div class="bar-fill math" style="height: 88%"></div>
+                  </div>
+                </div>
+                <div class="chart-labels">
+                  <span>Week 1</span>
+                  <span>Week 2</span>
+                  <span>Week 3</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gamification Section -->
+        <div class="feature-detail-section reverse">
+          <div class="feature-detail-content">
+            <span class="feature-badge">Gamification 🎮</span>
+            <h2>Learning as Fun as Gaming</h2>
+            <p class="feature-description">
+              Turn your learning journey into an exciting adventure with our
+              gamification system. Earn XP, complete quests, and compete with
+              friends!
+            </p>
+            <ul class="feature-list">
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Daily Quests</strong>
+                  <p>
+                    Complete challenges to earn rewards and boost your progress
+                  </p>
+                </div>
+              </li>
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Achievement System</strong>
+                  <p>Unlock badges and titles as you master new skills</p>
+                </div>
+              </li>
+              <li>
+                <span class="check-icon">✓</span>
+                <div>
+                  <strong>Leaderboards</strong>
+                  <p>Compete with friends and see who learns the fastest</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="feature-detail-demo">
+            <div class="achievements-preview">
+              <div class="achievement-card">
+                <div class="achievement-icon">🏆</div>
+                <h4>Physics Master</h4>
+                <p>Complete 100 physics problems</p>
+                <div class="achievement-progress">
+                  <div class="progress-bar">
+                    <div class="progress" style="width: 75%"></div>
+                  </div>
+                  <span>75/100</span>
+                </div>
+              </div>
+              <div class="achievement-card">
+                <div class="achievement-icon">⚡️</div>
+                <h4>Quick Learner</h4>
+                <p>Study for 7 days in a row</p>
+                <div class="achievement-progress">
+                  <div class="progress-bar">
+                    <div class="progress" style="width: 100%"></div>
+                  </div>
+                  <span>Completed!</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Privacy Section -->
+      <section class="privacy-section">
+        <div class="privacy-logo">
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="48" height="48" rx="12" fill="#000000" />
+            <path
+              d="M24 14c-2.2 0-4 1.8-4 4v2h-2c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V22c0-1.1-.9-2-2-2h-2v-2c0-2.2-1.8-4-4-4zm0 2c1.1 0 2 .9 2 2v2h-4v-2c0-1.1.9-2 2-2z"
+              fill="white"
+            />
+          </svg>
+        </div>
+        <h2>Privacy. That's neolearn.</h2>
+        <p class="privacy-subtitle">
+          Your learning journey should be personal. We keep it that way.
+        </p>
+        <div class="privacy-grid">
+          <div class="privacy-feature">
+            <div class="feature-icon">🔒</div>
+            <h3>End-to-End Encryption</h3>
+            <p>
+              Your notes and progress are encrypted and secure, accessible only
+              to you.
+            </p>
+          </div>
+          <div class="privacy-feature">
+            <div class="feature-icon">🛡️</div>
+            <h3>Data Control</h3>
+            <p>
+              Choose what you share and what you keep private. You're in
+              control.
+            </p>
+          </div>
+          <div class="privacy-feature">
+            <div class="feature-icon">👤</div>
+            <h3>No Tracking</h3>
+            <p>
+              We don't track your learning behavior or sell your data to third
+              parties.
+            </p>
+          </div>
+        </div>
+        <a href="#" class="privacy-link">Learn more about neolearn privacy →</a>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <div class="cta-content">
+          <h2>Ready to transform your learning?</h2>
+          <p>
+            Join thousands of learners who are achieving their goals with
+            neolearn
+          </p>
+          <div class="cta-buttons">
+            <a href="#" class="btn btn-primary">Get Started →</a>
+            <a href="#" class="btn btn-secondary">Learn More</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-grid">
+          <div class="footer-section brand-section">
+            <a href="/" class="footer-logo">
+              <img
+                src="assets/favicon.svg"
+                alt="neolearn logo"
+                class="footer-logo-img"
+              />
+              <span>neolearn</span>
+            </a>
+            <p class="footer-tagline">Empowering learners worldwide 🌍</p>
+            <div class="footer-buttons">
+              <a href="#" class="btn btn-primary btn-sm">Get Started Free</a>
+              <a href="#" class="btn btn-secondary btn-sm">Contact Sales</a>
+            </div>
+          </div>
 
           <div class="footer-section">
-            <h4>Resources</h4>
+            <h4>Product</h4>
             <ul>
-              <li><a href="#">Documentation</a></li>
-              <li><a href="#">API Reference</a></li>
-              <li><a href="#status">System Status</a></li>
-              <li><a href="#">Blog</a></li>
+              <li><a href="#">Features</a></li>
+              <li><a href="#">Use Cases</a></li>
+              <li><a href="#">Beta Docs</a></li>
+              <li><a href="#">Pricing</a></li>
             </ul>
           </div>
 
           <div class="footer-section">
             <h4>Company</h4>
             <ul>
-              <li><a href="#">About Us</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Blog</a></li>
               <li><a href="#">Careers</a></li>
               <li><a href="#">Contact</a></li>
-              <li><a href="#">Legal</a></li>
             </ul>
           </div>
 
-          <div class="footer-section newsletter">
-            <h4>Stay Updated</h4>
-            <p>Subscribe to our newsletter for updates and early access.</p>
-            <div class="newsletter-form">
-              <input type="email" placeholder="Enter your email" />
-              <button class="subscribe-btn">
-                <i class="fas fa-paper-plane"></i>
-              </button>
-            </div>
+          <div class="footer-section">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="#">Terms</a></li>
+              <li><a href="#">Privacy</a></li>
+              <li><a href="#">Status</a></li>
+              <li><a href="#">Security</a></li>
+            </ul>
           </div>
         </div>
-      </div>
 
-      <div class="footer-bottom">
-        <div class="footer-bottom-content">
-          <p>&copy; 2024 Neolearn. All rights reserved.</p>
+        <div class="footer-bottom">
+          <div class="footer-social">
+            <a href="#" class="social-link" aria-label="Twitter">
+              <svg
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-link" aria-label="GitHub">
+              <svg
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"
+                />
+              </svg>
+            </a>
+            <a href="#" class="social-link" aria-label="LinkedIn">
+              <svg
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"
+                />
+              </svg>
+            </a>
+          </div>
+          <p>© 2024 neolearn. All rights reserved.</p>
           <div class="footer-links">
-            <a href="#">Privacy Policy</a>
-            <span class="separator">•</span>
-            <a href="#">Terms of Service</a>
-            <span class="separator">•</span>
-            <a href="#">Cookie Policy</a>
+            <a href="#" class="status-link">
+              <span class="status-dot"></span>
+              All systems operational
+            </a>
           </div>
         </div>
       </div>
     </footer>
-
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script>
-      // Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyAacdQXlfBtXB9XxyFrLopsffDH2ZeMzI4",
-        authDomain: "neolearn-b3cb1.firebaseapp.com",
-        projectId: "neolearn-b3cb1",
-        storageBucket: "neolearn-b3cb1.firebasestorage.app",
-        messagingSenderId: "646341343406",
-        appId: "1:646341343406:web:fce6d834b2f81a8d30d53f",
-        measurementId: "G-EZYFSV1NT5",
-      };
-
-      // Initialize Firebase
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
-
-      // Handle subscription
-      document
-        .getElementById("subscribe-beta-btn")
-        .addEventListener("click", async () => {
-          const emailInput = document.getElementById("beta-email");
-          const message = document.getElementById("subscription-message");
-          const email = emailInput.value.trim();
-
-          if (!email || !email.includes("@")) {
-            message.textContent = "Please enter a valid email address";
-            message.style.color = "#ff4444";
-            return;
-          }
-
-          try {
-            await db.collection("beta-subscribers").add({
-              email: email,
-              timestamp: new Date(),
-            });
-            message.textContent =
-              "Thanks for subscribing! We'll keep you updated.";
-            message.style.color = "#4CAF50";
-            emailInput.value = "";
-          } catch (error) {
-            message.textContent = "Something went wrong. Please try again.";
-            message.style.color = "#ff4444";
-            console.error("Error:", error);
-          }
-        });
-    </script>
-    <script src="script.js"></script>
   </body>
 </html>
