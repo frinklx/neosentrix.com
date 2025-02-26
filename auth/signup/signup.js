@@ -4,6 +4,11 @@ let db;
 
 // Import routes and navigation helper
 import { ROUTES, navigateTo } from "../../shared/utils/routes.js";
+import {
+  GoogleAuthProvider,
+  GithubAuthProvider,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // UI Elements
 let signupForm;
@@ -96,20 +101,13 @@ function showToast(message, type = "error") {
 function initializeFirebase() {
   debug("Initializing Firebase...");
   try {
-    if (typeof firebase === "undefined") {
+    auth = window.firebaseAuth;
+    db = window.firebaseDb;
+
+    if (!auth || !db) {
       throw new Error("Firebase SDK not loaded");
     }
 
-    if (!firebase.apps.length) {
-      debug("No Firebase apps found, initializing with config");
-      if (!window.firebaseConfig) {
-        throw new Error("Firebase config not found");
-      }
-      firebase.initializeApp(window.firebaseConfig);
-    }
-
-    auth = firebase.auth();
-    db = firebase.firestore();
     debug("Firebase initialized successfully");
   } catch (error) {
     handleError(error, "initializeFirebase");
@@ -294,7 +292,7 @@ function initializeUI() {
           "Please wait while we securely connect to your Google account"
         );
 
-        const provider = new firebase.auth.GoogleAuthProvider();
+        const provider = new GoogleAuthProvider();
         provider.addScope("profile");
         provider.addScope("email");
         const result = await auth.signInWithPopup(provider);
@@ -313,7 +311,7 @@ function initializeUI() {
             photoURL: result.user.photoURL,
             authProvider: "google",
             hasCompletedProfile: false,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt: serverTimestamp(),
           });
 
           showToast("Successfully signed up with Google!");
@@ -461,7 +459,7 @@ function handleGithubSignIn() {
     "Please wait while we securely connect to your GitHub account"
   );
 
-  const provider = new firebase.auth.GithubAuthProvider();
+  const provider = new GithubAuthProvider();
   provider.addScope("user");
 
   auth
@@ -498,7 +496,7 @@ async function handleNewGithubUser(user) {
           : "",
         email: user.email,
         githubId: user.providerData[0].uid,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: serverTimestamp(),
       });
 
     hideLoading();
@@ -519,7 +517,7 @@ async function handleExistingGithubUser(user) {
   try {
     // Update last login
     await db.collection("users").doc(user.uid).update({
-      lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+      lastLogin: serverTimestamp(),
     });
 
     hideLoading();
