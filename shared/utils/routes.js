@@ -1,22 +1,40 @@
-// Route definitions
+// Define application routes
 export const ROUTES = {
   HOME: "/",
-  LOGIN: "/auth/login/",
-  SIGNUP: "/auth/signup/",
+  LOGIN: "/auth/login",
+  SIGNUP: "/auth/signup",
   CONTINUE_SIGNUP: "/auth/signup/continue.html",
-  DASHBOARD: "/dashboard/",
-  ONBOARDING: "/onboarding/",
+  DASHBOARD: "/dashboard",
+  ONBOARDING: "/onboarding",
   ABOUT: "/about",
   FEATURES: "/features",
   PRIVACY: "/privacypolicy",
   TERMS: "/tos",
 };
 
-// Navigate to a route with history
-export function navigateTo(path) {
-  console.log("[Routes] Navigating to:", path);
-  window.history.pushState({}, "", path);
-  window.dispatchEvent(new PopStateEvent("popstate"));
+// Navigation helper
+export function navigateTo(route, options = {}) {
+  if (options.loading) {
+    const loadingOverlay = document.querySelector(".loading-overlay");
+    if (loadingOverlay) {
+      loadingOverlay.innerHTML = `
+        <div class="loading-content">
+          <div class="loading-spinner"></div>
+          <h3>${options.loadingMessage || "Loading..."}</h3>
+          ${
+            options.loadingSubmessage
+              ? `<p>${options.loadingSubmessage}</p>`
+              : ""
+          }
+        </div>
+      `;
+      loadingOverlay.style.display = "flex";
+    }
+  }
+
+  setTimeout(() => {
+    window.location.href = route;
+  }, 500);
 }
 
 // Redirect to a route (replaces history)

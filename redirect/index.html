@@ -3,233 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirecting - Neolearn</title>
+    <title>Redirecting... | Neolearn</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <style>
-      :root {
-        --primary-black: #0a0a0a;
-        --neon-blue: #00f2ff;
-        --neon-green: #00ff9d;
-        --text-primary: #ffffff;
-        --text-secondary: rgba(255, 255, 255, 0.7);
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-      }
-
-      body {
-        min-height: 100vh;
-        background: var(--primary-black);
-        background-image: radial-gradient(
-            circle at 0% 0%,
-            rgba(0, 242, 255, 0.1),
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 100% 100%,
-            rgba(0, 255, 157, 0.1),
-            transparent 50%
-          );
-        color: var(--text-primary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-
-      .redirect-container {
-        text-align: center;
-        padding: 2rem;
-        max-width: 500px;
-        position: relative;
-        z-index: 1;
-      }
-
-      .logo {
-        font-size: 2.5rem;
-        color: var(--neon-blue);
-        margin-bottom: 2rem;
-        animation: pulse 2s ease-in-out infinite;
-      }
-
-      .message {
-        font-size: 1.5rem;
-        font-weight: 500;
-        margin-bottom: 1rem;
-        background: linear-gradient(45deg, var(--neon-blue), var(--neon-green));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 0.5s ease forwards 0.3s;
-      }
-
-      .submessage {
-        color: var(--text-secondary);
-        margin-bottom: 2rem;
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeInUp 0.5s ease forwards 0.5s;
-      }
-
-      .loading-bar {
-        width: 200px;
-        height: 4px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 2px;
-        margin: 0 auto;
-        overflow: hidden;
-        position: relative;
-      }
-
-      .loading-progress {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
-        animation: progress 2s ease-in-out forwards;
-        box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
-      }
-
-      .loading-progress::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.4),
-          transparent
-        );
-        animation: shimmer 1.5s infinite;
-      }
-
-      /* Background grid */
-      .bg-grid {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        opacity: 0.5;
-        background-size: 30px 30px;
-        background-image: linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px
-          ),
-          linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px
-          );
-      }
-
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes progress {
-        0% {
-          width: 0;
-        }
-        100% {
-          width: 100%;
-        }
-      }
-
-      @keyframes shimmer {
-        from {
-          transform: translateX(-100%);
-        }
-        to {
-          transform: translateX(100%);
-        }
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        50% {
-          transform: scale(1.1);
-          opacity: 0.8;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
-  <!-- Google tag (gtag.js) -->
-  <script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-EZYFSV1NT5"
-  ></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
-
-    gtag("config", "G-EZYFSV1NT5");
-  </script>
   <body>
-    <div class="bg-grid"></div>
-
-    <div class="redirect-container">
-      <div class="logo">
-        <i class="fas fa-brain"></i>
-      </div>
-      <div class="message" id="message">Redirecting...</div>
-      <div class="submessage" id="submessage">
-        Please wait while we prepare your experience
-      </div>
-      <div class="loading-bar">
-        <div class="loading-progress"></div>
-      </div>
+    <div class="bg-effects">
+      <div class="particles"></div>
     </div>
 
-    <script>
-      // Parse URL parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const to = urlParams.get("to") || "/";
-      const message = urlParams.get("message") || "Redirecting...";
-      const submessage =
-        urlParams.get("submessage") || "Please wait while we redirect you";
+    <main class="redirect-container">
+      <div class="redirect-content">
+        <a href="/" class="logo">
+          <img src="../assets/favicon.svg" alt="Neolearn Logo" />
+          <span>neolearn</span>
+        </a>
 
-      // Update messages
-      document.getElementById("message").textContent = message;
-      document.getElementById("submessage").textContent = submessage;
+        <div class="loading-wrapper">
+          <div class="loading-spinner">
+            <svg class="spinner-ring" viewBox="0 0 50 50">
+              <circle cx="25" cy="25" r="22" />
+            </svg>
+          </div>
+        </div>
 
-      // Redirect after animation
-      setTimeout(() => {
-        window.location.href = to;
-      }, 2000); // Matches the progress animation duration
-    </script>
+        <h1>Setting Up Your Workspace</h1>
+        <p>
+          Please wait while we prepare your personalized learning environment
+        </p>
+
+        <div class="progress-section">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <div class="status-message">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>Initializing your account...</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="index.js"></script>
   </body>
 </html>

@@ -143,7 +143,7 @@
             <div class="form-row">
               <div class="form-group">
                 <div class="input-group">
-                  <i class="far fa-user"></i>
+                  <i class="fa fa-user"></i>
                   <input
                     type="text"
                     id="firstName"
@@ -156,7 +156,7 @@
 
               <div class="form-group">
                 <div class="input-group">
-                  <i class="far fa-user"></i>
+                  <i class="fa fa-user"></i>
                   <input
                     type="text"
                     id="lastName"
@@ -170,7 +170,7 @@
 
             <div class="form-group">
               <div class="input-group">
-                <i class="far fa-envelope"></i>
+                <i class="fa fa-envelope"></i>
                 <input
                   type="email"
                   id="email"
@@ -183,7 +183,7 @@
 
             <div class="form-group">
               <div class="input-group">
-                <i class="far fa-phone"></i>
+                <i class="fa fa-phone"></i>
                 <input
                   type="tel"
                   id="phone"
@@ -198,7 +198,7 @@
 
             <div class="form-group">
               <div class="input-group">
-                <i class="far fa-lock"></i>
+                <i class="fa fa-lock"></i>
                 <input
                   type="password"
                   id="password"
@@ -207,7 +207,7 @@
                   required
                 />
                 <button type="button" class="toggle-password">
-                  <i class="far fa-eye"></i>
+                  <i class="fa fa-eye"></i>
                 </button>
               </div>
               <div class="password-strength">
@@ -285,11 +285,54 @@
     <!-- Toast Container -->
     <div class="toast-container"></div>
 
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+      <div class="loading-content">
+        <div class="loading-icon"></div>
+        <h3 class="loading-text">Creating Your Account</h3>
+        <p class="loading-subtext">
+          Setting up your personalized learning environment...
+        </p>
+        <div class="loading-progress">
+          <div class="loading-bar"></div>
+        </div>
+        <div class="loading-steps">
+          <div class="loading-step active">Creating account</div>
+          <div class="loading-step">Setting up profile</div>
+          <div class="loading-step">Configuring workspace</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="signup.js"></script>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDGHYGWUYP0Ot6WaXNvmRGvKTJMcJYZmXE",
+        authDomain: "neosentrix-dev.firebaseapp.com",
+        projectId: "neosentrix-dev",
+        storageBucket: "neosentrix-dev.appspot.com",
+        messagingSenderId: "1098122068065",
+        appId: "1:1098122068065:web:8e5e7e5d1e127083c6c4c1",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      // Make Firebase instances available globally
+      window.firebaseApp = app;
+      window.firebaseAuth = auth;
+      window.firebaseDb = db;
+    </script>
+
+    <!-- Application Scripts -->
+    <script src="signup.js" type="module"></script>
   </body>
 </html>

@@ -125,10 +125,11 @@ nav {
   font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 1.2;
   margin-bottom: 1.5rem;
-  background: var(--gradient);
+  background: white;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin-top: -100px;
 }
 
 .hero-section p {
