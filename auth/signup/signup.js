@@ -12,6 +12,38 @@ function debug(message, data = null) {
   }
 }
 
+// Loading overlay management
+function showLoading(message, submessage) {
+  debug("Showing loading overlay", { message, submessage });
+  let loadingOverlay = document.querySelector(".loading-overlay");
+
+  // Create overlay if it doesn't exist
+  if (!loadingOverlay) {
+    loadingOverlay = document.createElement("div");
+    loadingOverlay.className = "loading-overlay";
+    document.body.appendChild(loadingOverlay);
+  }
+
+  loadingOverlay.innerHTML = `
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3>${message || "Loading..."}</h3>
+      ${submessage ? `<p>${submessage}</p>` : ""}
+    </div>
+  `;
+  loadingOverlay.style.display = "flex";
+}
+
+function hideLoading() {
+  debug("Hiding loading overlay");
+  const loadingOverlay = document.querySelector(".loading-overlay");
+  if (loadingOverlay) {
+    loadingOverlay.style.display = "none";
+  } else {
+    debug("No loading overlay found to hide");
+  }
+}
+
 // Error handling helper
 function handleError(error, context) {
   debug(`Error in ${context}:`, error);
@@ -20,6 +52,185 @@ function handleError(error, context) {
   showToast(error.message || "An unexpected error occurred", "error");
 }
 
+// Toast notification function
+function showToast(message, type = "success") {
+  debug("Showing toast", { message, type });
+  let toastContainer = document.querySelector(".toast-container");
+
+  // Create container if it doesn't exist
+  if (!toastContainer) {
+    toastContainer = document.createElement("div");
+    toastContainer.className = "toast-container";
+    document.body.appendChild(toastContainer);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <i class="fas fa-${
+      type === "success" ? "check-circle" : "exclamation-circle"
+    }"></i>
+    ${message}
+  `;
+  toastContainer.appendChild(toast);
+
+  // Remove toast after 3 seconds
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// Form submission handler
+function setupFormSubmission(form, elements) {
+  if (!form) {
+    debug("Form element not found");
+    return;
+  }
+
+  debug("Setting up form submission handler");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    debug("Form submission started");
+
+    try {
+      if (!validateForm(elements)) {
+        debug("Form validation failed");
+        return;
+      }
+
+      const formData = {
+        email: elements.emailInput.value.trim(),
+        password: elements.passwordInput.value,
+        firstName: elements.firstNameInput.value.trim(),
+        lastName: elements.lastNameInput.value.trim(),
+        phone: elements.phoneInput.value.trim() || null,
+      };
+
+      debug("Form data collected", { ...formData, password: "***" });
+
+      await showLoading(
+        "Creating your account...",
+        "Please wait while we set up your secure profile"
+      );
+
+      // Create user account
+      debug("Creating Firebase user account");
+      const userCredential = await auth.createUserWithEmailAndPassword(
+        formData.email,
+        formData.password
+      );
+
+      debug("User account created successfully", userCredential.user.uid);
+
+      // Update user profile
+      debug("Updating user profile");
+      await userCredential.user.updateProfile({
+        displayName: `${formData.firstName} ${formData.lastName}`,
+      });
+
+      // Save user data to Firestore
+      debug("Saving user data to Firestore");
+      await saveUserData(userCredential.user.uid, {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        displayName: `${formData.firstName} ${formData.lastName}`,
+        authProvider: "email",
+        hasCompletedProfile: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+
+      debug("Account creation successful");
+      showToast("Account created successfully!");
+
+      // Redirect to continue page
+      debug("Redirecting to continue page");
+      window.location.href = ROUTES.CONTINUE_SIGNUP;
+    } catch (error) {
+      handleError(error, "formSubmission");
+
+      // Provide user-friendly error messages
+      let errorMessage = "An error occurred while creating your account";
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          errorMessage =
+            "This email is already registered. Please try logging in instead.";
+          break;
+        case "auth/invalid-email":
+          errorMessage = "Please enter a valid email address.";
+          break;
+        case "auth/weak-password":
+          errorMessage = "Please choose a stronger password.";
+          break;
+        case "auth/network-request-failed":
+          errorMessage =
+            "Network error. Please check your internet connection.";
+          break;
+      }
+      showToast(errorMessage, "error");
+    }
+  });
+}
+
+// Form validation
+function validateForm(elements) {
+  debug("Validating form");
+  let isValid = true;
+  const errors = [];
+
+  // Required field validation
+  ["firstName", "lastName", "email", "password"].forEach((field) => {
+    const input = elements[`${field}Input`];
+    if (!input || !input.value.trim()) {
+      isValid = false;
+      errors.push(
+        `Please enter your ${field.replace(/([A-Z])/g, " $1").toLowerCase()}`
+      );
+      if (input) input.classList.add("error");
+    }
+  });
+
+  // Email validation
+  if (
+    elements.emailInput &&
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(elements.emailInput.value)
+  ) {
+    isValid = false;
+    errors.push("Please enter a valid email address");
+    elements.emailInput.classList.add("error");
+  }
+
+  // Password strength validation
+  if (
+    elements.passwordInput &&
+    !checkPasswordStrength(elements.passwordInput.value)
+  ) {
+    isValid = false;
+    errors.push("Please choose a stronger password");
+    elements.passwordInput.classList.add("error");
+  }
+
+  // Terms agreement validation
+  if (elements.agreeTermsCheckbox && !elements.agreeTermsCheckbox.checked) {
+    isValid = false;
+    errors.push("Please agree to the Terms of Service and Privacy Policy");
+    elements.termsCheckbox?.classList.add("error");
+  }
+
+  // Show validation errors
+  if (!isValid) {
+    errors.forEach((error) => showToast(error, "error"));
+    debug("Form validation failed", errors);
+  } else {
+    debug("Form validation passed");
+  }
+
+  return isValid;
+}
+
+// Initialize Firebase
 function initializeFirebase() {
   debug("Initializing Firebase...");
   try {
@@ -40,15 +251,22 @@ function initializeFirebase() {
     debug("Firebase initialized successfully");
   } catch (error) {
     handleError(error, "initializeFirebase");
-    throw error; // Re-throw to prevent further initialization
+    throw error;
   }
 }
 
-// Initialize Firebase when the page loads
+// Single initialization point
 document.addEventListener("DOMContentLoaded", () => {
   debug("DOM Content Loaded");
-  initializeFirebase();
-  initializeUI();
+  try {
+    initializeFirebase();
+    const elements = initializeUI();
+    if (elements?.signupForm) {
+      setupFormSubmission(elements.signupForm, elements);
+    }
+  } catch (error) {
+    handleError(error, "initialization");
+  }
 });
 
 // Get DOM elements
@@ -79,33 +297,6 @@ const ROUTES = {
   LOGIN: "/auth/login/",
   SIGNUP: "/auth/signup/",
 };
-
-// Toast notification function
-function showToast(message, type = "success") {
-  // Create toast container if it doesn't exist
-  let toastContainer = document.querySelector(".toast-container");
-  if (!toastContainer) {
-    toastContainer = document.createElement("div");
-    toastContainer.className = "toast-container";
-    document.body.appendChild(toastContainer);
-  }
-
-  const toast = document.createElement("div");
-  toast.className = `toast ${type}`;
-  toast.innerHTML = `
-    <i class="fas fa-${
-      type === "success" ? "check-circle" : "exclamation-circle"
-    }"></i>
-    ${message}
-  `;
-  toastContainer.appendChild(toast);
-
-  // Remove toast after 3 seconds
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
 
 // Password strength checker
 function checkPasswordStrength(password) {
@@ -381,7 +572,7 @@ function initializeUI() {
     if (elements.signupForm) {
       debug("Setting up form validation");
       setupFormValidation(elements);
-      setupFormSubmission(elements.signupForm);
+      setupFormSubmission(elements.signupForm, elements);
     }
 
     // Initialize terms checkbox
