@@ -1,17 +1,55 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyAacdQXlfBtXB9XxyFrLopsffDH2ZeMzI4",
-  authDomain: "neolearn-b3cb1.firebaseapp.com",
-  projectId: "neolearn-b3cb1",
-  storageBucket: "neolearn-b3cb1.firebasestorage.app",
-  messagingSenderId: "646341343406",
-  appId: "1:646341343406:web:fce6d834b2f81a8d30d53f",
-  measurementId: "G-EZYFSV1NT5",
-};
+// Initialize Firebase references
+let auth;
+let db;
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+// Debug logging helper
+function debug(message, data = null) {
+  const timestamp = new Date().toISOString();
+  if (data) {
+    console.log(`[${timestamp}] 🔍 ${message}:`, data);
+  } else {
+    console.log(`[${timestamp}] 🔍 ${message}`);
+  }
+}
+
+// Error handling helper
+function handleError(error, context) {
+  debug(`Error in ${context}:`, error);
+  console.error(`[${context}]`, error);
+  hideLoading();
+  showToast(error.message || "An unexpected error occurred", "error");
+}
+
+function initializeFirebase() {
+  debug("Initializing Firebase...");
+  try {
+    if (typeof firebase === "undefined") {
+      throw new Error("Firebase SDK not loaded");
+    }
+
+    if (!firebase.apps.length) {
+      debug("No Firebase apps found, initializing with config");
+      if (!window.firebaseConfig) {
+        throw new Error("Firebase config not found");
+      }
+      firebase.initializeApp(window.firebaseConfig);
+    }
+
+    auth = firebase.auth();
+    db = firebase.firestore();
+    debug("Firebase initialized successfully");
+  } catch (error) {
+    handleError(error, "initializeFirebase");
+    throw error; // Re-throw to prevent further initialization
+  }
+}
+
+// Initialize Firebase when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+  debug("DOM Content Loaded");
+  initializeFirebase();
+  initializeUI();
+});
 
 // Get DOM elements
 const signupForm = document.getElementById("signupForm");
@@ -202,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Enhanced password visibility toggle
-function setupPasswordToggle() {
+function setupPasswordToggle(elements) {
   const toggleBtns = document.querySelectorAll(".toggle-password");
   const passwordInputs = document.querySelectorAll('input[type="password"]');
 
@@ -229,7 +267,7 @@ function setupPasswordToggle() {
 }
 
 // Enhanced real-time form validation
-function setupFormValidation() {
+function setupFormValidation(elements) {
   const inputs = document.querySelectorAll("input");
   const form = document.getElementById("signupForm");
 
@@ -269,29 +307,132 @@ function setupFormValidation() {
 }
 
 // Setup Terms checkbox interaction
-function setupTermsCheckbox() {
-  const termsCheckbox = document.getElementById("agreeTerms");
-  const termsLabel = termsCheckbox.parentElement;
+function setupTermsCheckbox(termsCheckbox) {
+  if (!termsCheckbox) {
+    debug("Terms checkbox container not found");
+    return;
+  }
 
-  termsCheckbox.addEventListener("change", () => {
-    termsLabel.style.color = termsCheckbox.checked
-      ? "var(--gray-text)"
-      : "#ff4444";
-  });
+  const checkbox = termsCheckbox.querySelector('input[type="checkbox"]');
+  if (!checkbox) {
+    debug("Checkbox input not found");
+    return;
+  }
 
-  // Make the entire label clickable
-  termsLabel.addEventListener("click", (e) => {
-    if (e.target.tagName !== "A") {
-      termsCheckbox.click();
+  debug("Setting up terms checkbox interactions");
+
+  termsCheckbox.addEventListener("click", (e) => {
+    debug("Terms checkbox clicked", { target: e.target.tagName });
+
+    // Don't handle clicks on links
+    if (e.target.closest("a")) {
+      debug("Click was on a link, not handling");
+      return;
     }
+
+    // Toggle the checkbox
+    checkbox.checked = !checkbox.checked;
+    debug("Checkbox state toggled:", checkbox.checked);
+
+    // Update UI state
+    termsCheckbox.classList.toggle("error", !checkbox.checked);
+    debug("Updated checkbox UI state");
+
+    e.preventDefault();
   });
 }
 
 // Initialize all UI interactions
 function initializeUI() {
-  setupPasswordToggle();
-  setupFormValidation();
-  setupTermsCheckbox();
+  debug("Initializing UI elements...");
+
+  // Get all form elements
+  const elements = {
+    signupForm: document.getElementById("signupForm"),
+    firstNameInput: document.getElementById("firstName"),
+    lastNameInput: document.getElementById("lastName"),
+    emailInput: document.getElementById("email"),
+    phoneInput: document.getElementById("phone"),
+    passwordInput: document.getElementById("password"),
+    confirmPasswordInput: document.getElementById("confirmPassword"),
+    agreeTermsCheckbox: document.getElementById("agreeTerms"),
+    togglePasswordBtn: document.querySelector(".toggle-password"),
+    googleSignUpBtn: document.querySelector(".social-btn.google"),
+    githubSignUpBtn: document.querySelector(".social-btn.github"),
+    strengthMeter: document.querySelector(".strength-meter"),
+    strengthText: document.querySelector(".strength-text"),
+    termsCheckbox: document.querySelector(".terms-checkbox"),
+    requirements: document.querySelectorAll(".requirement"),
+  };
+
+  debug(
+    "Found DOM elements:",
+    Object.entries(elements).map(([k, v]) => `${k}: ${v ? "✓" : "✗"}`)
+  );
+
+  try {
+    // Initialize password-related functionality
+    if (elements.togglePasswordBtn) {
+      debug("Setting up password toggle");
+      setupPasswordToggle(elements);
+    }
+
+    // Initialize form validation
+    if (elements.signupForm) {
+      debug("Setting up form validation");
+      setupFormValidation(elements);
+      setupFormSubmission(elements.signupForm);
+    }
+
+    // Initialize terms checkbox
+    if (elements.termsCheckbox) {
+      debug("Setting up terms checkbox");
+      setupTermsCheckbox(elements.termsCheckbox);
+    }
+
+    // Initialize Google Sign In
+    if (elements.googleSignUpBtn) {
+      debug("Setting up Google sign-in button");
+      elements.googleSignUpBtn.addEventListener("click", async () => {
+        try {
+          await showLoading(
+            "Connecting to Google...",
+            "Please wait while we securely connect to your Google account"
+          );
+
+          const provider = new firebase.auth.GoogleAuthProvider();
+          provider.addScope("profile");
+          provider.addScope("email");
+          const result = await auth.signInWithPopup(provider);
+          debug("Google sign-in successful", result.user.email);
+
+          const userExists = await checkUserExists(result.user.uid);
+          debug("User exists check:", userExists);
+
+          if (!userExists) {
+            await handleNewGoogleUser(result.user);
+          } else {
+            await handleExistingGoogleUser(result.user);
+          }
+        } catch (error) {
+          debug("Google sign-in error:", error);
+          hideLoading();
+          showToast(error.message, "error");
+        }
+      });
+    }
+
+    // Initialize GitHub Sign In
+    if (elements.githubSignUpBtn) {
+      debug("Setting up GitHub sign-in button");
+      elements.githubSignUpBtn.addEventListener("click", handleGithubSignIn);
+    }
+
+    debug("UI initialization complete");
+    return elements;
+  } catch (error) {
+    handleError(error, "initializeUI");
+  }
 }
 
 // Call initialization when DOM is loaded

@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Beta Access - Neolearn</title>
+    <title>Beta Program - Neolearn</title>
+    <meta
+      name="description"
+      content="Join Neolearn's Beta Program and experience the future of AI-powered learning. Get early access to cutting-edge features and help shape the future of education."
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -12,389 +16,173 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <style>
-      :root {
-        --primary-black: #0a0a0a;
-        --secondary-black: #121212;
-        --neon-blue: #00f2ff;
-        --neon-green: #00ff9d;
-        --text-primary: #ffffff;
-        --text-secondary: rgba(255, 255, 255, 0.7);
-        --glass-bg: rgba(18, 18, 18, 0.7);
-        --glass-border: rgba(255, 255, 255, 0.05);
-      }
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+    <script>
+      // Theme management
+      const getTheme = () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) return savedTheme;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-      }
+      const setTheme = (theme) => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        updateThemeIcon(theme);
+      };
 
-      body {
-        background: var(--primary-black);
-        background-image: radial-gradient(
-            circle at 0% 0%,
-            rgba(0, 242, 255, 0.1),
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 100% 100%,
-            rgba(0, 255, 157, 0.1),
-            transparent 50%
-          );
-        color: var(--text-primary);
-        line-height: 1.6;
-      }
-
-      .bg-grid {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-        opacity: 0.5;
-        background-size: 30px 30px;
-        background-image: linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px
-          ),
-          linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px
-          );
-      }
-
-      /* Navigation */
-      .nav-container {
-        background: rgba(10, 10, 10, 0.95);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--glass-border);
-        position: fixed;
-        width: 100%;
-        top: 0;
-        z-index: 100;
-      }
-
-      nav {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        text-decoration: none;
-        color: var(--text-primary);
-      }
-
-      .logo i {
-        font-size: 1.5rem;
-        color: var(--neon-blue);
-      }
-
-      .back-to-home {
-        padding: 0.5rem 1rem;
-        border: 1px solid var(--glass-border);
-        border-radius: 8px;
-        color: var(--text-primary);
-        text-decoration: none;
-        transition: all 0.3s ease;
-        background: rgba(255, 255, 255, 0.05);
-      }
-
-      .back-to-home:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-2px);
-      }
-
-      /* Main Content */
-      .main-content {
-        max-width: 1200px;
-        margin: 100px auto 50px;
-        padding: 0 2rem;
-      }
-
-      .hero-section {
-        text-align: center;
-        margin-bottom: 4rem;
-      }
-
-      .hero-section h1 {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        background: linear-gradient(45deg, var(--neon-blue), var(--neon-green));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .hero-section p {
-        color: var(--text-secondary);
-        max-width: 700px;
-        margin: 0 auto;
-      }
-
-      .beta-features {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-bottom: 4rem;
-      }
-
-      .feature-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border);
-        border-radius: 15px;
-        padding: 2rem;
-        transition: all 0.3s ease;
-      }
-
-      .feature-card:hover {
-        transform: translateY(-5px);
-        border-color: var(--neon-blue);
-      }
-
-      .feature-card i {
-        font-size: 2rem;
-        color: var(--neon-blue);
-        margin-bottom: 1rem;
-      }
-
-      .feature-card h3 {
-        margin-bottom: 1rem;
-        color: var(--text-primary);
-      }
-
-      .feature-card p {
-        color: var(--text-secondary);
-        margin-bottom: 1rem;
-      }
-
-      .status-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 15px;
-        font-size: 0.85rem;
-      }
-
-      .status-badge.available {
-        background: rgba(0, 255, 157, 0.1);
-        color: var(--neon-green);
-      }
-
-      .status-badge.coming-soon {
-        background: rgba(0, 242, 255, 0.1);
-        color: var(--neon-blue);
-      }
-
-      .beta-info {
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border);
-        border-radius: 15px;
-        padding: 2rem;
-        margin-bottom: 4rem;
-      }
-
-      .beta-info h2 {
-        margin-bottom: 1.5rem;
-        color: var(--text-primary);
-      }
-
-      .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-      }
-
-      .info-item {
-        display: flex;
-        gap: 1rem;
-        align-items: flex-start;
-      }
-
-      .info-item i {
-        font-size: 1.5rem;
-        color: var(--neon-blue);
-      }
-
-      .info-content h4 {
-        margin-bottom: 0.5rem;
-        color: var(--text-primary);
-      }
-
-      .info-content p {
-        color: var(--text-secondary);
-      }
-
-      .cta-section {
-        text-align: center;
-        margin-bottom: 4rem;
-      }
-
-      .cta-button {
-        display: inline-block;
-        padding: 1rem 2rem;
-        background: linear-gradient(45deg, var(--neon-blue), var(--neon-green));
-        color: var(--primary-black);
-        text-decoration: none;
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-      }
-
-      .cta-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 242, 255, 0.2);
-      }
-
-      @media (max-width: 768px) {
-        .hero-section h1 {
-          font-size: 2rem;
+      const updateThemeIcon = (theme) => {
+        const icon = document.getElementById("theme-icon");
+        if (icon) {
+          icon.style.transform = "rotate(360deg)";
+          setTimeout(() => {
+            icon.textContent = theme === "dark" ? "🌙" : "☀️";
+            icon.style.transform = "rotate(0deg)";
+          }, 150);
         }
+      };
 
-        .beta-features {
-          grid-template-columns: 1fr;
-        }
+      // Initialize theme
+      setTheme(getTheme());
 
-        .info-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
+      // Handle system theme changes
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (e) => {
+          if (!localStorage.getItem("theme")) {
+            setTheme(e.matches ? "dark" : "light");
+          }
+        });
+
+      // Intersection Observer for animations
+      document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        document
+          .querySelectorAll(".fade-in")
+          .forEach((el) => observer.observe(el));
+      });
+    </script>
   </head>
-  <!-- Google tag (gtag.js) -->
-  <script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-EZYFSV1NT5"
-  ></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
-
-    gtag("config", "G-EZYFSV1NT5");
-  </script>
   <body>
     <div class="bg-grid"></div>
 
-    <div class="nav-container">
-      <nav>
-        <a href="/" class="logo">
-          <i class="fas fa-brain"></i>
-          <h1>Neolearn</h1>
-        </a>
+    <nav>
+      <a href="/" class="logo">
+        <img src="../assets/favicon.svg" alt="neolearn logo" />
+        neolearn
+      </a>
+      <div class="nav-right">
+        <button
+          class="theme-toggle"
+          onclick="setTheme(getTheme() === 'dark' ? 'light' : 'dark')"
+          aria-label="Toggle theme"
+        >
+          <span id="theme-icon">☀️</span>
+        </button>
         <a href="/" class="back-to-home">
           <i class="fas fa-arrow-left"></i>
-          Back to Home
+          <span>Back</span>
         </a>
-      </nav>
-    </div>
+      </div>
+    </nav>
 
-    <main class="main-content">
-      <section class="hero-section">
-        <h1>Beta Access Program</h1>
+    <main>
+      <section class="hero-section fade-in">
+        <h1>Join Our Beta Program</h1>
         <p>
-          Join our exclusive beta program and be among the first to experience
-          the future of AI-powered learning. Get early access to cutting-edge
-          features and help shape the future of education.
+          Be among the first to experience the future of AI-powered learning.
+          Get early access to cutting-edge features and help shape the future of
+          education.
         </p>
       </section>
 
       <section class="beta-features">
-        <div class="feature-card">
+        <div class="feature-card fade-in">
           <i class="fas fa-brain"></i>
           <h3>AI Flashcard Maker</h3>
           <p>
             Transform your study materials into effective flashcards using
             advanced AI. Perfect for quick revision and active recall practice.
           </p>
-          <span class="status-badge available">Available Now</span>
+          <span class="status-badge">Available Now</span>
         </div>
 
-        <div class="feature-card">
-          <i class="fas fa-magnifying-glass"></i>
+        <div class="feature-card fade-in">
+          <i class="fas fa-shield-alt"></i>
           <h3>Plagiarism & AI Detector</h3>
           <p>
             Advanced detection system for both plagiarized content and
             AI-generated text. Get detailed reports and suggestions.
           </p>
-          <span class="status-badge available">Available Now</span>
+          <span class="status-badge">Available Now</span>
         </div>
 
-        <div class="feature-card">
+        <div class="feature-card fade-in">
           <i class="fas fa-chart-line"></i>
           <h3>Analytics Dashboard</h3>
           <p>
             Track your learning progress, study patterns, and get AI-powered
             insights to optimize your study routine.
           </p>
-          <span class="status-badge available">Available Now</span>
+          <span class="status-badge">Available Now</span>
         </div>
       </section>
 
       <section class="beta-info">
         <h2>What to Expect in Beta</h2>
         <div class="info-grid">
-          <div class="info-item">
+          <div class="info-item fade-in">
             <i class="fas fa-star"></i>
             <div class="info-content">
               <h4>Early Access</h4>
-              <p>
-                Be the first to try new features and provide feedback that
-                shapes the platform.
-              </p>
+              <p>Be the first to try new features and shape the platform.</p>
             </div>
           </div>
 
-          <div class="info-item">
+          <div class="info-item fade-in">
             <i class="fas fa-comments"></i>
             <div class="info-content">
-              <h4>Direct Feedback Channel</h4>
-              <p>
-                Direct line to our development team for suggestions and bug
-                reports.
-              </p>
+              <h4>Direct Feedback</h4>
+              <p>Direct line to our development team for suggestions.</p>
             </div>
           </div>
 
-          <div class="info-item">
+          <div class="info-item fade-in">
             <i class="fas fa-gift"></i>
             <div class="info-content">
               <h4>Beta Perks</h4>
-              <p>
-                Special benefits and features exclusive to beta users, even
-                after full launch.
-              </p>
+              <p>Special benefits exclusive to beta users.</p>
             </div>
           </div>
 
-          <div class="info-item">
+          <div class="info-item fade-in">
             <i class="fas fa-shield-alt"></i>
             <div class="info-content">
-              <h4>Guaranteed Free Tier</h4>
-              <p>
-                Beta users will always have access to core features, even after
-                premium tiers launch.
-              </p>
+              <h4>Free Tier</h4>
+              <p>Guaranteed access to core features after launch.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="cta-section">
-        <a href="/auth/signup" class="cta-button">Join the Beta Program</a>
+      <section class="cta-section fade-in">
+        <a href="/auth/signup" class="cta-button">
+          Join the Beta Program
+          <i class="fas fa-arrow-right"></i>
+        </a>
       </section>
     </main>
   </body>

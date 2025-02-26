@@ -15,6 +15,8 @@
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.16);
+  --scroll-padding-top: 100px; /* Add padding for fixed header */
+  --scroll-behavior: smooth;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -71,6 +73,11 @@
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--scroll-padding-top);
 }
 
 * {
@@ -144,21 +151,23 @@ body {
   gap: 36px;
 }
 
-.nav-menu li {
+.nav-item {
   font-size: 15px;
   cursor: pointer;
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   font-weight: 500;
   position: relative;
   padding: 8px 0;
+  text-decoration: none;
 }
 
-.nav-menu li:hover {
+.nav-item:hover,
+.nav-item.active {
   color: var(--text-primary);
 }
 
-.nav-menu li::after {
+.nav-item::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -166,10 +175,11 @@ body {
   width: 0;
   height: 2px;
   background: var(--gradient-primary);
-  transition: width 0.2s ease;
+  transition: width 0.3s ease;
 }
 
-.nav-menu li:hover::after {
+.nav-item:hover::after,
+.nav-item.active::after {
   width: 100%;
 }
 

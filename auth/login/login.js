@@ -14,6 +14,19 @@ function initializeFirebase() {
 document.addEventListener("DOMContentLoaded", () => {
   initializeFirebase();
   initializeUI();
+
+  // Check if user is already signed in
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      try {
+        const userDoc = await firestore.collection("users").doc(user.uid).get();
+        redirectBasedOnUserStatus(userDoc);
+      } catch (error) {
+        console.error("Error checking user status:", error);
+        showToast("Error verifying your account", "error");
+      }
+    }
+  });
 });
 
 // Get DOM elements
@@ -24,8 +37,8 @@ function getElements() {
     passwordInput: document.getElementById("password"),
     rememberMeCheckbox: document.getElementById("remember"),
     togglePasswordBtn: document.querySelector(".toggle-password"),
-    googleSignInBtn: document.querySelector(".social-btn.google"),
-    githubSignInBtn: document.querySelector(".social-btn.github"),
+    googleSignInBtn: document.getElementById("googleLogin"),
+    githubSignInBtn: document.getElementById("githubLogin"),
     toastContainer: document.querySelector(".toast-container"),
   };
 }
@@ -71,10 +84,28 @@ function initializeUI() {
   // Email/Password Sign In
   elements.loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const button = e.target.querySelector(".login-btn");
 
-    const email = elements.emailInput?.value || "";
+    const email = elements.emailInput?.value?.trim() || "";
     const password = elements.passwordInput?.value || "";
     const rememberMe = elements.rememberMeCheckbox?.checked || false;
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showToast("Please enter a valid email address", "error");
+      elements.emailInput.focus();
+      return;
+    }
+
+    // Validate password
+    if (!password) {
+      showToast("Please enter your password", "error");
+      elements.passwordInput.focus();
+      return;
+    }
+
+    button.classList.add("loading");
 
     try {
       const persistence = rememberMe
@@ -82,14 +113,40 @@ function initializeUI() {
         : firebase.auth.Auth.Persistence.SESSION;
 
       await auth.setPersistence(persistence);
-      await auth.signInWithEmailAndPassword(email, password);
+      const userCredential = await auth.signInWithEmailAndPassword(
+        email,
+        password
+      );
 
-      showToast("Successfully signed in!");
-      window.location.href =
-        "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
+      const userDoc = await firestore
+        .collection("users")
+        .doc(userCredential.user.uid)
+        .get();
+      redirectBasedOnUserStatus(userDoc);
     } catch (error) {
       console.error("Error:", error);
-      showToast(error.message, "error");
+      let errorMessage = "An error occurred during login";
+
+      // Provide more user-friendly error messages
+      switch (error.code) {
+        case "auth/invalid-email":
+          errorMessage = "Please enter a valid email address";
+          break;
+        case "auth/user-not-found":
+          errorMessage = "No account found with this email";
+          break;
+        case "auth/wrong-password":
+          errorMessage = "Incorrect password";
+          break;
+        case "auth/too-many-requests":
+          errorMessage = "Too many failed attempts. Please try again later";
+          break;
+        default:
+          errorMessage = error.message;
+      }
+
+      showToast(errorMessage, "error");
+      button.classList.remove("loading");
     }
   });
 
@@ -99,26 +156,11 @@ function initializeUI() {
       try {
         const provider = new firebase.auth.GoogleAuthProvider();
         const result = await auth.signInWithPopup(provider);
-
-        // After successful Google sign in, check if user exists in Firestore
         const userDoc = await firestore
           .collection("users")
           .doc(result.user.uid)
           .get();
-
-        if (!userDoc.exists) {
-          window.location.href =
-            "/redirect/index.html?to=/auth/signup/continue.html&message=Complete your profile&submessage=Setting up your account...";
-        } else {
-          const userData = userDoc.data();
-          if (!userData.isOnboardingComplete) {
-            window.location.href =
-              "/redirect/index.html?to=/onboarding&message=Complete onboarding&submessage=Setting up your workspace...";
-          } else {
-            window.location.href =
-              "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
-          }
-        }
+        redirectBasedOnUserStatus(userDoc);
       } catch (error) {
         console.error("Error:", error);
         showToast(error.message, "error");
@@ -132,25 +174,11 @@ function initializeUI() {
       try {
         const provider = new firebase.auth.GithubAuthProvider();
         const result = await auth.signInWithPopup(provider);
-
         const userDoc = await firestore
           .collection("users")
           .doc(result.user.uid)
           .get();
-
-        if (!userDoc.exists) {
-          window.location.href =
-            "/redirect/index.html?to=/auth/signup/continue.html&message=Complete your profile&submessage=Setting up your account...";
-        } else {
-          const userData = userDoc.data();
-          if (!userData.isOnboardingComplete) {
-            window.location.href =
-              "/redirect/index.html?to=/onboarding&message=Complete onboarding&submessage=Setting up your workspace...";
-          } else {
-            window.location.href =
-              "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
-          }
-        }
+        redirectBasedOnUserStatus(userDoc);
       } catch (error) {
         console.error("Error:", error);
         showToast(error.message, "error");
@@ -207,28 +235,18 @@ function initializeUI() {
   });
 }
 
-// Check if user is already signed in
-auth?.onAuthStateChanged(async (user) => {
-  if (user) {
-    try {
-      const userDoc = await firestore.collection("users").doc(user.uid).get();
-
-      if (!userDoc.exists) {
-        window.location.href =
-          "/redirect/index.html?to=/auth/signup/continue.html&message=Complete your profile&submessage=Setting up your account...";
-      } else {
-        const userData = userDoc.data();
-        if (!userData.isOnboardingComplete) {
-          window.location.href =
-            "/redirect/index.html?to=/onboarding&message=Complete onboarding&submessage=Setting up your workspace...";
-        } else {
-          window.location.href =
-            "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
-        }
-      }
-    } catch (error) {
-      console.error("Error checking user status:", error);
-      showToast("Error verifying your account", "error");
+function redirectBasedOnUserStatus(userDoc) {
+  if (!userDoc.exists) {
+    window.location.href =
+      "/redirect/index.html?to=/auth/signup/continue.html&message=Complete your profile&submessage=Setting up your account...";
+  } else {
+    const userData = userDoc.data();
+    if (!userData.isOnboardingComplete) {
+      window.location.href =
+        "/redirect/index.html?to=/onboarding&message=Complete onboarding&submessage=Setting up your workspace...";
+    } else {
+      window.location.href =
+        "/redirect/index.html?to=/dashboard&message=Welcome back!&submessage=Preparing your dashboard...";
     }
   }
-});
+}

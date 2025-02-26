@@ -1,47 +1,64 @@
-// Import shared utilities
-import { showToast, showLoading, hideLoading } from "../../shared/utils/ui.js";
-import { redirectTo } from "../../shared/utils/routes.js";
-
-// Import Firebase SDKs
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  EmailAuthProvider,
-  linkWithCredential,
-  updateProfile,
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-let auth;
-let firestore;
+// Initialize variables
 let currentUser = null;
+let currentStep = 1;
+const totalSteps = 4;
+
+const stepTitles = {
+  1: "Tell us about yourself",
+  2: "Your education details",
+  3: "Select your interests",
+  4: "Set your learning goals",
+};
+
+// Show toast message
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+
+  const container = document.querySelector(".toast-container");
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
+// Show loading overlay
+function showLoading(message, submessage) {
+  const loadingOverlay = document.createElement("div");
+  loadingOverlay.className = "loading-overlay";
+  loadingOverlay.innerHTML = `
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3>${message || "Loading..."}</h3>
+      ${submessage ? `<p>${submessage}</p>` : ""}
+    </div>
+  `;
+  document.body.appendChild(loadingOverlay);
+}
+
+// Hide loading overlay
+function hideLoading() {
+  const overlay = document.querySelector(".loading-overlay");
+  if (overlay) {
+    overlay.remove();
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("[Continue Signup] DOM Content Loaded - Initializing components");
   initializeFirebase();
   setupFormListeners();
+  updateProgressBar();
+  updateStepTitle();
 });
 
-async function initializeFirebase() {
+function initializeFirebase() {
   console.log("[Continue Signup] Initializing Firebase");
   try {
-    const { default: firebaseConfig } = await import(
-      "../../shared/utils/firebase-config.js"
-    );
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    auth = getAuth(app);
-    firestore = getFirestore(app);
-
     // Set up auth state listener
-    onAuthStateChanged(auth, handleAuthStateChange);
+    window.auth.onAuthStateChanged(handleAuthStateChange);
     console.log("[Continue Signup] Firebase initialized successfully");
   } catch (error) {
     console.error("[Continue Signup] Error initializing Firebase:", error);
@@ -57,7 +74,7 @@ function handleAuthStateChange(user) {
 
   if (!user) {
     console.log("[Continue Signup] No user found - redirecting to signup");
-    redirectTo("/auth/signup/");
+    window.location.href = "/auth/signup/";
     return;
   }
 
@@ -68,6 +85,11 @@ function handleAuthStateChange(user) {
     displayName: user.displayName,
   });
 
+  // Pre-fill form fields if available
+  prefillFormFields(user);
+}
+
+function prefillFormFields(user) {
   // Pre-fill email if available
   const emailInput = document.getElementById("email");
   if (emailInput && user.email) {
@@ -77,85 +99,177 @@ function handleAuthStateChange(user) {
   }
 
   // Pre-fill name if available
-  const nameInput = document.getElementById("username");
-  if (nameInput && user.displayName) {
-    console.log("[Continue Signup] Pre-filling name:", user.displayName);
-    nameInput.value = user.displayName;
+  if (user.displayName) {
+    const names = user.displayName.split(" ");
+    const firstName = document.getElementById("firstName");
+    const lastName = document.getElementById("lastName");
+
+    if (firstName && names[0]) {
+      firstName.value = names[0];
+    }
+    if (lastName && names.length > 1) {
+      lastName.value = names.slice(1).join(" ");
+    }
   }
 }
 
 function setupFormListeners() {
   console.log("[Continue Signup] Setting up form listeners");
-  const form = document.getElementById("continueSignupForm");
-  const passwordInput = document.getElementById("password");
-  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const form = document.getElementById("continueForm");
+  const nextBtn = document.getElementById("nextBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const submitBtn = document.getElementById("submitBtn");
 
   if (form) {
     form.addEventListener("submit", handleFormSubmit);
     console.log("[Continue Signup] Form submit listener added");
   }
 
-  if (passwordInput) {
-    passwordInput.addEventListener("input", () => {
-      console.log("[Continue Signup] Checking password strength");
-      checkPasswordStrength(passwordInput.value);
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      if (validateCurrentStep()) {
+        goToNextStep();
+      }
     });
   }
 
-  if (confirmPasswordInput) {
-    confirmPasswordInput.addEventListener("input", () => {
-      console.log("[Continue Signup] Validating password match");
-      validatePasswordMatch(passwordInput.value, confirmPasswordInput.value);
+  if (prevBtn) {
+    prevBtn.addEventListener("click", goToPrevStep);
+  }
+
+  // Set up input validation listeners
+  setupInputValidation();
+}
+
+function setupInputValidation() {
+  const inputs = document.querySelectorAll("input, select, textarea");
+  inputs.forEach((input) => {
+    input.addEventListener("input", () => {
+      validateInput(input);
     });
+
+    input.addEventListener("blur", () => {
+      validateInput(input);
+    });
+  });
+}
+
+function validateInput(input) {
+  const isValid = input.checkValidity();
+  const inputGroup = input.closest(".input-group");
+
+  if (inputGroup) {
+    if (!isValid && input.value) {
+      inputGroup.classList.add("error");
+    } else {
+      inputGroup.classList.remove("error");
+    }
+  }
+
+  return isValid;
+}
+
+function validateCurrentStep() {
+  const currentStepElement = document.querySelector(
+    `.form-step[data-step="${currentStep}"]`
+  );
+  const inputs = currentStepElement.querySelectorAll("input, select, textarea");
+  let isValid = true;
+
+  inputs.forEach((input) => {
+    if (input.required) {
+      const valid = validateInput(input);
+      isValid = isValid && valid;
+    }
+  });
+
+  if (!isValid) {
+    showToast("Please fill in all required fields correctly", "error");
+  }
+
+  return isValid;
+}
+
+function goToNextStep() {
+  if (currentStep < totalSteps) {
+    const currentStepElement = document.querySelector(
+      `.form-step[data-step="${currentStep}"]`
+    );
+    const nextStepElement = document.querySelector(
+      `.form-step[data-step="${currentStep + 1}"]`
+    );
+
+    currentStepElement.classList.remove("active");
+    nextStepElement.classList.add("active");
+
+    currentStep++;
+    updateProgressBar();
+    updateStepTitle();
+    updateNavigationButtons();
   }
 }
 
-function checkPasswordStrength(password) {
-  const strengthMeter = document.querySelector(".strength-meter");
-  const strengthText = document.querySelector(".strength-text");
+function goToPrevStep() {
+  if (currentStep > 1) {
+    const currentStepElement = document.querySelector(
+      `.form-step[data-step="${currentStep}"]`
+    );
+    const prevStepElement = document.querySelector(
+      `.form-step[data-step="${currentStep - 1}"]`
+    );
 
-  if (!strengthMeter || !strengthText) return;
+    currentStepElement.classList.remove("active");
+    prevStepElement.classList.add("active");
 
-  // Password strength criteria
-  const criteria = {
-    length: password.length >= 8,
-    uppercase: /[A-Z]/.test(password),
-    lowercase: /[a-z]/.test(password),
-    numbers: /[0-9]/.test(password),
-    special: /[^A-Za-z0-9]/.test(password),
-  };
-
-  const strength = Object.values(criteria).filter(Boolean).length;
-  console.log("[Continue Signup] Password strength:", strength);
-
-  // Update strength meter
-  strengthMeter.style.width = `${(strength / 5) * 100}%`;
-  strengthMeter.style.backgroundColor =
-    strength <= 2
-      ? "var(--error-color)"
-      : strength <= 3
-      ? "var(--warning-color)"
-      : "var(--success-color)";
-
-  // Update strength text
-  strengthText.textContent =
-    strength <= 2
-      ? "Weak"
-      : strength <= 3
-      ? "Moderate"
-      : strength <= 4
-      ? "Strong"
-      : "Very Strong";
+    currentStep--;
+    updateProgressBar();
+    updateStepTitle();
+    updateNavigationButtons();
+  }
 }
 
-function validatePasswordMatch(password, confirmPassword) {
-  const confirmInput = document.getElementById("confirmPassword");
-  if (!confirmInput) return;
+function updateProgressBar() {
+  const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+  const progressFill = document.getElementById("progressFill");
+  if (progressFill) {
+    progressFill.style.width = `${progress}%`;
+  }
 
-  const matches = password === confirmPassword;
-  console.log("[Continue Signup] Passwords match:", matches);
+  // Update step indicators
+  document.querySelectorAll(".step").forEach((step) => {
+    const stepNumber = parseInt(step.dataset.step);
+    step.classList.remove("active", "complete");
+    if (stepNumber === currentStep) {
+      step.classList.add("active");
+    } else if (stepNumber < currentStep) {
+      step.classList.add("complete");
+    }
+  });
+}
 
-  confirmInput.setCustomValidity(matches ? "" : "Passwords do not match");
+function updateStepTitle() {
+  const stepTitle = document.getElementById("stepTitle");
+  if (stepTitle) {
+    stepTitle.textContent = stepTitles[currentStep];
+  }
+}
+
+function updateNavigationButtons() {
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const submitBtn = document.getElementById("submitBtn");
+
+  if (prevBtn) {
+    prevBtn.style.display = currentStep === 1 ? "none" : "flex";
+  }
+
+  if (nextBtn) {
+    nextBtn.style.display = currentStep === totalSteps ? "none" : "flex";
+  }
+
+  if (submitBtn) {
+    submitBtn.style.display = currentStep === totalSteps ? "flex" : "none";
+  }
 }
 
 async function handleFormSubmit(event) {
@@ -165,26 +279,11 @@ async function handleFormSubmit(event) {
   if (!currentUser) {
     console.error("[Continue Signup] No current user found");
     showToast("Please sign in again", "error");
-    redirectTo("/auth/signup/");
+    window.location.href = "/auth/signup/";
     return;
   }
 
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
-  const phone = document.getElementById("phone").value;
-  const agreeTerms = document.getElementById("agreeTerms").checked;
-
-  // Validate form
-  if (!validateForm(username, password, confirmPassword)) {
-    return;
-  }
-
-  if (!agreeTerms) {
-    showToast(
-      "Please agree to the Terms of Service and Privacy Policy",
-      "error"
-    );
+  if (!validateCurrentStep()) {
     return;
   }
 
@@ -195,72 +294,68 @@ async function handleFormSubmit(event) {
     );
     console.log("[Continue Signup] Updating user profile");
 
-    // Update display name if changed
-    if (username !== currentUser.displayName) {
-      await updateProfile(currentUser, { displayName: username });
-    }
+    // Gather form data
+    const formData = {
+      // Personal Information
+      username: document.getElementById("username").value,
+      firstName: document.getElementById("firstName").value,
+      lastName: document.getElementById("lastName").value,
+      phone: document.getElementById("phone").value || null,
 
-    // Save additional user data
-    const userData = {
-      displayName: username,
+      // Education
+      school: document.getElementById("school").value,
+      educationLevel: document.getElementById("educationLevel").value,
+      yearOfStudy: document.getElementById("yearOfStudy").value,
+
+      // Interests
+      subjects: Array.from(
+        document.getElementById("subjects").selectedOptions
+      ).map((opt) => opt.value),
+      interests: Array.from(
+        document.getElementById("interests").selectedOptions
+      ).map((opt) => opt.value),
+
+      // Goals
+      goals: document.getElementById("goals").value,
+      studyTime: document.getElementById("studyTime").value,
+      studyDays: Array.from(
+        document.getElementById("studyDays").selectedOptions
+      ).map((opt) => opt.value),
+
+      // Additional Data
+      displayName: `${document.getElementById("firstName").value} ${
+        document.getElementById("lastName").value
+      }`,
       email: currentUser.email,
       photoURL: currentUser.photoURL || null,
       provider: currentUser.providerData[0].providerId,
-      phone: phone || null,
       hasCompletedSignup: true,
       isOnboardingComplete: false,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
 
-    console.log("[Continue Signup] Saving user data:", userData);
-    await setDoc(doc(firestore, "users", currentUser.uid), userData, {
-      merge: true,
+    // Update display name
+    await currentUser.updateProfile({
+      displayName: formData.displayName,
     });
 
-    // Link password to account if not already linked
-    if (!currentUser.providerData.some((p) => p.providerId === "password")) {
-      console.log("[Continue Signup] Linking password to account");
-      const credential = EmailAuthProvider.credential(
-        currentUser.email,
-        password
-      );
-      await linkWithCredential(currentUser, credential);
-    }
+    // Save to Firestore
+    console.log("[Continue Signup] Saving user data:", formData);
+    await window.db.collection("users").doc(currentUser.uid).set(formData, {
+      merge: true,
+    });
 
     console.log("[Continue Signup] Setup completed successfully");
     hideLoading();
     showToast("Account setup completed!", "success");
+
+    // Redirect to onboarding
     window.location.href =
-      "/redirect/index.html?to=/onboarding&message=Welcome to NeoSentrix!&submessage=Let's set up your workspace...";
+      "/redirect/index.html?to=/onboarding&message=Welcome to Neolearn!&submessage=Let's personalize your learning experience...";
   } catch (error) {
     console.error("[Continue Signup] Error during setup:", error);
     hideLoading();
     showToast(error.message, "error");
   }
-}
-
-function validateForm(username, password, confirmPassword) {
-  console.log("[Continue Signup] Validating form");
-
-  if (!username || username.length < 3) {
-    console.log("[Continue Signup] Invalid username");
-    showToast("Username must be at least 3 characters long", "error");
-    return false;
-  }
-
-  if (!password || password.length < 8) {
-    console.log("[Continue Signup] Invalid password length");
-    showToast("Password must be at least 8 characters long", "error");
-    return false;
-  }
-
-  if (password !== confirmPassword) {
-    console.log("[Continue Signup] Passwords do not match");
-    showToast("Passwords do not match", "error");
-    return false;
-  }
-
-  console.log("[Continue Signup] Form validation passed");
-  return true;
 }
