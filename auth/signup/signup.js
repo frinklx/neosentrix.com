@@ -7,6 +7,9 @@ import { ROUTES, navigateTo } from "../../shared/utils/routes.js";
 import {
   GoogleAuthProvider,
   GithubAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -243,7 +246,8 @@ function initializeUI() {
           "Setting up your secure profile"
         );
 
-        const userCredential = await auth.createUserWithEmailAndPassword(
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
           elements.emailInput.value,
           elements.passwordInput.value
         );
@@ -257,7 +261,7 @@ function initializeUI() {
             lastName: elements.lastNameInput.value,
             email: elements.emailInput.value,
             phone: elements.phoneInput.value || null,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt: serverTimestamp(),
           });
 
         showToast("Account created successfully!", "success");
@@ -295,7 +299,7 @@ function initializeUI() {
         const provider = new GoogleAuthProvider();
         provider.addScope("profile");
         provider.addScope("email");
-        const result = await auth.signInWithPopup(provider);
+        const result = await signInWithPopup(auth, provider);
 
         const userExists = await checkUserExists(result.user.uid);
 
@@ -305,7 +309,7 @@ function initializeUI() {
             "Setting up your profile with Google information"
           );
 
-          await saveUserData(result.user.uid, {
+          await db.collection("users").doc(result.user.uid).set({
             email: result.user.email,
             displayName: result.user.displayName,
             photoURL: result.user.photoURL,
@@ -462,8 +466,7 @@ function handleGithubSignIn() {
   const provider = new GithubAuthProvider();
   provider.addScope("user");
 
-  auth
-    .signInWithPopup(provider)
+  signInWithPopup(auth, provider)
     .then(async (result) => {
       debug("GitHub sign-in successful", result.user.email);
 
@@ -545,7 +548,7 @@ async function checkUserExists(uid) {
 }
 
 // Check if user is already signed in
-auth.onAuthStateChanged((user) => {
+onAuthStateChanged(auth, (user) => {
   if (user) {
     // Check if user has completed onboarding
     db.collection("users")
