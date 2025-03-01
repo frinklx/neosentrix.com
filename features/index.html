@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,6 +14,302 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <link rel="stylesheet" href="../styles.css" />
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --primary-soft: rgba(37, 99, 235, 0.1);
+        --accent: #7c3aed;
+        --text: #0f172a;
+        --text-secondary: #475569;
+        --background: #ffffff;
+        --glass-bg: rgba(255, 255, 255, 0.8);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --card-bg: rgba(255, 255, 255, 0.8);
+        --card-border: rgba(255, 255, 255, 0.1);
+        --shadow: rgba(0, 0, 0, 0.1);
+      }
+
+      [data-theme="dark"] {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --primary-soft: rgba(59, 130, 246, 0.1);
+        --accent: #8b5cf6;
+        --text: #f8fafc;
+        --text-secondary: #94a3b8;
+        --background: #0f172a;
+        --glass-bg: rgba(15, 23, 42, 0.8);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --card-bg: rgba(15, 23, 42, 0.8);
+        --card-border: rgba(255, 255, 255, 0.1);
+        --shadow: rgba(0, 0, 0, 0.3);
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--text);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .content-section {
+        padding: 6rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .features-header {
+        text-align: center;
+        margin-bottom: 4rem;
+        padding: 3rem;
+        border-radius: 24px;
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--card-border);
+        box-shadow: 0 8px 32px var(--shadow);
+      }
+
+      .features-header h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--accent) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientText 8s ease infinite;
+      }
+
+      .features-header .lead {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+      }
+
+      .feature-card {
+        padding: 2rem;
+        border-radius: 16px;
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--card-border);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px var(--shadow);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+        box-shadow: 0 8px 32px var(--shadow);
+      }
+
+      .feature-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--primary-soft);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .feature-icon i {
+        font-size: 24px;
+        color: var(--primary);
+      }
+
+      .feature-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--text);
+      }
+
+      .feature-card p {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .feature-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        color: var(--text);
+      }
+
+      .feature-list li i {
+        color: var(--primary);
+        margin-right: 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .features-cta {
+        text-align: center;
+        padding: 4rem 2rem;
+        border-radius: 24px;
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--card-border);
+        box-shadow: 0 8px 32px var(--shadow);
+      }
+
+      .features-cta h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--text);
+      }
+
+      .features-cta p {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      .primary-btn {
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        background: var(--primary);
+        color: white;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .primary-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+      }
+
+      .glow-effect {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .glow-effect::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.2) 0%,
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .glow-effect:hover::after {
+        opacity: 1;
+      }
+
+      /* Theme Toggle Styles */
+      .theme-toggle {
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+        color: var(--text);
+        font-size: 1.25rem;
+        transition: color 0.3s ease;
+      }
+
+      .theme-toggle:hover {
+        color: var(--primary);
+      }
+
+      /* Background Effects */
+      .noise-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("/assets/noise.png");
+        opacity: 0.03;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .gradient-sphere,
+      .gradient-sphere-2 {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      .gradient-sphere {
+        background: var(--primary);
+        width: 50vw;
+        height: 50vw;
+        top: -25vw;
+        right: -25vw;
+      }
+
+      .gradient-sphere-2 {
+        background: var(--accent);
+        width: 40vw;
+        height: 40vw;
+        bottom: -20vw;
+        left: -20vw;
+      }
+
+      @media (max-width: 768px) {
+        .content-section {
+          padding: 4rem 1rem;
+        }
+
+        .features-header h1 {
+          font-size: 2.5rem;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .feature-card {
+          padding: 1.5rem;
+        }
+      }
+
+      @keyframes gradientText {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+    </style>
   </head>
   <!-- Google tag (gtag.js) -->
   <script
@@ -38,163 +334,291 @@
     <div class="vignette"></div>
 
     <!-- Navigation -->
-    <nav class="glass-morphism">
-      <div class="logo">
-        <a href="/" style="text-decoration: none; color: inherit">
-          <i class="fas fa-brain gradient-text"></i>
-          NeoSentrix
+    <nav class="main-nav">
+      <div class="nav-left">
+        <a href="/" class="logo">
+          <img
+            src="/assets/favicon.svg"
+            alt="neolearn logo"
+            class="notion-logo"
+          />
+          <span>neolearn</span>
         </a>
+        <ul class="nav-menu">
+          <a href="/features" class="nav-item active">Features</a>
+          <a href="/usecases" class="nav-item">Use Cases</a>
+          <a href="/about" class="nav-item">About</a>
+        </ul>
       </div>
-      <div class="nav-links">
-        <a href="/features" class="hover-underline">Features</a>
-        <a href="/usecases" class="hover-underline">Use Cases</a>
-        <a href="/about" class="hover-underline">About</a>
-        <button class="primary-btn glow-effect">Get Started</button>
+      <div class="nav-right">
+        <button
+          class="theme-toggle"
+          onclick="setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')"
+          aria-label="Toggle theme"
+        >
+          <span id="theme-icon">☀️</span>
+        </button>
+        <a href="/auth" class="btn btn-secondary">Log in</a>
+        <a href="/auth" class="btn btn-primary">Get started free →</a>
       </div>
     </nav>
 
     <!-- Features Content -->
     <section class="content-section">
       <div class="container">
-        <div class="features-header glass-card">
-          <h1 class="gradient-heading">Platform Features</h1>
-          <p class="lead">Discover the power of AI-driven learning</p>
+        <div class="features-header">
+          <h1>Your complete workspace</h1>
+          <p class="lead">
+            A comprehensive platform that combines document creation, task
+            management, and AI assistance in one unified experience
+          </p>
         </div>
 
         <div class="features-grid">
-          <div class="glass-card feature-card">
+          <div class="feature-card">
             <div class="feature-icon">
-              <i class="fas fa-brain"></i>
+              <i class="fas fa-file-alt"></i>
             </div>
-            <h2>AI Learning Paths</h2>
-            <p>
-              Personalized learning journeys that adapt to your pace and style
-            </p>
+            <h2>Smart Documents</h2>
+            <p>Create and collaborate on documents with AI assistance</p>
             <ul class="feature-list">
-              <li><i class="fas fa-check"></i> Dynamic content adaptation</li>
-              <li>
-                <i class="fas fa-check"></i> Progress-based recommendations
-              </li>
-              <li><i class="fas fa-check"></i> Smart difficulty scaling</li>
-              <li><i class="fas fa-check"></i> Real-time adjustments</li>
+              <li><i class="fas fa-check"></i> Rich text editing</li>
+              <li><i class="fas fa-check"></i> Real-time collaboration</li>
+              <li><i class="fas fa-check"></i> Version history</li>
+              <li><i class="fas fa-check"></i> AI writing assistance</li>
             </ul>
           </div>
 
-          <div class="glass-card feature-card">
+          <div class="feature-card">
             <div class="feature-icon">
-              <i class="fas fa-chart-line"></i>
+              <i class="fas fa-tasks"></i>
             </div>
-            <h2>Progress Analytics</h2>
-            <p>Comprehensive insights into your learning journey</p>
+            <h2>Task Management</h2>
+            <p>Stay organized with powerful task tracking</p>
             <ul class="feature-list">
-              <li><i class="fas fa-check"></i> Performance tracking</li>
-              <li><i class="fas fa-check"></i> Learning pattern analysis</li>
-              <li><i class="fas fa-check"></i> Goal progress monitoring</li>
-              <li><i class="fas fa-check"></i> Improvement suggestions</li>
+              <li><i class="fas fa-check"></i> Priority management</li>
+              <li><i class="fas fa-check"></i> Project organization</li>
+              <li><i class="fas fa-check"></i> Due date tracking</li>
+              <li><i class="fas fa-check"></i> Task dependencies</li>
             </ul>
           </div>
 
-          <div class="glass-card feature-card">
+          <div class="feature-card">
             <div class="feature-icon">
               <i class="fas fa-robot"></i>
             </div>
             <h2>AI Assistant</h2>
-            <p>Your personal learning companion available 24/7</p>
+            <p>Your intelligent companion for any task</p>
             <ul class="feature-list">
-              <li>
-                <i class="fas fa-check"></i> Instant help and explanations
-              </li>
-              <li><i class="fas fa-check"></i> Concept clarification</li>
-              <li><i class="fas fa-check"></i> Practice suggestions</li>
-              <li><i class="fas fa-check"></i> Learning tips</li>
+              <li><i class="fas fa-check"></i> Writing assistance</li>
+              <li><i class="fas fa-check"></i> Research help</li>
+              <li><i class="fas fa-check"></i> Problem-solving</li>
+              <li><i class="fas fa-check"></i> Smart suggestions</li>
             </ul>
           </div>
 
-          <div class="glass-card feature-card">
+          <div class="feature-card">
             <div class="feature-icon">
-              <i class="fas fa-graduation-cap"></i>
+              <i class="fas fa-book"></i>
             </div>
-            <h2>Smart Assessment</h2>
-            <p>Adaptive testing that grows with you</p>
+            <h2>Knowledge Base</h2>
+            <p>Build your personal information hub</p>
             <ul class="feature-list">
-              <li>
-                <i class="fas fa-check"></i> Dynamic difficulty adjustment
-              </li>
-              <li><i class="fas fa-check"></i> Comprehensive feedback</li>
-              <li><i class="fas fa-check"></i> Knowledge gap identification</li>
-              <li><i class="fas fa-check"></i> Progress certification</li>
+              <li><i class="fas fa-check"></i> Linked notes</li>
+              <li><i class="fas fa-check"></i> Auto-organization</li>
+              <li><i class="fas fa-check"></i> Smart search</li>
+              <li><i class="fas fa-check"></i> Reference management</li>
             </ul>
           </div>
 
-          <div class="glass-card feature-card">
+          <div class="feature-card">
             <div class="feature-icon">
-              <i class="fas fa-users"></i>
+              <i class="fas fa-sync-alt"></i>
             </div>
-            <h2>Community Learning</h2>
-            <p>Connect and learn with peers worldwide</p>
-            <ul class="feature-list">
-              <li><i class="fas fa-check"></i> Study groups</li>
-              <li><i class="fas fa-check"></i> Peer reviews</li>
-              <li><i class="fas fa-check"></i> Knowledge sharing</li>
-              <li><i class="fas fa-check"></i> Collaborative projects</li>
-            </ul>
-          </div>
-
-          <div class="glass-card feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-mobile-alt"></i>
-            </div>
-            <h2>Mobile Learning</h2>
-            <p>Learn anywhere, anytime with our mobile app</p>
+            <h2>Seamless Sync</h2>
+            <p>Access your work from anywhere</p>
             <ul class="feature-list">
               <li><i class="fas fa-check"></i> Cross-device sync</li>
-              <li><i class="fas fa-check"></i> Offline access</li>
-              <li><i class="fas fa-check"></i> Mobile-optimized content</li>
-              <li><i class="fas fa-check"></i> Push notifications</li>
+              <li><i class="fas fa-check"></i> Offline support</li>
+              <li><i class="fas fa-check"></i> Auto-backup</li>
+              <li><i class="fas fa-check"></i> Version control</li>
+            </ul>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <h2>Powerful Integrations</h2>
+            <p>Connect with your favorite tools</p>
+            <ul class="feature-list">
+              <li><i class="fas fa-check"></i> Google Docs import</li>
+              <li><i class="fas fa-check"></i> Calendar sync</li>
+              <li><i class="fas fa-check"></i> API access</li>
+              <li><i class="fas fa-check"></i> Custom workflows</li>
             </ul>
           </div>
         </div>
 
-        <div class="glass-card features-cta">
-          <h2>Ready to Experience These Features?</h2>
-          <p>Start your learning journey today with NeoSentrix</p>
+        <div class="features-cta">
+          <h2>Ready to transform your workflow?</h2>
+          <p>Start organizing, creating, and learning with neolearn</p>
           <div class="cta-buttons">
-            <button class="primary-btn glow-effect">Get Started Now</button>
+            <a href="/auth" class="primary-btn glow-effect"
+              >Get Started Free →</a
+            >
           </div>
         </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="glass-morphism">
+    <footer>
       <div class="footer-content">
-        <div class="footer-section brand">
-          <div class="logo">
-            <i class="fas fa-brain gradient-text"></i>
-            NeoSentrix
+        <div class="footer-grid">
+          <div class="footer-section brand-section">
+            <a href="/" class="footer-logo">
+              <img
+                src="/assets/favicon.svg"
+                alt="neolearn logo"
+                class="footer-logo-img"
+              />
+              <span>neolearn</span>
+            </a>
+            <p class="footer-tagline">Empowering productivity worldwide 🌍</p>
           </div>
-          <p>Transforming learning through AI innovation</p>
-          <div class="social-links">
-            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+
+          <div class="footer-section">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="/features">Features</a></li>
+              <li><a href="/usecases">Use Cases</a></li>
+              <li><a href="/betadocs">Beta Docs</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/comingsoon">About</a></li>
+              <li><a href="/comingsoon">Blog</a></li>
+              <li><a href="/comingsoon">Careers</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="/tos">Terms</a></li>
+              <li><a href="/privacypolicy">Privacy</a></li>
+              <li><a href="/comingsoon">Security</a></li>
+            </ul>
           </div>
         </div>
-        <div class="footer-section">
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="/privacypolicy">Privacy Policy</a></li>
-            <li><a href="/tos">Terms of Service</a></li>
-            <li><a href="#">Security</a></li>
-          </ul>
+
+        <div class="footer-bottom">
+          <div class="footer-social">
+            <a
+              href="https://x.com/frinklx"
+              class="social-link"
+              aria-label="Twitter"
+            >
+              <svg
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://github.com/frinklx"
+              class="social-link"
+              aria-label="GitHub"
+            >
+              <svg
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"
+                />
+              </svg>
+            </a>
+          </div>
+          <p>© 2025 neolearn. All rights reserved.</p>
         </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 NeoSentrix. All rights reserved.</p>
       </div>
     </footer>
 
     <!-- Scripts -->
     <script src="../script.js"></script>
+    <script>
+      // Theme management
+      let isThemeChanging = false; // Add debounce flag
+
+      function getTheme() {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+          return savedTheme;
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+
+      function setTheme(theme) {
+        if (isThemeChanging) return; // Prevent recursive calls
+        isThemeChanging = true;
+
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        updateThemeIcon(theme);
+
+        // Notify parent window of theme change
+        try {
+          window.parent.postMessage({ type: "themeChange", theme }, "*");
+        } catch (e) {
+          console.log("Could not notify parent window of theme change");
+        }
+
+        setTimeout(() => {
+          isThemeChanging = false;
+        }, 100); // Reset flag after a short delay
+      }
+
+      function updateThemeIcon(theme) {
+        const themeIcon = document.getElementById("theme-icon");
+        if (themeIcon) {
+          themeIcon.innerHTML = theme === "dark" ? "🌙" : "☀️";
+        }
+      }
+
+      // Initialize theme
+      const initialTheme = getTheme();
+      document.documentElement.setAttribute("data-theme", initialTheme);
+      updateThemeIcon(initialTheme);
+
+      // Listen for system theme changes
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (e) => {
+          if (!localStorage.getItem("theme")) {
+            setTheme(e.matches ? "dark" : "light");
+          }
+        });
+
+      // Listen for theme changes from parent window
+      window.addEventListener("message", (event) => {
+        if (event.data.type === "themeChange" && !isThemeChanging) {
+          setTheme(event.data.theme);
+        }
+      });
+    </script>
   </body>
 </html>
