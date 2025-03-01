@@ -1,4 +1,17 @@
-// Import shared utilities
+// Maintenance mode configuration
+const express = require("express");
+const path = require("path");
+const router = express.Router();
+
+// Redirect all auth-related requests to the maintenance page
+router.all("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+module.exports = router;
+
+// Note: The following code is preserved but inactive during maintenance mode
+/*
 import { showToast, showLoading, hideLoading } from "../shared/utils/ui.js";
 import { redirectTo } from "../shared/utils/routes.js";
 import { initializeComponents } from "../shared/components/loading.js";
@@ -127,3 +140,4 @@ export async function saveUserData(userId, userData) {
 
 // Export necessary functions
 export { checkUserExists };
+*/

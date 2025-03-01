@@ -38,4 +38,4 @@ This project is proprietary software. While the source code is visible, usage an
 - Website: [neosentrix.com](https://neosentrix.com)
 - Github: [frinklx](https://github.com/frinklx)
 ---
-© 2024 Neosentrix. All rights reserved. It is illegal to reproduce this website.
+© 2025 Neosentrix. All rights reserved. It is illegal to reproduce this website.

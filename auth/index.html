@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coming Soon | neolearn</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      :root {
+        --background: #f8fafc;
+        --surface: #ffffff;
+        --text: #0f172a;
+        --text-secondary: #64748b;
+        --primary: #3b82f6;
+        --primary-light: #60a5fa;
+        --border: #e2e8f0;
+        --success: #22c55e;
+        --warning: #eab308;
+      }
+
+      [data-theme="dark"] {
+        --background: #0f172a;
+        --surface: #1e293b;
+        --text: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --primary: #3b82f6;
+        --primary-light: #60a5fa;
+        --border: #334155;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0.5rem;
+        border-radius: 0.75rem;
+        transition: all 0.2s;
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      .theme-toggle:hover {
+        background-color: var(--surface-hover);
+        transform: translateY(-2px);
+      }
+
+      .hero-section {
+        text-align: center;
+        padding: 4rem 0;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .hero-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-light) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero-section p {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto 2rem;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+      }
+
+      .feature-card {
+        background-color: var(--surface);
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        transition: transform 0.2s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+      }
+
+      .feature-icon {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+      }
+
+      .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+      }
+
+      .timeline {
+        max-width: 800px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background-color: var(--surface);
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+      }
+
+      .timeline h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--primary);
+      }
+
+      .timeline-item {
+        display: flex;
+        gap: 2rem;
+        padding: 1.5rem 0;
+        border-left: 2px solid var(--border);
+        margin-left: 1rem;
+        padding-left: 2rem;
+        position: relative;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -0.5rem;
+        width: 1rem;
+        height: 1rem;
+        background-color: var(--primary);
+        border-radius: 50%;
+      }
+
+      .timeline-date {
+        min-width: 100px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .timeline-content h3 {
+        margin-bottom: 0.5rem;
+      }
+
+      .timeline-content p {
+        color: var(--text-secondary);
+      }
+
+      .cta-section {
+        text-align: center;
+        padding: 4rem 0;
+        background-color: var(--surface);
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        margin: 2rem 0;
+      }
+
+      .cta-section h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+      }
+
+      .email-form {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .email-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        background-color: var(--background);
+        color: var(--text);
+        margin-bottom: 1rem;
+      }
+
+      .notify-button {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .notify-button:hover {
+        transform: translateY(-2px);
+      }
+
+      .footer {
+        text-align: center;
+        padding: 2rem 0;
+        color: var(--text-secondary);
+        border-top: 1px solid var(--border);
+        margin-top: 4rem;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .social-link {
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        transition: color 0.2s;
+      }
+
+      .social-link:hover {
+        color: var(--primary);
+      }
+
+      .status-section {
+        background-color: var(--surface);
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        margin: 2rem 0;
+      }
+
+      .status-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .status-item {
+        text-align: center;
+      }
+
+      .status-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .status-icon.complete {
+        color: var(--success);
+      }
+
+      .status-icon.in-progress {
+        color: var(--warning);
+      }
+
+      .status-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-section h1 {
+          font-size: 2rem;
+        }
+
+        .hero-section p {
+          font-size: 1rem;
+        }
+
+        .timeline {
+          padding: 1rem;
+        }
+
+        .timeline-item {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .timeline-date {
+          min-width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <header class="header">
+        <div class="logo-container">
+          <img src="../assets/favicon.svg" alt="neolearn logo" class="logo" />
+          <span class="logo-text">neolearn</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span id="theme-icon">☀️</span>
+        </button>
+      </header>
+
+      <section class="hero-section">
+        <h1>Authentication Coming Soon!</h1>
+        <p>
+          We're building a secure and seamless authentication system to provide
+          you with the best learning experience. Stay tuned for our launch!
+        </p>
+      </section>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-shield-alt feature-icon"></i>
+          <h3>Secure Authentication</h3>
+          <p>
+            State-of-the-art security measures to protect your data with
+            multi-factor authentication and encrypted storage.
+          </p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-sync feature-icon"></i>
+          <h3>Cross-Device Sync</h3>
+          <p>
+            Seamlessly sync your progress, achievements, and preferences across
+            all your devices.
+          </p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-users feature-icon"></i>
+          <h3>Social Learning</h3>
+          <p>
+            Connect with fellow learners, share achievements, and participate in
+            group learning activities.
+          </p>
+        </div>
+      </div>
+
+      <section class="status-section">
+        <h2>Development Status</h2>
+        <div class="status-grid">
+          <div class="status-item">
+            <i class="fas fa-check-circle status-icon complete"></i>
+            <h3>User Interface</h3>
+            <p class="status-label">Completed</p>
+          </div>
+          <div class="status-item">
+            <i class="fas fa-clock status-icon in-progress"></i>
+            <h3>Authentication System</h3>
+            <p class="status-label">In Progress</p>
+          </div>
+          <div class="status-item">
+            <i class="fas fa-clock status-icon in-progress"></i>
+            <h3>Data Sync</h3>
+            <p class="status-label">In Progress</p>
+          </div>
+          <div class="status-item">
+            <i class="fas fa-clock status-icon in-progress"></i>
+            <h3>Social Features</h3>
+            <p class="status-label">Coming Soon</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="timeline">
+        <h2>Development Timeline</h2>
+        <div class="timeline-item">
+          <div class="timeline-date">Phase 1</div>
+          <div class="timeline-content">
+            <h3>Core Authentication</h3>
+            <p>Secure login/signup system with email verification</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Phase 2</div>
+          <div class="timeline-content">
+            <h3>Profile Management</h3>
+            <p>User profiles, preferences, and achievement tracking</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Phase 3</div>
+          <div class="timeline-content">
+            <h3>Social Features</h3>
+            <p>Friend connections, group learning, and social sharing</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Phase 4</div>
+          <div class="timeline-content">
+            <h3>Advanced Features</h3>
+            <p>AI-powered recommendations and personalized learning paths</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-section">
+        <h2>Get Notified When We Launch!</h2>
+        <form class="email-form" id="notify-form">
+          <input
+            type="email"
+            class="email-input"
+            placeholder="Enter your email address"
+            required
+          />
+          <button type="submit" class="notify-button">Notify Me</button>
+        </form>
+      </section>
+
+      <footer class="footer">
+        <div class="social-links">
+          <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+          <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+        </div>
+        <p>© 2025 neolearn. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Theme management
+      const getTheme = () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) return savedTheme;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
+
+      const setTheme = (theme) => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        updateThemeIcon(theme);
+      };
+
+      const updateThemeIcon = (theme) => {
+        const icon = document.getElementById("theme-icon");
+        icon.textContent = theme === "dark" ? "🌙" : "☀️";
+      };
+
+      const toggleTheme = () => {
+        const currentTheme = getTheme();
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        setTheme(newTheme);
+      };
+
+      // Initialize theme
+      setTheme(getTheme());
+
+      // Handle email notification form
+      document.getElementById("notify-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = e.target.querySelector("input[type=email]").value;
+        // Here you would typically send this to your backend
+        alert("Thanks! We'll notify you when we launch.");
+        e.target.reset();
+      });
+    </script>
+  </body>
+</html>

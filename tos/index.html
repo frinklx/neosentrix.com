@@ -3,16 +3,235 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Terms of Service - NeoSentrix</title>
+    <title>Terms of Service | neolearn</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <link rel="stylesheet" href="../styles.css" />
+    <style>
+      :root {
+        --background: #ffffff;
+        --surface: #f8f8f8;
+        --text: #000000;
+        --text-secondary: #666666;
+        --primary: #000000;
+        --primary-light: #333333;
+        --border: #e0e0e0;
+        --success: #22c55e;
+        --warning: #eab308;
+        --accent-border: rgba(59, 130, 246, 0.3);
+      }
+
+      [data-theme="dark"] {
+        --background: #000000;
+        --surface: #111111;
+        --text: #ffffff;
+        --text-secondary: #999999;
+        --primary: #ffffff;
+        --primary-light: #cccccc;
+        --border: #333333;
+        --accent-border: rgba(59, 130, 246, 0.3);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+        transition: background-color 0.3s, color 0.3s;
+        line-height: 1.6;
+      }
+
+      .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        margin-bottom: 3rem;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0.5rem;
+        border-radius: 0.75rem;
+        transition: all 0.2s;
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent-border);
+      }
+
+      .main-content {
+        flex: 1;
+        background: var(--surface);
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        padding: 3rem;
+        margin-bottom: 3rem;
+      }
+
+      .tos-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .tos-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+          90deg,
+          #ff0000,
+          #ff8800,
+          #00ff00,
+          #0088ff,
+          #8800ff,
+          #ff0000
+        );
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientText 10s linear infinite;
+      }
+
+      .tos-header p {
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .tos-section {
+        margin-bottom: 3rem;
+      }
+
+      .tos-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .tos-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .tos-section p {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .tos-section ul {
+        list-style: none;
+        margin-left: 1.5rem;
+      }
+
+      .tos-section ul li {
+        margin-bottom: 0.5rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .tos-section ul li::before {
+        content: "→";
+        color: var(--primary);
+        flex-shrink: 0;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 2rem 0;
+        color: var(--text-secondary);
+        border-top: 1px solid var(--border);
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--surface);
+        color: var(--text);
+        text-decoration: none;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border);
+        margin-bottom: 3rem;
+      }
+
+      .back-button:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent-border);
+      }
+
+      @keyframes gradientText {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          padding: 2rem;
+        }
+
+        .tos-header h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
   </head>
   <!-- Google tag (gtag.js) -->
   <script
@@ -36,119 +255,212 @@
     <div class="grid-overlay"></div>
     <div class="vignette"></div>
 
-    <!-- Navigation -->
-    <nav class="glass-morphism">
-      <div class="logo">
-        <a href="/" style="text-decoration: none; color: inherit">
-          <i class="fas fa-brain gradient-text"></i>
-          NeoSentrix
-        </a>
-      </div>
-      <div class="nav-links">
-        <a href="/features" class="hover-underline">Features</a>
-        <a href="/usecases" class="hover-underline">Use Cases</a>
-        <a href="/about" class="hover-underline">About</a>
-        <button class="primary-btn glow-effect">Get Started</button>
-      </div>
-    </nav>
-
-    <!-- Terms of Service Content -->
-    <section class="content-section">
-      <div class="container glass-card">
-        <h1 class="gradient-heading">Terms of Service</h1>
-        <div class="tos-content">
-          <div class="tos-section">
-            <h2>1. Acceptance of Terms</h2>
-            <p>
-              By accessing and using NeoSentrix, you agree to be bound by these
-              Terms of Service and all applicable laws and regulations.
-            </p>
-          </div>
-
-          <div class="tos-section">
-            <h2>2. Service Description</h2>
-            <p>
-              NeoSentrix provides an AI-powered learning platform that includes:
-            </p>
-            <ul>
-              <li>Personalized learning paths</li>
-              <li>Progress tracking and analytics</li>
-              <li>AI-driven recommendations</li>
-              <li>Interactive learning tools</li>
-            </ul>
-          </div>
-
-          <div class="tos-section">
-            <h2>3. User Responsibilities</h2>
-            <ul>
-              <li>Maintain accurate account information</li>
-              <li>Protect account credentials</li>
-              <li>Use the service responsibly</li>
-              <li>Respect intellectual property rights</li>
-            </ul>
-          </div>
-
-          <div class="tos-section">
-            <h2>4. Intellectual Property</h2>
-            <p>
-              All content and materials available on NeoSentrix are protected by
-              intellectual property rights. Users may not:
-            </p>
-            <ul>
-              <li>Copy or distribute platform content</li>
-              <li>Modify or create derivative works</li>
-              <li>Reverse engineer the platform</li>
-              <li>Remove copyright notices</li>
-            </ul>
-          </div>
-
-          <div class="tos-section">
-            <h2>5. Termination</h2>
-            <p>
-              NeoSentrix reserves the right to terminate or suspend access to
-              the service for:
-            </p>
-            <ul>
-              <li>Violation of these terms</li>
-              <li>Fraudulent activity</li>
-              <li>Harmful behavior</li>
-              <li>Other reasonable causes</li>
-            </ul>
-          </div>
+    <div class="page-container">
+      <header class="header">
+        <div class="logo-container">
+          <img src="/assets/favicon.svg" alt="neolearn logo" class="logo" />
+          <span class="logo-text">neolearn</span>
         </div>
-      </div>
-    </section>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span id="theme-icon">☀️</span>
+        </button>
+      </header>
 
-    <!-- Footer -->
-    <footer class="glass-morphism">
-      <div class="footer-content">
-        <div class="footer-section brand">
-          <div class="logo">
-            <i class="fas fa-brain gradient-text"></i>
-            NeoSentrix
-          </div>
-          <p>Transforming learning through AI innovation</p>
-          <div class="social-links">
-            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-          </div>
+      <a href="/" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        <span>Return to Homepage</span>
+      </a>
+
+      <main class="main-content">
+        <div class="tos-header">
+          <h1>Terms of Service</h1>
+          <p>Last updated: March 1, 2024</p>
         </div>
-        <div class="footer-section">
-          <h4>Legal</h4>
+
+        <div class="tos-section">
+          <h2><i class="fas fa-handshake"></i> 1. Acceptance of Terms</h2>
+          <p>
+            By accessing or using neolearn's services, you agree to be bound by
+            these Terms of Service and all applicable laws and regulations. If
+            you do not agree with any of these terms, you are prohibited from
+            using or accessing our services.
+          </p>
+        </div>
+
+        <div class="tos-section">
+          <h2><i class="fas fa-rocket"></i> 2. Service Description</h2>
+          <p>
+            neolearn provides an AI-powered learning platform that includes:
+          </p>
           <ul>
-            <li><a href="/privacypolicy">Privacy Policy</a></li>
-            <li><a href="/tos">Terms of Service</a></li>
-            <li><a href="#">Security</a></li>
+            <li>Personalized learning paths and content recommendations</li>
+            <li>Progress tracking and performance analytics</li>
+            <li>AI-driven study assistance and feedback</li>
+            <li>Interactive learning tools and resources</li>
+            <li>Collaborative learning features</li>
+            <li>Mobile and desktop access</li>
           </ul>
         </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2024 NeoSentrix. All rights reserved.</p>
-      </div>
-    </footer>
 
-    <!-- Scripts -->
-    <script src="../script.js"></script>
+        <div class="tos-section">
+          <h2><i class="fas fa-user-check"></i> 3. User Responsibilities</h2>
+          <p>As a user of neolearn, you agree to:</p>
+          <ul>
+            <li>Provide accurate and complete registration information</li>
+            <li>Maintain the security of your account credentials</li>
+            <li>Use the service in compliance with all applicable laws</li>
+            <li>Respect the intellectual property rights of others</li>
+            <li>Not engage in any unauthorized or harmful activities</li>
+            <li>Report any security vulnerabilities or misuse</li>
+          </ul>
+        </div>
+
+        <div class="tos-section">
+          <h2><i class="fas fa-copyright"></i> 4. Intellectual Property</h2>
+          <p>
+            All content and materials available on neolearn are protected by
+            intellectual property rights. Users must:
+          </p>
+          <ul>
+            <li>Respect copyright and trademark rights</li>
+            <li>Not copy or distribute platform content without permission</li>
+            <li>Not modify or create derivative works</li>
+            <li>Not attempt to reverse engineer the platform</li>
+            <li>Maintain all copyright and proprietary notices</li>
+          </ul>
+        </div>
+
+        <div class="tos-section">
+          <h2><i class="fas fa-ban"></i> 5. Termination</h2>
+          <p>
+            neolearn reserves the right to terminate or suspend access to our
+            services for:
+          </p>
+          <ul>
+            <li>Violation of these terms or applicable laws</li>
+            <li>Fraudulent or malicious activity</li>
+            <li>Non-payment of fees (if applicable)</li>
+            <li>Extended periods of inactivity</li>
+            <li>Behavior that harms other users or the platform</li>
+          </ul>
+        </div>
+
+        <div class="tos-section">
+          <h2><i class="fas fa-credit-card"></i> 6. Payments and Refunds</h2>
+          <p>For paid services:</p>
+          <ul>
+            <li>
+              All payments are processed securely through trusted providers
+            </li>
+            <li>Subscription fees are billed according to the selected plan</li>
+            <li>Refunds are provided according to our refund policy</li>
+            <li>Users are responsible for all applicable taxes</li>
+            <li>Price changes will be communicated in advance</li>
+          </ul>
+        </div>
+
+        <div class="tos-section">
+          <h2>
+            <i class="fas fa-shield-alt"></i> 7. Privacy and Data Protection
+          </h2>
+          <p>Our commitment to your privacy includes:</p>
+          <ul>
+            <li>Protection of personal information</li>
+            <li>Secure data storage and transmission</li>
+            <li>Compliance with data protection laws</li>
+            <li>Transparent data collection practices</li>
+            <li>User control over personal data</li>
+          </ul>
+        </div>
+
+        <div class="tos-section">
+          <h2><i class="fas fa-exclamation-triangle"></i> 8. Disclaimers</h2>
+          <p>Please note that:</p>
+          <ul>
+            <li>Services are provided "as is" without warranties</li>
+            <li>We do not guarantee uninterrupted service</li>
+            <li>Results may vary based on individual effort</li>
+            <li>Users assume responsibility for their use of the platform</li>
+            <li>We are not liable for third-party content or links</li>
+          </ul>
+        </div>
+
+        <div class="tos-section">
+          <h2><i class="fas fa-gavel"></i> 9. Governing Law</h2>
+          <p>
+            These terms are governed by and construed in accordance with the
+            laws of the United States. Any disputes shall be resolved in the
+            courts of California.
+          </p>
+        </div>
+
+        <div class="tos-section">
+          <h2><i class="fas fa-envelope"></i> 10. Contact Information</h2>
+          <p>
+            For questions about these Terms of Service, please contact us at:
+          </p>
+          <ul>
+            <li>Email: legal@neolearn.com</li>
+            <li>Address: 123 Learning Street, Education Valley, CA 94025</li>
+          </ul>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>© 2024 neolearn. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Theme management with debounce
+      let themeTimeout;
+
+      const getTheme = () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) return savedTheme;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
+
+      const setTheme = (theme) => {
+        if (themeTimeout) return;
+
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        updateThemeIcon(theme);
+
+        themeTimeout = setTimeout(() => {
+          themeTimeout = null;
+        }, 300);
+
+        try {
+          window.parent.postMessage({ type: "THEME_CHANGE", theme }, "*");
+        } catch (e) {
+          console.log("Theme sync failed:", e);
+        }
+      };
+
+      const updateThemeIcon = (theme) => {
+        const icon = document.getElementById("theme-icon");
+        icon.textContent = theme === "dark" ? "🌙" : "☀️";
+      };
+
+      const toggleTheme = () => {
+        const currentTheme = getTheme();
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        setTheme(newTheme);
+      };
+
+      // Initialize theme
+      setTheme(getTheme());
+
+      // Listen for theme changes from main site
+      window.addEventListener("message", (event) => {
+        if (event.data.type === "THEME_CHANGE") {
+          setTheme(event.data.theme);
+        }
+      });
+    </script>
   </body>
 </html>

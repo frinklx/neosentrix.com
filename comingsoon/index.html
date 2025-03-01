@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coming Soon | neolearn</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      :root {
+        --background: #ffffff;
+        --surface: #f8f8f8;
+        --text: #000000;
+        --text-secondary: #666666;
+        --primary: #000000;
+        --primary-light: #333333;
+        --border: #e0e0e0;
+        --success: #22c55e;
+        --warning: #eab308;
+        --accent-border: rgba(59, 130, 246, 0.3);
+      }
+
+      [data-theme="dark"] {
+        --background: #000000;
+        --surface: #111111;
+        --text: #ffffff;
+        --text-secondary: #999999;
+        --primary: #ffffff;
+        --primary-light: #cccccc;
+        --border: #333333;
+        --accent-border: rgba(59, 130, 246, 0.3);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+      }
+
+      .theme-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0.5rem;
+        border-radius: 0.75rem;
+        transition: all 0.2s;
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      .theme-toggle:hover {
+        background-color: var(--surface-hover);
+        transform: translateY(-2px);
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem 0;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .hero-section {
+        max-width: 800px;
+        margin-bottom: 3rem;
+      }
+
+      .hero-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+          90deg,
+          #ff0000,
+          #ff8800,
+          #00ff00,
+          #0088ff,
+          #8800ff,
+          #ff0000
+        );
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientText 10s linear infinite;
+      }
+
+      .hero-section p {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        width: 100%;
+        margin-bottom: 3rem;
+      }
+
+      .content-card {
+        background-color: var(--surface);
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        text-align: left;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .content-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--accent-border);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .content-card:hover::after {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        right: -1px;
+        bottom: -1px;
+        border-radius: 1rem;
+        border: 1px solid transparent;
+        animation: borderGlow 3s linear infinite;
+        pointer-events: none;
+      }
+
+      .content-icon {
+        font-size: 2rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .content-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        color: var(--text);
+      }
+
+      .content-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      .content-card ul {
+        list-style: none;
+        color: var(--text-secondary);
+      }
+
+      .content-card ul li {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .content-card ul li::before {
+        content: "→";
+        color: var(--primary);
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-top: 1rem;
+      }
+
+      .status-badge.coming-soon {
+        background-color: var(--warning);
+        color: #000;
+      }
+
+      .status-badge.in-progress {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .cta-section {
+        text-align: center;
+        padding: 3rem;
+        background-color: var(--surface);
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        margin: 2rem 0;
+        width: 100%;
+      }
+
+      .cta-section h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+      }
+
+      .email-form {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .email-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        background-color: var(--background);
+        color: var(--text);
+        margin-bottom: 1rem;
+      }
+
+      .notify-button {
+        background-color: var(--primary);
+        color: var(--background);
+        border: 1px solid var(--border);
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .notify-button:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent-border);
+      }
+
+      .notify-button:hover::after {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        right: -1px;
+        bottom: -1px;
+        border: 1px solid transparent;
+        animation: borderGlow 3s linear infinite;
+        pointer-events: none;
+      }
+
+      .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--surface);
+        color: var(--text);
+        text-decoration: none;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: transform 0.2s;
+        border: 1px solid var(--border);
+        margin-top: 2rem;
+      }
+
+      .back-button:hover {
+        transform: translateY(-2px);
+      }
+
+      .footer {
+        text-align: center;
+        padding: 2rem 0;
+        color: var(--text-secondary);
+        border-top: 1px solid var(--border);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-section h1 {
+          font-size: 2rem;
+        }
+
+        .hero-section p {
+          font-size: 1rem;
+        }
+
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .cta-section {
+          padding: 2rem 1rem;
+        }
+      }
+
+      .notify-success {
+        display: none;
+        background-color: var(--success);
+        color: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .notify-success.show {
+        display: block;
+      }
+
+      @keyframes gradientText {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      @keyframes borderGlow {
+        0% {
+          border-color: #ff0000;
+        }
+        20% {
+          border-color: #ff8800;
+        }
+        40% {
+          border-color: #00ff00;
+        }
+        60% {
+          border-color: #0088ff;
+        }
+        80% {
+          border-color: #8800ff;
+        }
+        100% {
+          border-color: #ff0000;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <header class="header">
+        <div class="logo-container">
+          <img src="/assets/favicon.svg" alt="neolearn logo" class="logo" />
+          <span class="logo-text">neolearn</span>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span id="theme-icon">☀️</span>
+        </button>
+      </header>
+
+      <main class="main-content">
+        <section class="hero-section">
+          <h1>Page Coming Soon!</h1>
+          <p>
+            We're working hard to bring you amazing content and features. This
+            section is currently under development and will be available soon.
+          </p>
+        </section>
+
+        <div class="content-grid">
+          <div class="content-card">
+            <i class="fas fa-newspaper content-icon"></i>
+            <h3>Blog</h3>
+            <p>Our blog will feature:</p>
+            <ul>
+              <li>Learning tips and strategies</li>
+              <li>Student success stories</li>
+              <li>Product updates and features</li>
+              <li>Educational insights</li>
+            </ul>
+            <span class="status-badge in-progress">
+              <i class="fas fa-code"></i>
+              In Development
+            </span>
+          </div>
+
+          <div class="content-card">
+            <i class="fas fa-briefcase content-icon"></i>
+            <h3>Careers</h3>
+            <p>Join our growing team:</p>
+            <ul>
+              <li>Engineering positions</li>
+              <li>Design opportunities</li>
+              <li>Content creation roles</li>
+              <li>Customer support</li>
+            </ul>
+            <span class="status-badge coming-soon">
+              <i class="fas fa-clock"></i>
+              Coming Q2 2025
+            </span>
+          </div>
+
+          <div class="content-card">
+            <i class="fas fa-chart-line content-icon"></i>
+            <h3>Status & Security</h3>
+            <p>Monitor our platform:</p>
+            <ul>
+              <li>System status dashboard</li>
+              <li>Incident reports</li>
+              <li>Security measures</li>
+              <li>Performance metrics</li>
+            </ul>
+            <span class="status-badge in-progress">
+              <i class="fas fa-shield-alt"></i>
+              Final Testing
+            </span>
+          </div>
+        </div>
+
+        <section class="cta-section">
+          <h2>Stay Updated!</h2>
+          <p>Get notified when these features launch.</p>
+          <form class="email-form" id="notify-form">
+            <input
+              type="email"
+              class="email-input"
+              placeholder="Enter your email address"
+              required
+            />
+            <button type="submit" class="notify-button">Notify Me</button>
+            <div class="notify-success" id="notify-success">
+              Thanks! We'll notify you when we launch these features. 🎉
+            </div>
+          </form>
+        </section>
+
+        <a href="/" class="back-button">
+          <i class="fas fa-arrow-left"></i>
+          <span>Return to Homepage</span>
+        </a>
+      </main>
+
+      <footer class="footer">
+        <p>© 2025 neolearn. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <script>
+      // Theme management with debounce to prevent rapid switching
+      let themeTimeout;
+
+      const getTheme = () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) return savedTheme;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
+
+      const setTheme = (theme) => {
+        if (themeTimeout) return; // Prevent rapid switching
+
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        updateThemeIcon(theme);
+
+        // Set a timeout to prevent rapid switching
+        themeTimeout = setTimeout(() => {
+          themeTimeout = null;
+        }, 300);
+
+        // Sync theme with main site
+        try {
+          window.parent.postMessage({ type: "THEME_CHANGE", theme }, "*");
+        } catch (e) {
+          console.log("Theme sync failed:", e);
+        }
+      };
+
+      const updateThemeIcon = (theme) => {
+        const icon = document.getElementById("theme-icon");
+        icon.textContent = theme === "dark" ? "🌙" : "☀️";
+      };
+
+      const toggleTheme = () => {
+        const currentTheme = getTheme();
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        setTheme(newTheme);
+      };
+
+      // Initialize theme
+      setTheme(getTheme());
+
+      // Listen for theme changes from main site
+      window.addEventListener("message", (event) => {
+        if (event.data.type === "THEME_CHANGE") {
+          setTheme(event.data.theme);
+        }
+      });
+
+      // Handle email notification form
+      document.getElementById("notify-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = e.target.querySelector("input[type=email]").value;
+        const successEl = document.getElementById("notify-success");
+
+        // Show success message
+        successEl.classList.add("show");
+
+        // Reset form
+        e.target.reset();
+
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          successEl.classList.remove("show");
+        }, 5000);
+      });
+    </script>
+  </body>
+</html>
