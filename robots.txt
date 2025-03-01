@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
 
+# Block internal/private areas (optional but recommended)
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /auth
+Disallow: /admin
+
+# Point to sitemap
 Sitemap: https://neosentrix.com/sitemap.xml
