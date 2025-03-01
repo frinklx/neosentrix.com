@@ -2969,7 +2969,7 @@ footer::before {
   color: var(--text-secondary);
 }
 
-.note-connections a {
+.note-connections li {
   color: var(--accent-color);
   text-decoration: none;
   padding: 4px 12px;
@@ -2978,7 +2978,7 @@ footer::before {
   transition: all 0.2s ease;
 }
 
-.note-connections a:hover {
+.note-connections li:hover {
   background: rgba(10, 133, 209, 0.2);
   transform: translateY(-1px);
 }
